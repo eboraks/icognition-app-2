@@ -83,7 +83,6 @@ const useLibrary = () => {
     const getSubtopics = async (user_id) => {
         error.value = null
         isPending.value = true
-        console.log("User id: ", user_id)
         try {
             const res = await fetch(`${baseurl}/subtopics/${user_id}`)
             if (!res.ok) {
