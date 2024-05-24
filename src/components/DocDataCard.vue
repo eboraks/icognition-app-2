@@ -1,31 +1,26 @@
 <template>
-    <div class="border-round border-1 border-primary-500 mb-2 shadow-2" style="width: 800px;">
-        <div class="grid">
-            <div class="col">
-                <div class="bg-primary border-round border-1 border-primary-500 align-content-start py-3 pl-2">
-                    {{ document.title }}
+
+    <div class="grid nested-grid border-round border-1 border-primary-500 m-1 shadow-2" style="width: 98%;">
+        <div class="col-8">
+            <div class="grid">
+                <div class="col-12 align-items-center justify-content-start border-bottom-1 border-primary-500">
+                    <a class="text-xl text-color" :href="document.url" style="text-decoration: none" target="_blank">{{ document.title }}</a>
+                    <p class="text-sm text-color my-1">Saved on: {{ formate_date }}, Source: {{ document.site_name }}</p>
+                </div>
+                <div class="col-12">
+                    <p class="m-0">{{ document.is_about }}</p>
+                </div>
+                <div class="col-12">
+                    <label class="text-primary-500 underline" @click="showmore = !showmore">{{ showmore_text }}</label>
+                    <ul class="m-0" v-if="showmore" v-for="(item, index) in document.tldr" :key="index">
+                        <li class="m-2">{{ item }}</li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="grid">
-            <div class="col line-height-3 pl-3">
-                <div v-if = "document.is_about"> {{ document.is_about}}</div>
-                <div else> {{ document.oneSentenceSummary }}</div>
-            </div>
-        </div>
-        <div class="grid">
-            <div class="col-10"></div> 
-            <div class="col-2 px-1 py-2">
-                <span class="text-black underline pl-4" @click="showmore = !showmore">{{ showmore_text}}</span>
-            </div>
-        </div>
-                
-        <div class="flex flex-row" v-if="showmore">
-            <div class="pl-2 pb-3">
-                <div>Key points:</div>
-                <ul class="w-11" v-for="(item, index) in document.tldr" :key="index">
-                    <li class="ml-3 line-height-2">{{ item }}</li>
-                </ul>
+        <div class="col-4">
+            <div class="image">
+                <img :src="image_url" :alt="document.title" width="100%" height="100%" style="max-height: 175px;">
             </div>
         </div>
     </div>
@@ -33,7 +28,7 @@
 </template>
 <script setup>
 
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch} from 'vue';
 const showmore = ref(false);
 
 const props = defineProps({
@@ -41,10 +36,17 @@ const props = defineProps({
 });
 
 const showmore_text = computed(() => {
-    return showmore.value ? 'Read Less' : 'Read More';
+    return showmore.value ? 'Less Details' : 'More Details';
 });
 
 
+const image_url = computed(() => {
+    return props.document.image_url ? props.document.image_url : "http://localhost:8889/placeholder_image";
+});
+
+const formate_date = computed((value) => {
+    return new Date(props.document.updateAt).toLocaleDateString();
+});
 
 
 

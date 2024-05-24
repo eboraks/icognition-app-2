@@ -10,11 +10,17 @@ const props = defineProps({
 
 </script>
 <template>
+
+  <ScrollPanel style="width: 102%; height: 1000px"  
+      :pt="{ bary: 'hover:bg-primary-400 bg-primary-300 opacity-100'}">
+                                    
     <TransitionGroup name="list" tag="div">
         <div class="w-full" v-for="(item, index) in props.documents" :key="index">
             <DocDataCard :document="item" />
         </div>
     </TransitionGroup>
+  </ScrollPanel>
+    
 </template>
 
 <style scoped>

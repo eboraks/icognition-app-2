@@ -10,6 +10,7 @@ const useLibrary = () => {
     const isPending = ref(false)
     const subtopics = ref([])
     const subtopics_nodes = ref([])
+    const entities_names = ref([])
     
     const baseurl = import.meta.env.VITE_APP_API_BASE_URL
     console.log("Base URL: ", baseurl)
@@ -118,7 +119,23 @@ const useLibrary = () => {
         }
     }
 
-    return { documents, answer, resp_type, error, isPending, getDocumets, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes}    
+    const getEntitiesNames = async (user_id) => {
+        error.value = null
+        try {
+            const res = await fetch(`${baseurl}/entities_names/${user_id}`)
+            if (!res.ok) {
+                throw Error('Could not fetch the data for that resource')
+            }
+            entities_names.value = await res.json()
+            console.log("getEntitiesNames -> entities lenght: ", entities_names.value.length)
+        } catch (err) {
+            error.value = err.message
+            isPending.value = false
+            console.log("Error: ", error.value)
+        }
+    }
+
+    return { documents, answer, resp_type, error, isPending, getDocumets, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names}    
 
 
 }
