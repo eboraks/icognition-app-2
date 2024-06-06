@@ -4,7 +4,7 @@ import user_state from '@/composables/getUser';
 import { ref, onMounted, computed } from 'vue'
 import DataTable from '@/components/DataTable.vue';
 import AnswerCard from '@/components/AnswerCard.vue';
-import SkeletonCard from '@/components/SkeletonCard.vue';
+import Skeleton from 'primevue/skeleton';
 import ProgressBar from 'primevue/progressbar';
 import SubtopicsTree from '@/components/SubtopicsTree.vue';
 
@@ -76,10 +76,11 @@ function inputHandle(params) {
 }
 const items = ref([]);
 
-const search = (e) => {
-    console.log("Search: ", e.query);
+const autocompleteSearch = (e) => {
+    console.log("Autocomplete Search: ", e.query);
 
     items.value = entities_names.value;
+    console.log("query length ", e.query.length);
     if (e.query.length > 1) {
         items.value = [];
         
@@ -87,9 +88,10 @@ const search = (e) => {
         const lastWord = words[words.length - 1];
 
         if (e.query.endsWith(' ')) {
-            items.value = entities_names.value.map((item) => {
+            items.value = entities_names.value.filter(entname => !e.query.includes(entname.toLowerCase())).map((item) => {
                 return e.query + item;
             });
+            
         } else {
             items.value = entities_names.value.filter((item) => {
                 return item.toLowerCase().startsWith(lastWord.toLowerCase());
@@ -97,7 +99,12 @@ const search = (e) => {
                 words.pop();
                 return words.join(' ') + ' ' + item;
             });
+            if (items.value.length == 0) {
+                return e.query;
+            }
         }
+        return e.query;
+        
     } 
     
 }
@@ -115,19 +122,27 @@ const search = (e) => {
         </div>
 
         <div class="col static">
+            <!-- Auto-complete-->
             <div class="flex flex-row" style="width: 80%;"> 
                 <div class="flex flex-row m-2 pt-2 w-full" style="height: 60px;">
                     <AutoComplete class="my-1 bg-gray-50 border-round-lg" v-model="search_term" :suggestions="items" 
-                        @complete="search" @keydown.enter="searchHandle"  
+                        @complete="autocompleteSearch" @keydown.enter="searchHandle"  
                         @input="inputHandle" @keydown.escape="emptied"
-                        placeholder="Hint: what I I read about ...?"/>
+                        placeholder="Hint: what I read about ...?"/>
                 </div>   
             </div>
             <div class="p-0 m-2 bg-gray-50 border-round-lg" style="width: 75%;">
 
                 <div>{{ error }}</div>
-                <div class="flex flex-row" v-if="answer_loading">
-                    <div>loading...</div>
+                <div class="flex flex-column" v-if="answer_loading">
+                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
                 </div>
                 <div class="flex flex-row" v-if="resp_type =='RAGAnswer'">
                     <AnswerCard :answer="answer" />

@@ -39,7 +39,7 @@ const useLibrary = () => {
     const searchDocuments = async (user_id, search_term) => {
         error.value = null
         isPending.value = true
-        console.log("User id: ", user_id)
+        resp_type.value = null
         try {
 
             const payload = {
@@ -105,7 +105,7 @@ const useLibrary = () => {
         isPending.value = true
         console.log("User id: ", user_id)
         try {
-            const res = await fetch(`${baseurl}/subtopics_node/${user_id}`)
+            const res = await fetch(`${baseurl}/filter_nodes/${user_id}`)
             if (!res.ok) {
                 throw Error('Could not fetch the data for that resource')
             }

@@ -1,6 +1,6 @@
 <template>
     <div v-if="props.answer" class="border-round border-1 border-primary-500 mt-1 shadow-2 m-1" style="width: 98%;">
-        <p class="line-height-2 p-1 m-1" style="width: 790px;">{{ typeValue }}</p>      
+        <div class="line-height-2 p-1 m-1"><span  v-html="props.answer"></span></div>
     </div>
 
 </template>
@@ -14,9 +14,14 @@ const props = defineProps({
 });
 
 onUpdated(() => {
+    console.log("Answer: ", props.answer);
     if (typeValue.value.length < 1 && props.answer !== undefined) {
         typeEffect();
     }
+});
+
+const formatedAnswer = computed(() => {
+    return props.answer.replace(/^\s*["']|["']\s*$/g, '').replace(/\n/g, '<br />');
 });
 
 const typeEffect = () => {
