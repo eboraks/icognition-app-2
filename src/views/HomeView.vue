@@ -1,28 +1,28 @@
 <template>
     <div class="grid">
       <div class="col-6">
-        <div class="flex flex-column justify-content-center p-5 m-5">
+        <div class="flex flex-column justify-content-center p-1 m-1">
           <div class="text-lg line-height-3 w-10 m-2 p-2">
-            <h1 class="flex">Under Construction</h1>
+            <h1 class="flex">iCogntion - AI Assistant for Dyslexics</h1>
             <p class="">
-              iCognition.ai is a simple and elegant bookmarking application designed for the knowledge-seeking busy executives. 
-              It solve the problem, of too much stuff to read, and not enough time to comprehend.
+              iCognition is an AI assistant designed to empower individuals with dyslexia by helping them comprehend information. It is tailored to leverage the strengths of the dyslexic mind, such as big-picture thinking and compensating for short-term memory issues.
             </p>
               <h5 class="text-lg">How does it work?</h5>
               <ul class="list-disc">
-                <li>When bookmarking, iCognition.ai uses AI algorithms to analyze the content of articles and extract relevant information, such as key points, concepts, named entities and TLDR summaries.</li>
-                <li>Make it easy to find information, every bookmarked page is added a library that is searchable and categorized using AI.</li>
+                <li>iCognition utilizes AI algorithms to analyze information and present it in a way that is easily understood by individuals with dyslexia. It helps users identify the main idea and key points of the information and enables them to interact with the content, ask questions, and get answers.</li>
+                <li>It facilitates easy recall of information by creating a searchable and categorized library from every page read, using AI technology.</li>
               </ul>
               <p></p>
             <p class="">
-              iCognition.ai enables executives to quickly find and access the information they need, stay organized, and make more informed decisions.
-              The application is in development with target date for alpha in May. For demos, early access, or anything else reachout at: <a href= "mailto:information@icognition.ai">information@icognition.ai</a>
+              iCognition assists students and professionals with dyslexia in comprehending information more quickly, staying organized, and making more informed decisions. The application is currently in development. For demos, early access, or any other inquiries, please contact us at  <a href= "mailto:information@icognition.ai">information@icognition.ai</a>
             </p>
           </div>
         </div>
       </div>
       <div class="col-4">
-        <img  class="pt-10" src="@/assets/images/icognition_library_2.png.jpeg" alt="iCognition.ai" height="80%" width="80%">
+        <div class="flex justify-content-center p-2 m-5">
+          <img  class="m-10" src="@/assets/images/icognition_library_2.png.jpeg" alt="iCognition.ai" height="80%" width="80%">
+        </div>
       </div>
     </div>  
 </template>

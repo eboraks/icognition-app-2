@@ -12,9 +12,16 @@
                 </div>
                 <div class="col-12">
                     <label class="text-primary-500 underline" @click="showmore = !showmore">{{ showmore_text }}</label>
-                    <ul class="m-0" v-if="showmore" v-for="(item, index) in document.tldr" :key="index">
-                        <li class="m-2">{{ item }}</li>
-                    </ul>
+                    <div v-if="showmore" class="m-2">
+                        <h3>Key Points</h3>
+                        <ul class="m-0" v-if="showmore" v-for="(item, index) in document.tldr" :key="index">
+                            <li class="m-2">{{ item }}</li>
+                        </ul>
+                        <h3>Concepts, Ideas and Entities</h3>
+                        <ul class="m-0" v-if="showmore" v-for="entity in document.entities_and_concepts">
+                            <li class="m-2">{{ entity.name }} ({{ entity.type }}) - {{ entity.description }}</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
