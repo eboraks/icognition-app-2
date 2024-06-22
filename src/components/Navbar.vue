@@ -36,7 +36,7 @@ auth.onAuthStateChanged((_user) => {
     
     if (user_state.user) {
         console.log('User is logged in. Current user is: ', user_state.user)
-        router.push({ name: 'library' })
+        //router.push({ name: 'library' })
     }
 })
 

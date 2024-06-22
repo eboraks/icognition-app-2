@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import user_state from '@/composables/getUser';
 import Library from '../views/library/Library.vue'
+import DocXRayView from '../views/library/DocXRayView.vue'
 
 // route guard
 const requireAuth = (to, from, next) => {
@@ -17,7 +18,8 @@ const requireAuth = (to, from, next) => {
 const authticated = (to, from, next) => {
   if (user_state.user) {
     console.log('authenticated: user logged in. From: ', from, ' To: ', to)
-    next({ name: 'library' })
+    next({ name: to })
+    //next({ name: 'library' })
   } else {
     next()
   }
@@ -35,6 +37,12 @@ const routes = [
     path: '/library',
     name: 'library',
     component: Library,
+    beforeEnter: requireAuth
+  },
+  { 
+    path: '/docxray/:id',
+    name: 'docxray',
+    component: DocXRayView,
     beforeEnter: requireAuth
   }
 ]
