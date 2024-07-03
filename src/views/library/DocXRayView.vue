@@ -8,12 +8,6 @@
         <h3 class="learning">{{ summary.learningsFromTheArticle.question }}</h3>
         <p>{{ summary.learningsFromTheArticle.answer }}</p>
 
-        <div v-if="document.entities_and_concepts">
-          <h3 class="entity">Concepts, Ideas and Entities</h3>
-          <div v-for="entity in document.entities_and_concepts">
-            <p>{{ entity.name }} ({{ entity.type }}) - {{ entity.description }}</p>
-          </div>
-        </div>
       </div>
         
         
@@ -61,15 +55,29 @@ onUpdated(() => {
   
   console.log(summary.value.whatThisArticleIsAbout)
   summary.value.whatThisArticleIsAbout.sources.forEach((item) => {
-    jQuery("body").html(jQuery("body").html().replace(new RegExp(item, 'g'), '<span class="about">' + item + '</span>'));
+    try {
+      jQuery("body").html(jQuery("body").html().replace(new RegExp(item, 'g'), `<span class="about" v-tooltip.top="'Enter your username'">${item}</span>`));
+    } catch (err) {
+      console.log("Error: ", err);
+    }
   });
   console.log(summary.value.learningsFromTheArticle)
   summary.value.learningsFromTheArticle.sources.forEach((item) => {
-    jQuery("body").html(jQuery("body").html().replace(new RegExp(item, 'g'), '<span class="learning">' + item + '</span>'));
+    try {
+      jQuery("body").html(jQuery("body").html().replace(new RegExp(item, 'g'), '<span class="about">' + item + '</span>'));
+    } catch (err) {
+      console.log("Error: ", err);
+    }
   });
-
-  document.value.entities_and_concepts.forEach((item) => {
-    jQuery("#article").html(jQuery("#article").html().replace(new RegExp(item.name, 'g'), '<span class="entity">' + item.name + '</span>'));
+  console.log("Poinst: ", summary.value.summaryInBulletPoints)
+  summary.value.summaryInBulletPoints.forEach((point) => {
+    point.sources.forEach((item) => {
+      try {
+        jQuery("body").html(jQuery("body").html().replace(new RegExp(item, 'g'), `<span class="entity"> ${item}</span>`));
+      } catch (err) {
+        console.log("Error: ", err);
+      }
+    });
   });
 });
 
@@ -87,7 +95,10 @@ onUpdated(() => {
 }
 
 .article {
-    font-family: NotoSans;
-    font-size: 14px;
+    font-family: "Trebuchet MS", sans-serif, monospace;
+    font-size: 18px;
+    font-weight: 545;
+    letter-spacing: .08rem;
+    
 }
 </style>

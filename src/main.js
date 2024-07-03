@@ -16,6 +16,7 @@ import Tree from 'primevue/tree';
 import AutoComplete from 'primevue/autocomplete';
 import Fieldset from 'primevue/fieldset';
 import ScrollPanel from 'primevue/scrollpanel';
+import Tooltip from 'primevue/tooltip';
 
 
 
@@ -35,5 +36,6 @@ onAuthStateChanged(auth, (user) => {
         app.component('Fieldset', Fieldset);
         app.component('ScrollPanel', ScrollPanel);
         app.component('AutoComplete', AutoComplete);
+        app.component('Tooltip', Tooltip);
     }   
 })

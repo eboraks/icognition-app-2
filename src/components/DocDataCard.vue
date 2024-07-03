@@ -7,10 +7,10 @@
                     <a class="text-xl text-color" :href="document.url" style="text-decoration: none" target="_blank">{{ document.title }}</a>
                     <p class="text-sm text-color my-1">Saved on: {{ formate_date }}, Source: {{ document.site_name }}</p>
                 </div>
-                <div class="col-12">
+                <div class="col-12 article">
                     <p class="m-0">{{ document.is_about }}</p>
                 </div>
-                <div class="col-12">
+                <div class="col-12 article">
                     <label class="text-primary-500 underline" @click="showmore = !showmore">{{ showmore_text }}</label>
                     <div v-if="showmore" class="m-2">
                         <h3>Key Points</h3>
@@ -64,4 +64,11 @@ const formate_date = computed((value) => {
     height: 250px;
 }
     
+.article {
+    font-family: "Trebuchet MS", sans-serif, monospace;
+    font-size: 18px;
+    font-weight: 545;
+    letter-spacing: .08rem;
+    
+}    
 </style>
