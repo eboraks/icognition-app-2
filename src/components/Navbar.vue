@@ -1,5 +1,5 @@
 <template>
-    <nav class="grid pt-2 bg-gray-100 m-0 border-white border-left-1 border-bottom-1">
+    <nav class="grid pt-2 bg-gray-100 m-0 border-white border-bottom-3">
         <div class="col-6 pb-1">
             <router-link class="pl-2" to="/">
                 <img src="@/assets/images/icog_logo.png" alt="iCognition.ai" width="200px" height="45px">

@@ -1,5 +1,5 @@
 <template>
-    <footer v-if="display" class="footer border-left-2 border-white grid m-0 bg-gray-100 border-top-1 pt-2">
+    <footer v-if="display" class="footer border-white grid m-0 bg-gray-100 border-top-1 pt-2">
         <div class="grid w-full m-0">
             <div class="xs:hidden md:block md:col-4 surface-border border-right-1">
                 <a href="https://www.linkedin.com/company/icognition-ai/" target="_blank"><img id="linkedin" src="/src/assets/images/footer/Linkedin_button.svg" alt="LinkedIn"></a>

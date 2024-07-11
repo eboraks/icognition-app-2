@@ -45,7 +45,8 @@ const routes = [
     path: '/docxray/:id',
     name: 'docxray',
     component: DocXRayView,
-    beforeEnter: requireAuth
+    beforeEnter: requireAuth,
+    props: true
   },
   { 
     path: '/privacy-policy',

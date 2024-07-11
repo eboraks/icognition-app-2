@@ -50,14 +50,11 @@ const route = useRoute()
 
 const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
 const { document, original_elements, llm_results, xRayIsPending, getDocumetXRay } = useDocXRay();
-
-
 const question = ref('');
 const answer = ref('');
 
-
 onMounted(async () => {
- 
+
     try {
       await getDocumetXRay(route.params.id);
       console.log("Document: ", document.value);
@@ -96,9 +93,7 @@ const handleAsk = async () => {
     answer.value = 'Please wait for the answer';
   } else {
     answer.value = answerResponse.value.answer;
-  }
-  
+  }  
 }
-
 
 </script>

@@ -25,6 +25,18 @@ a,
   margin-right: 0.5rem !important;
 }
 
+.p-autocomplete {
+  width: 70% !important;
+}
+
+.p-autocomplete-input {
+  width: 100% !important;
+}
+
+.p-tree-filter-icon {
+  top: 30%;
+}
+
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);

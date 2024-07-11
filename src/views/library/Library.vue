@@ -113,7 +113,7 @@ const autocompleteSearch = (e) => {
 
 <template>
     <div class="grid nested-grid m-0">
-        <div class="col-12 bg-gray-100">
+        <div class="col-12 bg-gray-100 border-white border-bottom-3">
             <div class="grid m-2 pt-1 w-full">
                 <div class="field mb-0 col-fixed" style="width: 50px">
                     <h3 class="pt-2">Ask </h3>
@@ -124,18 +124,19 @@ const autocompleteSearch = (e) => {
                     placeholder="Hint: what did I read about ...?"/>
                 </div>
                 <div class="field mb-0 col-1">
-                    <button class="border-primary border-round mt-2 border-solid surface-border border-1 p-2 text-white bg-gray-400">Clear</button>
+                    <button class="border-primary border-round mt-2 border-solid surface-border border-1 px-4 py-2 text-white bg-gray-400">Clear</button>
                 </div>
             </div>
         </div>
-        <div class="grid col-12 hero-background" style="margin-right: 0rem; margin-left: 0rem; margin-top: 0rem;">
+        <div class="grid col-12 bg-gray-100" style="margin-right: 0rem; margin-left: 0rem; margin-top: 0rem;">
+            <h2 class="col-12">Library</h2>
             <div class="col-12 md:col-4">
-                <div class="mb-2 w-full gray-50 border-round-lg">
+                <div class="mb-2 bg-white w-full border-round-lg">
                     <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
                 </div>
             </div>
             <div class="col-12 md:col-8">
-                <div class="bg-gray-50 border-round-lg">
+                <div class="border-round-lg">
                     <div class="p-3" v-if="isError">{{ error }}</div>
                     <div class="flex flex-column" v-if="answer_loading">
                         <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
@@ -158,13 +159,3 @@ const autocompleteSearch = (e) => {
         </div>
     </div>
 </template>
-
-<style>
-.p-autocomplete {
-    width: 70% !important;
-}
-
-.p-autocomplete-input {
-    width: 100% !important;
-}
-</style>
