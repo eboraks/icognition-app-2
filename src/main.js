@@ -17,6 +17,7 @@ import AutoComplete from 'primevue/autocomplete';
 import Fieldset from 'primevue/fieldset';
 import ScrollPanel from 'primevue/scrollpanel';
 import Tooltip from 'primevue/tooltip';
+import InputText from 'primevue/inputtext';
 
 // Firebase
 import { auth } from './firebase/config'
@@ -35,5 +36,6 @@ onAuthStateChanged(auth, (user) => {
         app.component('ScrollPanel', ScrollPanel);
         app.component('AutoComplete', AutoComplete);
         app.component('Tooltip', Tooltip);
+        app.component('InputText', InputText);
     }   
 })
