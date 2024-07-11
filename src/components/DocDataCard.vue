@@ -1,6 +1,5 @@
 <template>
-
-    <div class="grid nested-grid border-round border-1 border-primary-500 m-1 shadow-2" style="width: 98%;">
+    <div class="grid nested-grid border-round border-1 border-primary-100 m-1 shadow-2 w-full">
         <div class="col-8">
             <div class="grid">
                 <div class="col-12 align-items-center justify-content-start border-bottom-1 border-primary-500">
@@ -26,8 +25,8 @@
             </div>
         </div>
         <div class="col-4">
-            <div class="image">
-                <img :src="image_url" :alt="document.title" width="100%" height="100%" style="max-height: 175px;">
+            <div class="text-center">
+                <img :src="image_url" :alt="document.title" class="max-w-full h-full" style="max-height: 175px;">
             </div>
         </div>
     </div>
@@ -70,5 +69,5 @@ const formate_date = computed((value) => {
     font-weight: 545;
     letter-spacing: .08rem;
     
-}    
+}
 </style>

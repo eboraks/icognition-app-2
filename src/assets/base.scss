@@ -84,3 +84,32 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.hero-background {
+  background-image:url(/src/assets/images/background/background-hero.png);
+  background-repeat:no-repeat;
+  background-size:cover
+}
+
+.footer {
+  p {
+    font-weight:600;
+
+    a {
+      font-weight:400;
+      color:#000;
+    }
+  }
+
+  h5 {
+    a {
+      font-size:.875em;
+      font-weight:400;
+      color:#000;
+    }
+  }
+
+  span {
+    color:#000;
+  }
+}

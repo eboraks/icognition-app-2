@@ -15,8 +15,7 @@ const { documents, answer, error, resp_type, isPending, getDocumets, getSubtopic
 const search_term = ref('');
 const fitlerCheckedIds = ref(new Map());
 const answer_loading = ref(false);
-
-
+let isError = false;
 
 onMounted(async() => {
     try {
@@ -27,7 +26,9 @@ onMounted(async() => {
         console.log("Subtopics: ", subtopics.value);
         console.log("Subtopics Nodes: ", subtopics_nodes.value);
         console.log("Entities Names: ", entities_names.value);
+        isError = false;
     } catch (err) {
+        isError = true;
         console.log("Error: ", err);
     }
 });
@@ -108,56 +109,55 @@ const autocompleteSearch = (e) => {
     } 
     
 }
-
-
-
 </script>
+
 <template>
-    <div class="grid bg-primary-100">
-        <div class="col-fixed" style="width: 400px;">
-            <div class="flex flex-row m-2 pt-4" style="height: 60px;"></div>
-            <div class="my-2 pt-2 w-full gray-50 border-round-lg">
-                <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
+    <div class="grid nested-grid m-0">
+        <div class="col-12 bg-gray-100">
+            <div class="grid m-2 pt-1 w-full">
+                <div class="field mb-0 col-fixed" style="width: 50px">
+                    <h3 class="pt-2">Ask </h3>
+                </div>
+                <div class="field mb-0 col-10"><AutoComplete class="my-1 bg-gray-50 border-round-lg w-full" v-model="search_term" :suggestions="items" 
+                    @complete="autocompleteSearch" @keydown.enter="searchHandle"  
+                    @input="inputHandle" @keydown.escape="emptied"
+                    placeholder="Hint: what did I read about ...?"/>
+                </div>
+                <div class="field mb-0 col-1">
+                    <button class="border-primary border-round mt-2 border-solid surface-border border-1 p-2 text-white bg-gray-400">Clear</button>
+                </div>
             </div>
         </div>
-
-        <div class="col static">
-            <!-- Auto-complete-->
-            <div class="flex flex-row" style="width: 80%;"> 
-                <div class="flex flex-row m-2 pt-2 w-full" style="height: 60px;">
-                    <AutoComplete class="my-1 bg-gray-50 border-round-lg" v-model="search_term" :suggestions="items" 
-                        @complete="autocompleteSearch" @keydown.enter="searchHandle"  
-                        @input="inputHandle" @keydown.escape="emptied"
-                        placeholder="Hint: what I read about ...?"/>
-                </div>   
+        <div class="grid col-12 hero-background" style="margin-right: 0rem; margin-left: 0rem; margin-top: 0rem;">
+            <div class="col-12 md:col-4">
+                <div class="mb-2 w-full gray-50 border-round-lg">
+                    <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
+                </div>
             </div>
-            <div class="p-0 m-2 bg-gray-50 border-round-lg" style="width: 75%;">
-
-                <div>{{ error }}</div>
-                <div class="flex flex-column" v-if="answer_loading">
-                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+            <div class="col-12 md:col-8">
+                <div class="bg-gray-50 border-round-lg">
+                    <div class="p-3" v-if="isError">{{ error }}</div>
+                    <div class="flex flex-column" v-if="answer_loading">
+                        <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                        <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                        <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                        <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                        <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                        <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                        <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                        <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                    </div>
+                    <div class="flex flex-row" v-if="resp_type =='RAGAnswer'">
+                        <AnswerCard :answer="answer" />
+                    </div>
+                    <div class="flex flex-row">
+                        <DataTable :documents="filteredDocuments" />
+                    </div>
                 </div>
-                <div class="flex flex-row" v-if="resp_type =='RAGAnswer'">
-                    <AnswerCard :answer="answer" />
-                </div>
-                <div class="flex flex-row">
-                    <DataTable :documents="filteredDocuments" />
-                </div>
+            </div>
         </div>
-        </div>
-        
     </div>
-
-     
 </template>
-
 
 <style>
 .p-autocomplete {
@@ -167,6 +167,4 @@ const autocompleteSearch = (e) => {
 .p-autocomplete-input {
     width: 100% !important;
 }
-
-
 </style>

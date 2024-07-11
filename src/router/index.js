@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import user_state from '@/composables/getUser';
 import Library from '../views/library/Library.vue'
 import DocXRayView from '../views/library/DocXRayView.vue'
+import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
+import TermsOfUse from '@/components/TermsOfUse.vue'
 
 // route guard
 const requireAuth = (to, from, next) => {
@@ -15,7 +17,7 @@ const requireAuth = (to, from, next) => {
   }
 }
 
-const authticated = (to, from, next) => {
+const authenticated = (to, from, next) => {
   if (user_state.user) {
     console.log('authenticated: user logged in. From: ', from, ' To: ', to)
     next({ name: to })
@@ -31,7 +33,7 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
-    beforeEnter: authticated
+    beforeEnter: authenticated
   },
   {
     path: '/library',
@@ -44,6 +46,16 @@ const routes = [
     name: 'docxray',
     component: DocXRayView,
     beforeEnter: requireAuth
+  },
+  { 
+    path: '/privacy-policy',
+    name: 'privacy-policy',
+    component: PrivacyPolicy
+  },
+  { 
+    path: '/terms-of-use',
+    name: 'terms-of-use',
+    component: TermsOfUse
   }
 ]
 

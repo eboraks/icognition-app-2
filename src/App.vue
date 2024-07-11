@@ -1,17 +1,11 @@
 <template>
-  <div class="w-full">
-    <Navbar />
-    <router-view/>
-  </div>
+  <Navbar />
+  <router-view/>
+  <Footer />
 </template>
 
 <script setup>
 import Navbar from '@/components/Navbar.vue'
-
-
+import Footer from '@/components/Footer.vue'
 
 </script>
-
-<style>
-
-</style>

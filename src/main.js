@@ -1,4 +1,4 @@
-//import './assets/main.css'
+import './assets/main.scss'
 
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -17,8 +17,6 @@ import AutoComplete from 'primevue/autocomplete';
 import Fieldset from 'primevue/fieldset';
 import ScrollPanel from 'primevue/scrollpanel';
 import Tooltip from 'primevue/tooltip';
-
-
 
 // Firebase
 import { auth } from './firebase/config'

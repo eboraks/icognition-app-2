@@ -1,15 +1,20 @@
 <template>
-    <nav class="grid bg-primary-100">
-        <router-link class="col-3" :to="{ name: 'home'}">
-            <img src="@/assets/images/icog_logo.png" alt="iCognition.ai" width="200px" height="45px">
-        </router-link>
-        <div class="col-5"></div>
-        <div class="col-4">
-            <div v-if="user_state.user" class="flex align-items-center justify-content-center">
-                <button class="bg-primary-reverse border-50 border-round text-base m-2 font-bold" @click="handleLogout">Logout</button>
+    <nav class="grid pt-2 bg-gray-100 m-0 border-white border-left-1 border-bottom-1">
+        <div class="col-6 pb-1">
+            <router-link class="pl-2" to="/">
+                <img src="@/assets/images/icog_logo.png" alt="iCognition.ai" width="200px" height="45px">
+            </router-link>
+        </div>
+        <div class="col-6">
+            <div v-if="user_state.user" class="text-right">
+                <button type="button" class="login-with-google-btn mr-2" @click="handleLogout">
+                    Logout
+                </button>
             </div>
-            <div v-else class="flex align-items-center justify-content-center">
-                <button class="bg-primary-reverse border-50 border-round text-base m-2 font-bold" @click="handleGoogleLogin">Login with Google</button>
+            <div v-else class="text-right">
+                <button type="button" class="login-with-google-btn mr-2" @click="handleGoogleLogin">
+                    Sign in with Google
+                </button>
             </div>
         </div>
         
@@ -33,10 +38,8 @@ const router = useRouter()
 // I ended up using this listener in Navbar because I wasn't able to redirect after login because of race condition. 
 // The router guard always executed before the user was fully logged in.
 auth.onAuthStateChanged((_user) => {
-    
     if (user_state.user) {
         console.log('User is logged in. Current user is: ', user_state.user)
-        //router.push({ name: 'library' })
     }
 })
 
@@ -66,7 +69,3 @@ const handleGoogleLogin = async () => {
 }
 
 </script>
-<style scoped>
- 
-    
-</style>
