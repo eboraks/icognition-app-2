@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="grid">
                 <div class="col-12 align-items-center justify-content-start border-bottom-1 border-gray-200">
-                    <h3><a class="text-xl text-color" :href="document.url" style="text-decoration: none" target="_blank">{{document.id}} {{ document.title }}</a></h3>
+                    <h3><a class="text-xl text-color" :href="document.url" style="text-decoration: none" target="_blank">{{ document.title }}</a></h3>
                 </div>
                 <div class="col-3 overflow-hidden">
                     <p><a href="{{document.url}}" target="_blank">{{ document.site_name }}</a></p>
