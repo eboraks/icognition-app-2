@@ -130,12 +130,12 @@ const autocompleteSearch = (e) => {
         </div>
         <div class="grid col-12 bg-gray-100" style="margin-right: 0rem; margin-left: 0rem; margin-top: 0rem;">
             <h2 class="col-12">Library</h2>
-            <div class="col-12 md:col-4">
+            <div class="col-12 md:col-3">
                 <div class="mb-2 bg-white w-full border-round-lg">
                     <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
                 </div>
             </div>
-            <div class="col-12 md:col-8">
+            <div class="col-12 md:col-9">
                 <div class="border-round-lg">
                     <div class="p-3" v-if="isError">{{ error }}</div>
                     <div class="flex flex-column" v-if="answer_loading">

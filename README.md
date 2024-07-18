@@ -27,3 +27,16 @@ npm run dev
 ```sh
 npm run build
 ```
+
+
+## Firebase deployment
+### First Time
+1. `firebase login` 
+2. `firebase init`
+3. `firebase target:apply hosting app icognition-app`
+4. `firebase deploy`
+
+### Push new chnge
+1. `firebase login --reauth`
+1. `firebase deploy`
+

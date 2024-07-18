@@ -18,6 +18,8 @@ import Fieldset from 'primevue/fieldset';
 import ScrollPanel from 'primevue/scrollpanel';
 import Tooltip from 'primevue/tooltip';
 import InputText from 'primevue/inputtext';
+import Divider from 'primevue/divider';
+
 
 // Firebase
 import { auth } from './firebase/config'
@@ -37,5 +39,6 @@ onAuthStateChanged(auth, (user) => {
         app.component('AutoComplete', AutoComplete);
         app.component('Tooltip', Tooltip);
         app.component('InputText', InputText);
+        app.component('Divider', Divider);
     }   
 })

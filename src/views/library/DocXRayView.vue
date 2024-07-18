@@ -1,22 +1,15 @@
 <template>
   <div class="grid hero-background m-0">
     <div class="xs:col-12 lg:col-6">
-      <div class="flex">
+      <div ref="article" class="flex">
         <div class="white-space-normal text-xl">
-          <div v-for="element in original_elements">
-            <div v-if="element.element === 'h1'">
-              <h1 class="foo">{{ element.text }}</h1>
-            </div>
-            <div v-if="element.element === 'p'">
-              <p>{{ element.text }}</p>
-            </div>
-          </div>
+          <div v-html="articleElements"></div>
         </div>
       </div>
     </div>
 
     <div class="xs:vol-12 lg:col-6">
-      <div class="flex">
+      <div class="flex-row">
         <div class="summary m-2" v-if="llm_results">
           <div class="m-100 p-100 white-space-normal text-xl p-100 article">
             <h3 class="about">{{ llm_results.whatThisArticleIsAbout.question }}</h3>
@@ -52,32 +45,45 @@ const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
 const { document, original_elements, llm_results, xRayIsPending, getDocumetXRay } = useDocXRay();
 const question = ref('');
 const answer = ref('');
+const articleElements = ref('');
+
 
 onMounted(async () => {
 
     try {
       await getDocumetXRay(route.params.id);
-      console.log("Document: ", document.value);
-      console.log("LLM Results: ", llm_results.value);
-      console.log("Original Elements: ", original_elements.value)
-      highlight(llm_results.value.source_sentences);
+      articleElements.value = addHightlights(original_elements, new Map(Object.entries(llm_results.value.source_sentences)));
     } catch (err) {
         console.log("Error: ", err);
     }
 });
 
-const highlight = (source_sentences) => {
+const addHightlights = (original_elements, sentences_map) => {
 
-  const sentences_map = new Map(Object.entries(source_sentences));
-  console.log("Highlighting", source_sentences);
-  sentences_map.forEach((item) => {
-    try {
-      //jQuery("article").html(jQuery("article").html().replace(new RegExp(item.sentence, 'g'), '<span class="about">' + item.sentence + '</span>'));
-    } catch (err) {
-      console.log("Error: ", err);
+  let html = article_html_builder(original_elements.value);
+
+  sentences_map.forEach((sentence) => {
+    
+    if (html.includes(sentence.sentence)) {
+      console.log("Matched: ", sentence.sentence)
+      html = html.replace(new RegExp(sentence.sentence, 'gi'), `<span class="about">${sentence.sentence}</span>`);
     }
   });
-  
+  return html;
+
+}
+
+
+const article_html_builder = (elements) => {
+  let html = '';
+  elements.forEach((element) => {
+    if (element.element === 'h1') {
+      html += `<h1>${element.text}</h1>`;
+    } else if (element.element === 'p') {
+      html += `<p>${element.text}</p>`;
+    }
+  });
+  return html;
 }
 
 const handleAsk = async () => {

@@ -1,5 +1,16 @@
 {
   "projects": {
     "default": "icognition-app"
-  }
+  },
+  "targets": {
+    "icognition-app": {
+      "hosting": {
+        "app": [
+          "icognition-app"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
