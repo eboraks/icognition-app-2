@@ -1,5 +1,3 @@
-import './assets/css/main.scss'
-
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -12,12 +10,14 @@ import 'primeicons/primeicons.css'
 
 // PrimeVue Components
 import Button from 'primevue/button';
+import Card from 'primevue/card';
 import Tree from 'primevue/tree';
 import AutoComplete from 'primevue/autocomplete';
 import Fieldset from 'primevue/fieldset';
 import ScrollPanel from 'primevue/scrollpanel';
 import Tooltip from 'primevue/tooltip';
 import InputText from 'primevue/inputtext';
+import './assets/css/main.scss'
 
 // Firebase
 import { auth } from './firebase/config'
@@ -31,6 +31,7 @@ onAuthStateChanged(auth, (user) => {
         app.use(router).use(PrimeVue).mount('#app');
         
         app.component('Button', Button);
+        app.component('Card', Card);
         app.component('Tree', Tree);
         app.component('Fieldset', Fieldset);
         app.component('ScrollPanel', ScrollPanel);

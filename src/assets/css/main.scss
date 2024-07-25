@@ -1,15 +1,15 @@
 @import './base.scss';
 @import './xsmall.scss';
 @import './docxray.scss';
+@import './homepage.scss';
 
 @font-face {
   font-family: NotoSans;
   src: url('assets/fonts/static/NotoSans-Regular.ttf');
 }
 
-#app {
+#page, #footer {
   max-width: 1280px;
-  margin: 0 auto;
   font-weight: normal;
 }
 
