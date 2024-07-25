@@ -60,7 +60,8 @@
                           <span class="description required text-xs text-gray-300">(required)</span>
                         </div>
                       </label>
-                      <input aria-invalid="false" aria-required="true" autocomplete="email" class="w-full p-2 text-lg" id="user_email" placeholder="email@company.com" type="email" name="user_email">
+                      <input v-model="form_email" aria-invalid="false" aria-required="true" autocomplete="email" class="w-full p-2 text-lg" id="user_email" placeholder="email@company.com" type="email" name="user_email">
+                      <input v-model="form_name" aria-invalid="false" aria-required="true" autocomplete="name" class="w-full p-2 text-lg" id="user_name" placeholder="John Due" type="text" name="user_name">
                       <!-- <div class="option">
                         <label class="AxMlQPmJs69_7pr1bLwT">
                           <input class="vnLLkKq87liyzPxn4wMB" name="email-yui_3_17_2_1_1553888888520_3745-field" type="checkbox" value="Sign up for news and updates">
@@ -194,6 +195,8 @@
   import emailjs from '@emailjs/browser';
 
   const form = ref(null);
+  const form_email = ref('');
+  const form_name = ref('');
   const video = ref(null);
   const firstSection = document.querySelector('.page-section');
   const header = document.querySelector('.header');
@@ -216,10 +219,18 @@
   }
 
 
-  const handleSendClick = async () => {
+const handleSendClick = async () => {
+  console.log('Send Clicked', form_email.value);
+  let params = {
+      to_name: 'iCognition',
+      from_name: form_name.value,
+      user_email: form_email.value,
+      message: 'Hello world',
+    }
+
     emailjs
-      .sendForm('service_dzt964k', 'template_6e6k0m7', 
-      form.value, {
+      .send('service_dzt964k', 'template_6e6k0m7', 
+      params, {
         publicKey: 'RPWYe_cHikHCgVsm1',
         limitRate: {
           throttle: 2
