@@ -60,8 +60,9 @@
                           <span class="description required text-xs text-gray-300">(required)</span>
                         </div>
                       </label>
+                      <input v-model="form_name" aria-invalid="false" aria-required="true" autocomplete="name" class="w-full p-2 text-lg" id="user_name" placeholder="Your Name" type="text" name="user_name">
                       <input v-model="form_email" aria-invalid="false" aria-required="true" autocomplete="email" class="w-full p-2 text-lg" id="user_email" placeholder="email@company.com" type="email" name="user_email">
-                      <input v-model="form_name" aria-invalid="false" aria-required="true" autocomplete="name" class="w-full p-2 text-lg" id="user_name" placeholder="John Due" type="text" name="user_name">
+                      
                       <!-- <div class="option">
                         <label class="AxMlQPmJs69_7pr1bLwT">
                           <input class="vnLLkKq87liyzPxn4wMB" name="email-yui_3_17_2_1_1553888888520_3745-field" type="checkbox" value="Sign up for news and updates">
