@@ -56,7 +56,7 @@
                     <div class="form-item field email required" id="email" data-dynamic-strings="">
                       <label for="user_email">
                         <div class="text-white">
-                          <span>Email &nbsp;</span>
+                          <span>Email & Name &nbsp;</span>
                           <span class="description required text-xs text-gray-300">(required)</span>
                         </div>
                       </label>
