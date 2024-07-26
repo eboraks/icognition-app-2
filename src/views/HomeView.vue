@@ -1,9 +1,9 @@
 <template>
   <main id="page" class="container m-auto pt-2" role="main">
     <article class="sections" id="sections">
-      <section class="section bg-white md:px-8 xs:px-4 py-6">
+      <section class="section bg-white md:px-8 xs:px-4 sm:py-6">
         <div class="content-wrapper">
-          <div class="content grid nested-grid px-6">
+          <div class="content grid nested-grid sm:px-6">
             <div class="col-12 lg:col-6">
               <div class="grid">
                 <div class="col-12 pb-5">
@@ -41,7 +41,7 @@
       </section>
       <section class="section bg-blue-400 md:px-8 xs:px-4 py-3">
         <div class="content-wrapper">
-          <div class="content grid px-6">
+          <div class="content grid sm:px-6">
             <div class="col-12 md:col-6">
               <div class="flex flex-column justify-content-center">
                 <div class="text-2xl line-height-3 text-white md:pr-6">
@@ -56,11 +56,11 @@
                     <div class="form-item field email required" id="email" data-dynamic-strings="">
                       <label for="user_email">
                         <div class="text-white">
-                          <span>Email & Name &nbsp;</span>
+                          <span>Full Name & Email &nbsp;</span>
                           <span class="description required text-xs text-gray-300">(required)</span>
                         </div>
                       </label>
-                      <input v-model="form_name" aria-invalid="false" aria-required="true" autocomplete="name" class="w-full p-2 text-lg" id="user_name" placeholder="Your Name" type="text" name="user_name">
+                      <input v-model="form_name" aria-invalid="false" aria-required="true" autocomplete="name" class="w-full p-2 text-lg" id="user_name" placeholder="Full Name" type="text" name="user_name">
                       <input v-model="form_email" aria-invalid="false" aria-required="true" autocomplete="email" class="w-full p-2 text-lg" id="user_email" placeholder="email@company.com" type="email" name="user_email">
                       
                       <!-- <div class="option">
@@ -80,9 +80,9 @@
           </div>  
         </div>
       </section>
-      <section class="section p-5">
+      <section class="section sm:p-5 p-2">
         <div class="content-wrapper">
-          <div class="content grid px-6">
+          <div class="content grid sm:px-6">
             <div class="col-12">
               <div class="flex justify-content-center">
                 <div class="text-2xl text-black-alpha-90 text-center line-height-2 bold">
@@ -96,7 +96,7 @@
       <section class="section px-3">
         <div class="content-wrapper">
           <div class="content grid">
-            <div class="col-4 sm:col-12 md:col-6 lg:col-4 md:px-4">
+            <div class="col-12 md:col-6 lg:col-4 md:px-4">
               <Card>
                 <template #header>
                   <img alt="user header" class="w-full" src="/src/assets/images/illus1.png" />
@@ -111,7 +111,7 @@
                 </template>
               </Card>
             </div>
-            <div class="col-4 sm:col-12 md:col-6 lg:col-4 md:px-4">
+            <div class="col-12 md:col-6 lg:col-4 md:px-4">
               <Card>
                 <template #header>
                   <img alt="user header" class="w-full" src="/src/assets/images/illus3.png" />
@@ -126,7 +126,7 @@
                 </template>
               </Card>
             </div>
-            <div class="col-4 sm:col-12 md:col-6 lg:col-4 md:px-4">
+            <div class="col-12 md:col-6 lg:col-4 md:px-4">
               <Card>
                 <template #header>
                   <img alt="user header" class="w-full" src="/src/assets/images/illus5.png" />
@@ -141,7 +141,7 @@
                 </template>
               </Card>
             </div>
-            <div class="col-4 sm:col-12 md:col-6 lg:col-4 md:px-4">
+            <div class="col-12 md:col-6 lg:col-4 md:px-4">
               <Card>
                 <template #header>
                   <img alt="user header" class="w-full" src="/src/assets/images/illus4.png" />
@@ -156,7 +156,7 @@
                 </template>
               </Card>
             </div>
-            <div class="col-4 sm:col-12 md:col-6 lg:col-4 md:px-4">
+            <div class="col-12 md:col-6 lg:col-4 md:px-4">
               <Card>
                 <template #header>
                   <img alt="user header" class="w-full" src="/src/assets/images/illus2.png" />

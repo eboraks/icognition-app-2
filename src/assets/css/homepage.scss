@@ -2,6 +2,13 @@
     height: 80px;
 }
 
+@media screen and (max-width: 767px) {
+    .header-title-logo img {
+        height: auto;
+        width: 100%;
+    }
+}
+
 .text-tertiary {
     color: #83d5e8;
 }
@@ -23,8 +30,10 @@
     border-top-style: solid;
 }
 
-.content-transform-text {
-    max-width: 70%;
+@media screen and (min-width: 768px) {
+    .content-transform-text {
+        max-width: 70%;
+    }
 }
 
 @media screen and (max-width: 767px) {

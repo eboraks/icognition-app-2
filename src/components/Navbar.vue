@@ -11,14 +11,17 @@
             </a>
             <!-- Background -->
             <div class="flex col-12">
-
                 <!-- Title and nav wrapper -->
-                <div class="col-2"></div>
-                <div class="col-8 text-center">
-
+                <div class="col-3">
+                    <div class="card p-4 flex justify-center sm:hidden">
+                        <!-- <Button type="button" icon="pi pi-bars" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu" />
+                        <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" /> -->
+                    </div>
+                </div>
+                <div class="col-6 text-center">
                     <!-- Title -->
                     <div class="header-title" data-animation-role="header-element">
-                        <div class="header-title-logo pt-3">
+                        <div class="header-title-logo md:pt-3 xs:pt-5">
                             <a href="/" data-animation-role="header-element">
                                 <img
                                 src="/src/assets/images/iCognitionLogo.png?format=1500w"
@@ -29,16 +32,18 @@
                 </div>
 
                 <!-- Actions -->
-                <div class="col-2 pt-6 pr-3">
-                    <div v-if="user_state.user" class="text-right">
-                        <button type="button" class="login-with-google-btn mr-2" @click="handleLogout">
-                            Logout
-                        </button>
-                    </div>
-                    <div v-else class="text-right">
-                        <button type="button" class="login-with-google-btn mr-2" @click="handleGoogleLogin">
-                            Sign in with Google
-                        </button>
+                <div class="col-3 pt-6 pr-3">
+                    <div class="hidden sm:flex">
+                        <div v-if="user_state.user" class="text-right">
+                            <button type="button" class="login-with-google-btn mr-2" @click="handleLogout">
+                                Logout
+                            </button>
+                        </div>
+                        <div v-else class="text-right">
+                            <button type="button" class="login-with-google-btn mr-2" @click="handleGoogleLogin">
+                                Sign in with Google
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -57,7 +62,22 @@ import { auth } from '@/firebase/config'
 const { error, logout } = useLogout()
 const { login_error, login, isPending, loginGoogle } = useSignin()
 const router = useRouter()
+const menu = ref();
+const items = ref([
+    {
+        label: '',
+        items: [
+            {
+                label: ' Sign in with Google',
+                icon: 'pi pi-google'
+            }
+        ]
+    }
+]);
 
+const toggle = (event) => {
+    menu.value.toggle(event);
+};
 
 // Check if user is logged in. If so, redirect to library page
 // I ended up using this listener in Navbar because I wasn't able to redirect after login because of race condition. 
