@@ -8,7 +8,7 @@
               <div class="grid">
                 <div class="col-12 pb-5">
                   <div class="flex flex-column justify-content-center">
-                    <div class="text-2xl text-blue-400 line-height-2 bold">
+                    <div class="text-2xl text-blue-icog-dark font-bold line-height-2">
                       <h2>For people with dyslexia, iCognition changes the rules of the game.</h2>
                     </div>
                   </div>
@@ -39,7 +39,7 @@
           </div>
         </div>
       </section>
-      <section class="section bg-blue-400 md:px-8 xs:px-4 py-3">
+      <section class="section bg-blue-icog-dark md:px-8 xs:px-4 py-3">
         <div class="content-wrapper">
           <div class="content grid sm:px-6">
             <div class="col-12 md:col-6">
