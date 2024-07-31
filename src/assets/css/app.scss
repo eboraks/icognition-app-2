@@ -1,0 +1,31 @@
+.route-app {
+    .app-header-title {
+        display: block!important;
+        height: 60px;
+
+        .header-title-logo {
+            padding-top: 0px!important;
+
+            img {
+                max-height: 60px;
+                width: auto;
+            }
+        }
+    }
+
+    .app-login {
+        display: block;
+    }
+
+    .website-header-title {
+        display: none!important;
+    }
+
+    .website-login-logout {
+        display: none!important;
+    }
+
+    .webite-login-menu {
+        display: none!important;
+    }
+}
