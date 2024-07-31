@@ -51,7 +51,7 @@
             </div>
             <div class="col-12 md:col-6">
               <div class="form-wrapper">
-                <form autocomplete="on" class="react-form-contents" ref="form" @submit.prevent="handleSendClick">
+                <form autocomplete="on" class="react-form-contents" ref="form">
                   <div class="field-list">
                     <div class="form-item field email required" id="email" data-dynamic-strings="">
                       <label for="user_email">

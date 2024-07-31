@@ -1,3 +1,13 @@
 .p-menuitem-icon {
     margin: 0 .5em;
 }
+
+.p-menu {
+    .p-menuitem {
+        padding: .5rem;
+    }
+
+    .p-submenu-header {
+        padding: 0rem!important;
+    }
+}
