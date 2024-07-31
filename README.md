@@ -27,3 +27,7 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Deployment to Firebase
+1. firebase login --reauth
+2. firebase deploy

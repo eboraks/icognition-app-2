@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-12 py-2">
                   <div class="flex flex-column justify-content-center">
-                    <div class="text-xl line-height-3 md:pr-6">
+                    <div class="text-xl text-blue-icog-dark line-height-3 md:pr-6">
                       <h4>Advance your studies and career with an AI assistant designed to supercharge dyslexic thinking.&nbsp;</h4>
                     </div>
                   </div>
@@ -239,6 +239,8 @@ const handleSendClick = async () => {
       })
       .then(
         (response) => {
+          form_name.value = '';
+          form_email.value = '';
           console.log('SUCCESS!', response.status, response.text);
         },
         (error) => {
