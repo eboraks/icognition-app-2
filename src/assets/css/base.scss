@@ -1,5 +1,40 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
+  --primary-color:#3497be;     // Primary Main
+  --primary-200:#abc9fb;      // Primary Light
+  --primary-500:#3497be;    // Primary Main
+  --primary-800:#054761;    // Primary Dark
+
+  --secondary-200:#65d7c0;  // Secondary Light
+  --secondary-500:#29b998;  // Secondary Main
+  --secondary-800:#26796c;  // Secondary Dark
+
+  --blue-100:#cde8fc;       // Info-Link Ultralight
+  --blue-200:#64b5f6;       // Info-Link Light
+  --blue-400:#0d7699;       // Info-Link Website
+  --blue-500:#2196f3;       // Info-Link Main
+  --blue-800:#1976d2;       // Info-Link Dark
+    
+  --red-200:#e57373;        // Error Light
+  --red-500:#f44336;        // Error Main
+  --red-800:#d32f2f;        // Error Dark
+  --red-900:#611a15;        // Error Text
+  
+  --green-200:#96d7ac;      // Success Light
+  --green-500:#4caf6e;      // Success Main
+  --green-800:#297945;      // Success Dark
+  --green-800:#1c4229;      // Success Text
+
+  --orange-200:#ffb74d;     // Warning Light
+  --orange-500:#ff9800;     // Warning Main
+  --orange-800:#f57c00;     // Warning Dark
+  --orange-800:#661f00;     // Warning Text
+
+  --orange-200:#ffb74d;     // Warning Light
+  --orange-500:#ff9800;     // Warning Main
+  --orange-800:#f57c00;     // Warning Dark
+  --orange-800:#661f00;     // Warning Text
+
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;

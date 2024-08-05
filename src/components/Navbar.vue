@@ -13,10 +13,6 @@
             <div class="flex col-12 pb-0">
                 <!-- Title and nav wrapper -->
                 <div class="col-2 md:col-4">
-                    <div class="card pl-2 py-4 justify-center md:hidden webite-login-menu">
-                        <Button type="button" icon="pi pi-bars" @click="toggleWebsiteMenu" aria-haspopup="true" aria-controls="overlay_menu" />
-                        <Menu ref="menu_website" id="overlay_menu" :model="website_menu_items" :popup="true" />
-                    </div>
                     <div class="header-title app-header-title mt-2" data-animation-role="header-element">
                         <div class="header-title-logo">
                             <a href="/" data-animation-role="header-element">
@@ -53,6 +49,10 @@
                                 Sign in with Google
                             </button>
                         </div>
+                    </div>
+                    <div class="card pl-2 py-4 justify-center md:hidden webite-login-menu">
+                        <Button type="button" icon="pi pi-bars" @click="toggleWebsiteMenu" aria-haspopup="true" aria-controls="overlay_menu" />
+                        <Menu ref="menu_website" id="overlay_menu" :model="website_menu_items" :popup="true" />
                     </div>
                     <div class="card px-4 py-2 app-profile">
                         <Button icon="pi pi-user" severity="info" @click="toggleAppMenu" rounded aria-haspopup="true" aria-controls="overlay_menu" aria-label="User"/>
@@ -137,47 +137,37 @@ const handleNotifications = async () => {
 let route_location = Route_Location.WEBSITE;
 
 const app_menu_items = ref([
+    // {
+    //     label: ' Notifications',
+    //     icon: 'pi pi-envelope',
+    //     badge: 2,
+    //     command: () => {
+    //         handleNotifications();
+    //     }
+    // },
+    // {
+    //     label: ' Account',
+    //     icon: 'pi pi-cog',
+    //     command: () => {
+    //         handleAccount();
+    //     }
+    // },
     {
-        label: '',
-        items: [
-            {
-                label: ' Notifications',
-                icon: 'pi pi-envelope',
-                badge: 2,
-                command: () => {
-                    handleNotifications();
-                }
-            },
-            {
-                label: ' Account',
-                icon: 'pi pi-cog',
-                command: () => {
-                    handleAccount();
-                }
-            },
-            {
-                label: ' Sign Out',
-                icon: 'pi pi-sign-out',
-                command: () => {
-                    handleLogout();
-                }
-            }
-        ]
+        label: ' Sign Out',
+        icon: 'pi pi-sign-out',
+        command: () => {
+            handleLogout();
+        }
     }
 ]);
 
 let website_menu_items = ref([
     {
-        label: '',
-        items: [
-            {
-                label: ' Login with Google',
-                icon: 'pi pi-google',
-                command: () => {
-                    handleGoogleLogin();
-                }
-            }
-        ]
+        label: ' Login with Google',
+        icon: 'pi pi-google',
+        command: () => {
+            handleGoogleLogin();
+        }
     }
 ]);
 
