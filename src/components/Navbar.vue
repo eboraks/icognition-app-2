@@ -96,7 +96,8 @@ auth.onAuthStateChanged((_user) => {
     if (user_state.user) {
         console.log('User is logged in. Current user is: ', user_state.user)
         if (route_location == Route_Location.WEBSITE) {
-            router.push('/library');
+            /// Ryan, I commented this out because it was causing xray page to redirect to library page
+            //router.push('/library');
         }
     }
 });

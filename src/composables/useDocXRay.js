@@ -22,9 +22,8 @@ const useDocXRay = () => {
                 throw Error('Could not fetch the data for that resource')
             }
             const results = await res.json()
-            document.value = results.doc
-            original_elements.value = results.doc.html_elements
-            llm_results.value = results.results 
+            document.value = results
+            original_elements.value = results.html_elements 
             xRayIsPending.value = false
         } catch (err) {
             console.error(err)
@@ -34,7 +33,7 @@ const useDocXRay = () => {
         }
     }
 
-    return { document, original_elements, llm_results, xRayIsPending, getDocumetXRay }    
+    return { document, original_elements, xRayIsPending, getDocumetXRay }    
 
 
 }

@@ -17,13 +17,13 @@
 
     <div class="xs:vol-12 lg:col-6">
       <div class="flex">
-        <div class="summary m-2" v-if="llm_results">
+        <div class="summary m-2" v-if="document">
           <div class="m-100 p-100 white-space-normal text-xl p-100 article">
-            <h3 class="about">{{ llm_results.whatThisArticleIsAbout.question }}</h3>
-            <p>{{ llm_results.whatThisArticleIsAbout.answer }}</p>
+            <h3 class="about">Artilce is about:</h3>
+            <p>{{ document.is_about }}</p>
 
-            <h3 class="learning">{{ llm_results.learningsFromTheArticle.question }}</h3>
-            <p>{{ llm_results.learningsFromTheArticle.answer }}</p>
+            <h3 class="learning">Learning from the article:</h3>
+            <p>{{ document.learning_from_document }}</p>
           </div>
         </div>
         <div class="qandn m-2">
@@ -49,7 +49,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
-const { document, original_elements, llm_results, xRayIsPending, getDocumetXRay } = useDocXRay();
+const { document, original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
 const question = ref('');
 const answer = ref('');
 
@@ -58,9 +58,8 @@ onMounted(async () => {
     try {
       await getDocumetXRay(route.params.id);
       console.log("Document: ", document.value);
-      console.log("LLM Results: ", llm_results.value);
       console.log("Original Elements: ", original_elements.value)
-      highlight(llm_results.value.source_sentences);
+      highlight(document.value.summary_citations);
     } catch (err) {
         console.log("Error: ", err);
     }
@@ -72,7 +71,7 @@ const highlight = (source_sentences) => {
   console.log("Highlighting", source_sentences);
   sentences_map.forEach((item) => {
     try {
-      //jQuery("article").html(jQuery("article").html().replace(new RegExp(item.sentence, 'g'), '<span class="about">' + item.sentence + '</span>'));
+      //console.log("Item: ", item);
     } catch (err) {
       console.log("Error: ", err);
     }
