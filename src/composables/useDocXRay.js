@@ -23,7 +23,13 @@ const useDocXRay = () => {
             }
             const results = await res.json()
             document.value = results
-            original_elements.value = results.html_elements 
+
+            // Check if html_elements is a string or an object. This is results from the API change of changing how the html_elements are stored. 
+            if (typeof results.html_elements === 'string') {
+                original_elements.value = JSON.parse(results.html_elements)
+            } else {
+                original_elements.value = results.html_elements
+            }    
             xRayIsPending.value = false
         } catch (err) {
             console.error(err)
