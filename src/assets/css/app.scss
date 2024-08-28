@@ -22,6 +22,72 @@
         }
     }
 
+    #body-library {
+        height: calc(100% - 84px - 72px);
+    }
+
+    .dialog-inner-scroll {
+        height: calc(100% - 68.8px);
+    }
+
+    #header {
+        height: 84px;
+    }
+
+    .p-button.button-library-tab {
+        background-color: var(---vt-c-white)!important;
+        color: var(--gray-400)!important;
+        
+        &.is-selected {
+            background-color: var(--blue-500)!important;
+            border-color: var(--blue-500)!important;
+
+            .p-button-label {
+                color: white;
+            }
+        }
+    }
+
+    .splitter-panel-container-left {
+        flex-basis: calc(25% - 4px)!important;
+    }
+
+    .splitter-panel-container-left-small {
+        flex-basis: 65px!important;
+    }
+
+    .splitter-panel-container-right {
+        flex-basis: calc(75% - 4px)!important;
+    }
+
+    .splitter-panel-container-right-big {
+        flex-basis: calc(100% - 65px)!important;
+    }
+
+    .splitter-panel-container-right-full {
+        flex-basis: calc(100%)!important;
+    }
+
+    .splitter-panel-xray-left {
+        flex-basis: 66%!important;
+    }
+
+    .splitter-panel-xray-left-full {
+        flex-basis: 100%!important;
+    }
+
+    .splitter-panel-xray-right {
+        flex-basis: 34%!important;
+    }
+
+    .splitter-panel-xray-right-none {
+        flex-basis: 0%!important;
+    }
+
+    textarea {
+        background-color: white;
+    }
+
     .website-header-title {
         display: none!important;
     }

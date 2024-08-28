@@ -15,7 +15,7 @@ const useLibrary = () => {
     const baseurl = import.meta.env.VITE_APP_API_BASE_URL
     console.log("Base URL: ", baseurl)
 
-    const getDocumets = async (user_id) => {
+    const getDocuments = async (user_id) => {
         error.value = null
         isPending.value = true
         try {
@@ -25,8 +25,8 @@ const useLibrary = () => {
             if (!res.ok) {
                 throw Error('Could not fetch the data for that resource')
             }
-            documents.value = await res.json()
-            console.log("Library documents: ", documents.value)
+            documents.value = await res.json();
+            console.log("Library documents: ", documents);
             isPending.value = false
         } catch (err) {
             console.error(err)
@@ -135,7 +135,7 @@ const useLibrary = () => {
         }
     }
 
-    return { documents, answer, resp_type, error, isPending, getDocumets, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names}    
+    return { documents, answer, resp_type, error, isPending, getDocuments, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names}    
 
 
 }

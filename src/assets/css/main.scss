@@ -3,11 +3,40 @@
 @import './docxray.scss';
 @import './homepage.scss';
 @import './app.scss';
+@import './talkify.scss';
 @import './prime-components.scss';
 
 @font-face {
-  font-family: NotoSans;
-  src: url('assets/fonts/static/NotoSans-Regular.ttf');
+  font-family: HarmoniaSans;
+  src: url('assets/fonts/HarmoniaSansProCyr-Regular.ttf');
+}
+
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", HarmoniaSans, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 16px;
+}
+
+h1 {
+  line-height: 2.375rem;
+}
+
+h2 {
+  line-height: 1.75rem;
+}
+
+h3 {
+  font-size: 1.25em;
+  line-height: 1.5rem;
+}
+
+h4 {
+  font-size: 1.125em;
+  line-height: 1.32rem;
+}
+
+h5 {
+  font-size: .875em;
+  line-height: 1rem;
 }
 
 #page, #footer {
@@ -18,9 +47,10 @@
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: var(--blue-500);
   transition: 0.4s;
   padding: 3px;
+  cursor: pointer;
 }
 
 .p-checkbox {

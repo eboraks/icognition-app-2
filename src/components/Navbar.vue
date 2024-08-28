@@ -3,7 +3,7 @@
         data-test="header"
         id="header"
         class="header w-full bg-white shadow-5 overflow-hidden sticky top-0"
-        style="z-index: 500"
+        style="z-index: 500;"
         tabindex="-1">
         <div class="grid">
             <a href="#page" class="hidden">
@@ -64,8 +64,6 @@
     </header>
 </template>
 <script lang="ts" setup>
-import Button from 'primevue/button';
-import Menu from 'primevue/menu';
 import useLogout from '@/composables/useLogout';
 import useSignin from '@/composables/useLogin';
 import user_state from '@/composables/getUser';
@@ -96,7 +94,7 @@ auth.onAuthStateChanged((_user) => {
     if (user_state.user) {
         console.log('User is logged in. Current user is: ', user_state.user)
         if (route_location == Route_Location.WEBSITE) {
-            router.push('/library');
+            router.push('/documents');
         }
     }
 });

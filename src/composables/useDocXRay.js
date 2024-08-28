@@ -22,9 +22,14 @@ const useDocXRay = () => {
                 throw Error('Could not fetch the data for that resource')
             }
             const results = await res.json()
-            document.value = results.doc
-            original_elements.value = results.doc.html_elements
-            llm_results.value = results.results 
+            document.value = results
+
+            // Check if html_elements is a string or an object. This is results from the API change of changing how the html_elements are stored. 
+            if (typeof results.html_elements === 'string') {
+                original_elements.value = JSON.parse(results.html_elements)
+            } else {
+                original_elements.value = results.html_elements
+            }    
             xRayIsPending.value = false
         } catch (err) {
             console.error(err)
@@ -34,7 +39,7 @@ const useDocXRay = () => {
         }
     }
 
-    return { document, original_elements, llm_results, xRayIsPending, getDocumetXRay }    
+    return { document, original_elements, xRayIsPending, getDocumetXRay }    
 
 
 }

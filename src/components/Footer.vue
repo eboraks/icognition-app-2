@@ -1,5 +1,5 @@
 <template>
-  <footer class="sections bg-white m-auto" id="footer" data-footer-sections="">
+  <footer class="sections bg-white m-auto" id="footer" data-footer-sections="" style="height: 72px;">
     <section class="section">
       <div class="content-wrapper">
         <div class="content grid">

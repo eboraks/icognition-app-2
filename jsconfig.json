@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "target": "es2020"
   },
   "exclude": ["node_modules", "dist"]
 }

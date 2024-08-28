@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import user_state from '@/composables/getUser';
-import Library from '../views/library/Library.vue'
+import AppContainer from '../views/AppContainer.vue'
 import DocXRayView from '../views/library/DocXRayView.vue'
 import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
 import TermsOfUse from '@/components/TermsOfUse.vue'
@@ -36,9 +36,15 @@ const routes = [
     beforeEnter: authenticated
   },
   {
-    path: '/library',
-    name: 'library',
-    component: Library,
+    path: '/documents',
+    name: 'documents',
+    component: AppContainer,
+    beforeEnter: requireAuth
+  },
+  {
+    path: '/projects',
+    name: 'projects',
+    component: AppContainer,
     beforeEnter: requireAuth
   },
   { 
