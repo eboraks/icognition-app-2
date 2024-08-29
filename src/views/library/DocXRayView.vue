@@ -8,7 +8,17 @@
               <a class="font-bold pt-2 pl-1" @click="handleDownloadClick"><i class="pi pi-download mr-1"></i>Download...</a>
             </div>
             <div class="col-6 inline-flex justify-content-end">
-              <Button class="text-black-alpha-90 bg-white mx-2 border-blue-100" icon="pi pi-eraser" @click="handleHighlightClick" rounded />
+              <Button type="button" icon="pi pi-eraser" class="text-black-alpha-90 bg-white mx-2 border-blue-100" @click="toggleHighlightMenu" rounded aria-haspopup="true" aria-controls="overlay_menu" />
+              <Popover ref="menu_highlight">
+                <div class="grid flex flex-column gap-4 w-[25rem]">
+                  <div class="col-12">
+                    <Textarea v-model="highlight_notes_value" rows="4" cols="30" />
+                  </div>
+                  <div class="col-12">
+                    <Button type="button" label="Add Note" class="bg-primary-800" @click="handleHighlightNotesAdd"></Button>
+                  </div>
+                </div>
+              </Popover>
               <Button :class="{ 'hidden': !buttonTogglePlay }" class="text-black-alpha-90 bg-white mx-2 border-blue-100" icon="pi pi-stop" @click="buttonTogglePlay = !buttonTogglePlay" rounded />
               <Button :class="{ 'hidden': buttonTogglePlay }" class="text-black-alpha-90 bg-white mx-2 border-blue-100" icon="pi pi-play" @click="buttonTogglePlay = !buttonTogglePlay" rounded />
               <Button class="text-black-alpha-90 bg-white ml-2 border-blue-100" icon="pi pi-sparkles" @click="buttonToggleSplitterPanelRight = !buttonToggleSplitterPanelRight" rounded />
@@ -21,8 +31,8 @@
                 <span class="text-xs" v-for="item in author">{{ item }} </span>
               </div>
               
-              <span class="text-xs mb-3">Updated {{ updated_at.valueOf() }}</span>
-              <div v-for="item in html_elements_for_page" class="text-sm">
+              <span class="text-xs mb-3">Published {{ publication_date.valueOf() }}</span>
+              <div v-for="item in html_elements_for_page.value" class="text-sm">
                 <h1 v-if="item.element == 'h1'" class="mt-2"><span v-html="item.text"></span></h1>
                 <h2 v-if="item.element == 'h2'" class="mt-2"><span v-html="item.text"></span></h2>
                 <h3 v-if="item.element == 'h3'" class="mt-1"><span v-html="item.text"></span></h3>
@@ -45,12 +55,12 @@
             <TabPanels>
               <TabPanel value="0">
                 <div class="flex-column my-1 h-full p-2 bg-bluegray-200">
-                  <div class="overflow-y-auto pr-3 py-3" v-if="doc != null" style="height: calc(100% - 49.6px);">
-                    <h3 class="pl-3 pb-3" v-if="doc.is_about != null">Summary:<br/>{{ doc.is_about }}</h3>
-                    <div v-if="doc.tldr != null">
+                  <div class="overflow-y-auto pr-3 py-3" style="height: calc(100% - 49.6px);">
+                    <h3 class="pl-3 pb-3" v-if="dialogRef.data.is_about != null">Summary:<br/>{{ dialogRef.data.is_about }}</h3>
+                    <div v-if="dialogRef.data.tldr != null">
                       <p class="pl-3">Key Points:</p>
                       <ul>
-                        <li v-for="item in doc.tldr">{{ item }}</li>
+                        <li v-for="item in dialogRef.data.tldr">{{ item }}</li>
                       </ul>
                     </div>
                   </div>
@@ -58,20 +68,20 @@
               </TabPanel>
               <TabPanel value="1">
                 <div class="flex-column my-1 h-full p-2 bg-bluegray-200">
-                  <div class="overflow-y-auto px-2 py-2" v-if="doc != null" style="height: calc(100% - 49.6px);">
-                    <div class="panel mb-3">
-                      <p class="flex text-xs justify-content-end">21 Aug 2024 1:30pm</p>
+                  <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
+                    <div class="panel mb-3" v-for="item in qas">
+                      <p class="flex text-xs justify-content-end">{{moment(item.created_at).format('DD MMM YYYY h:mm a')}}</p>
                       <div class="card">
                         <Card class="border-1 border-round border-bluegray-300 bg-white shadow-3">
                           <template #header>
                             <div class="border-1 border-round border-bluegray-300 bg-bluegray-300 flex border-bottom-1 border-noround-bottom border-top-none border-left-none border-right-none">
-                              <p class="flex-grow-1 px-3 py-2 text-sm border-round font-semibold">Ad veros intellis, cum narde frolicher dan eis?</p>
+                              <p class="flex-grow-1 px-3 py-2 text-sm border-round font-semibold">{{item.question}}</p>
                               <Button icon="pi pi-times" class="bg-transparent border-transparent border-0 flex-shrink-0 text-black-alpha-90 pr-0" size="small" aria-label="Close"/>
                             </div>
                           </template>
                           <template #content class="p-0">
                             <div class="bg-white flex flex-column">
-                              <h3 class="flex-grow-1 pl-3 py-1 text-sm text-black-alpha-90 border-round">At vera eos et accusamus et iusto odio dignissimos decimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas modestias excepturi.</h3>
+                              <p class="flex-grow-1 pl-3 py-1 text-sm text-black-alpha-90 border-round">{{item.answer}}</p>
                               <div class="flex-row">
                                 <Button icon="pi pi-copy" class="bg-transparent border-transparent border-0 text-bluegray-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
                                 <Button icon="pi pi-clipboard" class="bg-transparent border-transparent border-0 text-bluegray-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
@@ -79,30 +89,7 @@
                             </div>
                           </template>
                         </Card>
-                      </div>  
-                    </div>
-                    
-                    <div class="panel">
-                      <p class="flex text-xs justify-content-end">21 Aug 2024 1:30pm</p>
-                      <div class="card">
-                        <Card class="border-1 border-round border-bluegray-300 bg-white shadow-3">
-                          <template #header>
-                            <div class="border-1 border-round border-bluegray-300 bg-bluegray-300 flex border-bottom-1 border-noround-bottom border-top-none border-left-none border-right-none">
-                              <p class="flex-grow-1 px-3 py-2 text-sm border-round font-semibold">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti?</p>
-                              <Button icon="pi pi-times" class="bg-transparent border-transparent border-0 flex-shrink-0 text-black-alpha-90 pr-0" size="small" aria-label="Close"/>
-                            </div>
-                          </template>
-                          <template #content class="p-0">
-                            <div class="bg-white flex flex-column">
-                              <p class="flex-grow-1 pl-3 py-1 text-sm text-black-alpha-90 border-round">At vera eos et accusamus et iusto odio dignissimos decimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas modestias excepturi. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque correpti quos dolores et quas molestias excepturi.</p>
-                              <div class="flex-row">
-                                <Button icon="pi pi-copy" class="bg-transparent border-transparent border-0 text-bluegray-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
-                                <Button icon="pi pi-clipboard" class="bg-transparent border-transparent border-0 text-bluegray-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
-                              </div>
-                            </div>
-                          </template>
-                        </Card>
-                      </div>  
+                      </div>
                     </div>
                   </div>
                   <div class="flex p-2 pr-0 bg-white">
@@ -116,8 +103,8 @@
                   <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
                     <div class="panel mb-3">
                       <div v-for="item in highlightedTextList" class="mb-3">
-                        <p class="text-sm">{{ moment(item.updated).format('DD MMM YYYY h:m a') }}</p>
-                        <p class="text-sm overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;"><a :href="item.id">{{ item.contents }}</a></p>
+                        <p class="text-sm">{{ moment(item.updated).format('DD MMM YYYY h:mm a') }}</p>
+                        <p class="text-sm overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;"><a :href="item.id">{{ item.notes }}</a></p>
                       </div>
                     </div>
                   </div>
@@ -147,39 +134,44 @@
 
   const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
   const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
-  const { doc, original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
+  const { original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
   const dialogRef = inject("dialogRef") as any;
   const articleElements = ref('');
   const author = ref(dialogRef.value.data.authors);
-  const buttonToggleHighlight = ref(true);
   const buttonTogglePlay = ref(true);
   const buttonToggleSplitterPanelRight = ref(true);
   const citations = ref();
+  const highlightedFromWhere = ref();
+  const highlightedText = ref('');
   const highlightedTextList = ref([]);
   let highlightedTextListId = 0;
   const hightlights = ref();
-  const html_elements_for_page = ref(dialogRef.value.data.html_elements);
+  const highlight_notes_value = ref('');
+  const html_elements_for_page = ref();
   let html_elements_for_pdf = dialogRef.value.data.html_elements;
   let html_to_pdf: [Object] = [null];
+  const menu_highlight = ref();
 
   // const talkify = new Talkify({
   //   fallbackLanguage: 'English',
   //   format: 'mp3',
   //   key: (import.meta as any).env.TALKIFY_TTS_API_KEY
   // });
-  const updated_at = ref(formate_date(dialogRef.value.data.updateAt));
+  const publication_date = ref(formate_date(dialogRef.value.data.publicationDate));
   const question = ref('');
   const answer = ref('');
 
   onBeforeMount(async () => {
       try {
         await getDocumetXRay(dialogRef.value.data.id);
+        await getDocQuestionsAnswers(dialogRef.value.data.id);
         console.log("Document: ", dialogRef.value.data);
         console.log("Original Elements: ", original_elements.value);
         console.log("Questions and Answers: ", qas.value);
-        articleElements.value = addHightlights(original_elements, doc.value.summary_citations);
-        if (doc.value.summary_citations != null) {
-          highlight(doc.value.summary_citations);
+        html_elements_for_page.value = ref(dialogRef.value.data.html_elements);
+        articleElements.value = addHightlights(original_elements, dialogRef.value.data.summary_citations);
+        if (dialogRef.value.data.summary_citations != null) {
+          highlight(dialogRef.value.data.summary_citations);
         }
         DocxrayService.getCitations().then((data) => (citations.value = data));
         DocxrayService.getHighlights().then((data) => (hightlights.value = data));
@@ -290,16 +282,22 @@
     }
     pdfMake.createPdf(docDefinition).download(`${dialogRef.value.data.title.substr(0, 20)}.pdf`);
   }
-  
-  const handleHighlightClick = async (element) => {
-    const highlightedText = getSelectedText();
-    const fromWhere = document.getSelection().focusNode.textContent;
+
+  const handleHighlightNotesAdd = async () => {
+    if (highlight_notes_value.value != '' && highlight_notes_value.value != null) {
+      handleHighlightClick();
+    }
+    menu_highlight.value.toggle();
+  }
+
+  const handleHighlightClick = async () => {
+    
     html_elements_for_page.value.forEach(element => {
-      if (element.text == fromWhere) {
-        if (element.text.includes(highlightedText)) {
-          let first_half = element.text.substr(0, element.text.indexOf(highlightedText));
-          let second_half = element.text.substr(element.text.indexOf(highlightedText) + highlightedText.length, element.text.length);
-          element.text = first_half + `<span class="bg-highlight" id="section-${highlightedTextListId}">${highlightedText}</span>` + second_half;
+      if (element.text == highlightedFromWhere.value) {
+        if (element.text.includes(highlightedText.value)) {
+          let first_half = element.text.substr(0, element.text.indexOf(highlightedText.value));
+          let second_half = element.text.substr(element.text.indexOf(highlightedText.value) + highlightedText.value.length, element.text.length);
+          element.text = first_half + `<span class="bg-highlight tooltip" id="section-${highlightedTextListId}">${highlightedText.value}<span class="tooltiptext">${highlight_notes_value.value}</span></span>` + second_half;
         }
       }
     });
@@ -307,6 +305,7 @@
     highlightedTextList.value.push({
       id: '#section-' + highlightedTextListId,
       contents: highlightedText,
+      notes: highlight_notes_value.value,
       updated: new Date()
     });
     highlightedTextListId += 1;
@@ -377,5 +376,12 @@
     })
     
   }
+
+  const toggleHighlightMenu = (event) => {
+    // We need to get the highlighted text prior to opening the popover or we lose the data.
+    highlightedText.value = getSelectedText();
+    highlightedFromWhere.value = document.getSelection().focusNode.textContent;
+    menu_highlight.value.toggle(event);
+  };
 
 </script>

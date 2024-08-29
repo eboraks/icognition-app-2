@@ -3,6 +3,7 @@ import useLibrary from '@/composables/useLibrary';
 import user_state from '@/composables/getUser';
 import { ref, onMounted, computed, defineAsyncComponent } from 'vue'
 import AutoComplete from 'primevue/autocomplete';
+import moment from 'moment';
 import { useDialog } from 'primevue/usedialog';
 import { useToast } from 'primevue/usetoast';
 
@@ -84,10 +85,6 @@ const filteredDocuments = computed(() => {
         }   
     }
 });
-
-const formatDate = (value) => {
-    return value.split("T")[0];
-};
 
 const hasData = async (documentsLength) => {
     if (documentsLength != null && documentsLength > 0) {
@@ -174,7 +171,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
 </script>
 
 <template>
-    <div class="col-12 grid p-0 pl-2 grid-nogutter" style="height: calc(100% - 53px);">
+    <div class="col-12 grid p-0 pl-2 grid-nogutter h-full">
         <div class="flex flex-row w-full">
             <div class="col-6">
                 <IconField>
@@ -190,20 +187,22 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                 <a class="pr-3 py-1" @click="onExpandAll" style="height: 2rem;"><i class="pi pi-plus text-xs"></i> Expand All</a> <a @click="onCollapseAll" class="py-1 mr-1" style="height: 2rem;"><i class="pi pi-minus text-xs"></i> Collapse All</a>
             </div>
         </div>
-        <div class="col-12 pr-0" style="height: calc(100% - 61px);">
+        <div class="col-12 pr-0" style="height: calc(100% - 49px);">
             <div class="card h-full" v-if="!hasNoData">
                 <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocument" :value="documents" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
-                    <Column expander style="width: 5rem" />
+                    <Column expander style="width: 4rem" />
                     <Column field="title" header="Title" class="set-background-image">
                         <template #body="slotProps">
-                            <img :src="slotProps.data.image_url" :alt="slotProps.data.image_url" class="vertical-align-middle shadow-lg inline-block" width="32" />
-                            <p class="inline-block px-2">{{slotProps.data.title}}</p>
+                            <div class="flex flex-row">
+                                <img :src="slotProps.data.image_url" :alt="slotProps.data.image_url" class="vertical-align-middle shadow-lg inline-block" width="32" />
+                                <p class="inline-block my-auto px-2 overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;">{{slotProps.data.title}}</p>
+                            </div>
                         </template>
                     </Column>
-                    <Column field="Last Updated" header="Last Updated">
+                    <Column field="Last Updated" header="Last Updated" headerStyle="min-width: 12rem;" sortable >
                         <template #body="slotProps">
-                            {{ formatDate(slotProps.data.updateAt) }}
+                            {{ moment(slotProps.data.updatedAt).format('DD MMM YYYY h:mm a') }}
                         </template>
                     </Column>
                     <Column field="tags" header="Tags">
@@ -211,7 +210,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                             <Tag :value="slotProps.data.tags" :severity="warn" v-if="slotProps.data.tags" />
                         </template>
                     </Column>
-                    <Column field="site_name" header="Source">
+                    <Column field="site_name" header="Source" sortable >
                         <template #body="slotProps">
                             <a v-bind:href="slotProps.data.url" target="_blank">{{ slotProps.data.site_name }}</a>
                         </template>
@@ -227,39 +226,9 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                             <div class="col-12 pt-1">
                                 <h5>Summary: {{ slotProps.data.is_about}}</h5>
                             </div>
-                            <!-- <router-link 
-                                :to="{
-                                    name: 'docxray',
-                                    params: { id: slotProps.data.id }
-                                }" 
-                                class="border-primary border-round mt-2 border-solid surface-border border-1 px-2 py-1 text-white bg-blue-500">Open XRay
-                            </router-link> -->
-                            
-                            
-                            <!-- <DataTable :value="slotProps.data.orders">
-                                <Column field="id" header="Id" sortable></Column>
-                                <Column field="customer" header="Customer" sortable></Column>
-                                <Column field="date" header="Date" sortable></Column>
-                                <Column field="amount" header="Amount" sortable>
-                                    <template #body="slotProps">
-                                        {{ formatCurrency(slotProps.data.amount) }}
-                                    </template>
-                                </Column>
-                                <Column field="status" header="Status" sortable>
-                                    <template #body="slotProps">
-                                        <Tag :value="slotProps.data.status.toLowerCase()" :severity="getOrderSeverity(slotProps.data)" />
-                                    </template>
-                                </Column>
-                                <Column headerStyle="width:4rem">
-                                    <template #body>
-                                        <Button icon="pi pi-search" />
-                                    </template>
-                                </Column>
-                            </DataTable> -->
                         </div>
                     </template>
                 </DataTable>
-                <!-- <Toast /> -->
             </div>
         </div>
         <div class="col-12 card" v-if="hasNoData">
@@ -272,29 +241,5 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                 </p>
             </div>
         </div>
-        <!-- <div class="mb-2 bg-white w-full border-round-lg">
-            <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
-        </div> -->
     </div>
-    <!-- <div class="col-12 md:col-8">
-        <div class="border-round-lg">
-            <div class="p-3" v-if="isError">{{ error }}</div>
-            <div class="flex flex-column" v-if="answer_loading">
-                <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-            </div>
-            <div class="flex flex-row" v-if="resp_type =='RAGAnswer'">
-                <AnswerCard :answer="answer" />
-            </div>
-            <div class="flex flex-row">
-                <DataTable :documents="filteredDocuments" />
-            </div>
-        </div>
-    </div> -->
 </template>

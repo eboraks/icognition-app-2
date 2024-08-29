@@ -90,11 +90,18 @@
   --p-dialog-title-font-size: 1.75rem;
   --p-dialog-title-font-weight: 600;
   --p-inputtext-padding-y: .25rem;
+  --p-panel-content-padding: 0rem;
+  --p-panel-header-background: transparent;
   --p-splitter-background: transparent;
   --p-tabs-tab-background: var(--vt-c-white);
   --p-tabs-tab-border-width: 0px 0px 2px 0px;
   --p-tabs-tabpanel-background: var(--gray-200);
   --p-tabs-tabpanel-padding: 0rem;
+  --p-tag-info-background: var(--blue-100);
+  --p-tag-info-color: var(--vt-c-black);
+  --p-tag-padding: .1rem .25rem;
+  --p-tag-primary-background: var(--blue-100);
+  --p-tag-primary-color: var(--vt-c-black);
 }
 
 @media (prefers-color-scheme: dark) {

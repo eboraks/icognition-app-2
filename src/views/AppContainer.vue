@@ -25,7 +25,31 @@
                             <div class="w-full" v-else>
                                 <div class="mb-2 w-full border-round-lg">
                                     <!-- <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/> -->
+                                    <!-- <div class="mb-2 bg-white w-full border-round-lg">
+                                        <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
+                                    </div> -->
                                 </div>
+                                <!-- <div class="col-12 md:col-8">
+                                    <div class="border-round-lg">
+                                        <div class="p-3" v-if="isError">{{ error }}</div>
+                                        <div class="flex flex-column" v-if="answer_loading">
+                                            <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                                            <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                                            <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                                            <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                                            <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                                            <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                                            <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
+                                            <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
+                                        </div>
+                                        <div class="flex flex-row" v-if="resp_type =='RAGAnswer'">
+                                            <AnswerCard :answer="answer" />
+                                        </div>
+                                        <div class="flex flex-row">
+                                            <DataTable :documents="filteredDocuments" />
+                                        </div>
+                                    </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

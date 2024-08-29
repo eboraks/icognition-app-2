@@ -5,11 +5,9 @@
     import AutoComplete from 'primevue/autocomplete';
     import Button from 'primevue/button';
     import Checkbox from 'primevue/checkbox';
-    import Column from 'primevue/column';
-    import DataTable from 'primevue/datatable';
     import Dialog from 'primevue/dialog';
+    import moment from 'moment';
     import ProjectService from '@/services/ProjectService';
-    import Textarea from 'primevue/textarea';
     import { useToast } from 'primevue/usetoast';
 
 
@@ -103,7 +101,7 @@
         }
     }
 
-    const checkShowNewProjectDialogComponents = async () => {
+    const handleShowNewProjectDialogComponents = async () => {
 
         // Reset
         newProjectErrorMessages.value = [];
@@ -129,12 +127,16 @@
         }
 
         if (newProjectErrorMessages.value.length == 0) {
-            showNewProjectDialog.value = false;
-            project_name_value.value = '';
-            description_value.value = '';
-            project_objectives_textarea_value.value = '';
-            studyTaskList.value = [];
+            clearNewProjectDialog();
         }
+    }
+
+    function clearNewProjectDialog() {
+        showNewProjectDialog.value = false;
+        project_name_value.value = '';
+        description_value.value = '';
+        project_objectives_textarea_value.value = '';
+        studyTaskList.value = [];
     }
 
     const closeAddANewStudyPoint = async () => {
@@ -170,6 +172,11 @@
     const formatDate = (value) => {
         return value.split("T")[0];
     };
+
+    const handleCancelNewProjectDialog = async () => {
+        clearNewProjectDialog();
+        showNewProjectDialog.value = false;
+    }
 
     function inputHandle(params) {
         if (search_term.value === '') {
@@ -242,12 +249,20 @@
                     <Column expander style="width: 5rem" />
                     <Column field="title" header="Title" class="set-background-image">
                         <template #body="slotProps">
-                            <p class="inline-block px-2">{{slotProps.data.title}}</p>
+                            <p class="inline-block">
+                                <router-link 
+                                    :to="{
+                                        name: 'projectdetails',
+                                        params: {id: slotProps.data.id}
+                                    }"
+                                    class="mt-2 py-1">{{ slotProps.data.title }}
+                                </router-link>
+                            </p>
                         </template>
                     </Column>
                     <Column field="Created" header="Created">
                         <template #body="slotProps">
-                            {{ formatDate(slotProps.data.createdAt) }}
+                            {{ moment(slotProps.data.createdAt).format('DD MMM YYYY h:mm a') }}
                         </template>
                     </Column>
                     <Column field="document_number" header="# Documents"></Column>
@@ -354,18 +369,18 @@
                             </p>
                         </div>
                         <div class="flex flex-column mb-1">
-                            <div class="border-bluegray-300 border-400 w-full">
+                            <div class="border-bluegray-300 border-1 p-2 w-full">
                                 <div v-for="studyTask in studyTaskList" class="pr-2">
-                                    <Tag class="mr-1 mb-1">
+                                    <Tag class="mr-1 mb-1" severity="info">
                                         <div class="flex items-center gap-2 px-1">
-                                            <span class="text-base">{{ studyTask }}</span>
-                                            <a @click="deleteStudyTask(studyTask)"><i class="text-white text-xs pi pi-times"></i></a> 
+                                            <p class="text-sm text-black-alpha-90">{{ studyTask }}</p>
+                                            <a @click="deleteStudyTask(studyTask)"><i class="text-black-alpha-90 text-xs pi pi-times"></i></a> 
                                         </div>
                                     </Tag>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-column mb-4 col-6">
+                        <div class="flex flex-column col-6">
                             <Button icon="pi pi-plus" style="width: 12rem;" class="bg-bluegray-300 border-bluegray-300 border-400 text-black-alpha-90 px-3 py-1" label="Add a Study Point" raised @click="showAddANewStudyPointDialog = true" />
                         </div>
                     </div>
@@ -377,8 +392,8 @@
                     </div>
                 </div>
                 <div class="grid grid-nogutter flex justify-content-end gap-2">
-                    <Button type="button" label="Cancel" class="text-black-alpha-90 bg-bluegray-300 border-bluegray-300 border-400" severity="secondary" @click="showNewProjectDialog = false"></Button>
-                    <Button type="button" label="Submit" class="bg-primary-800" @click="checkShowNewProjectDialogComponents"></Button>
+                    <Button type="button" label="Cancel" class="text-black-alpha-90 bg-bluegray-300 border-bluegray-300 border-400" severity="secondary" @click="handleCancelNewProjectDialog"></Button>
+                    <Button type="button" label="Submit" class="bg-primary-800" @click="handleShowNewProjectDialogComponents"></Button>
                 </div>
             </div>
         </div>

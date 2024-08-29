@@ -1,14 +1,103 @@
 const ProductService = {
+    getProductData() {
+        return {
+            id: '1000',
+            title: 'Project Name 1',
+            description: 'Description given during project creation',
+            image: 'bamboo-watch.jpg',
+            createdAt: '2023-08-01T00:00:00.000Z',
+            document_list: ['1', '2', '3'],
+            document_number: 3,
+            objective: 'Describe the political impacts of the French Revolution on European monarchy in the eighteenth century.',
+            study_tasks: [{
+                question: 'What were the conditions that led up to the French Revolution?',
+                answer: {
+                    summary: 'The French Revolution (1789-1799 was caused by a number of factors, including:',
+                    summary_details: [
+                        'The estate System: Also known as the Ancient Regime, this system dividend people into groups based on birth.',
+                        'Unequal wealth distribution: The poor were taxed heavily while nobles enjoyed many privileges.',
+                        'Poor leadership: Louse XVI was often seen as a weak leader.',
+                        'Financial crisis: The Seven Years War and a poor harvest in 1788 contributed to the countrys financial crisis.',
+                        'Poor economic policies: The royal family spent extravagantly and the countrys coffers were depleted.',
+                        'Exploitative social and political structures: The regime imposed heavy taxes without providing relief, which led to resentment and unrest among the poor.'
+                    ]
+                },
+                question: 'What is the windspeed velocity of an unladen swallow?',
+                answer: {
+                    summary: 'The French Revolution (1789-1799 was caused by a number of factors, including:',
+                    summary_details: [
+                        'The estate System: Also known as the Ancient Regime, this system dividend people into groups based on birth.',
+                        'Unequal wealth distribution: The poor were taxed heavily while nobles enjoyed many privileges.',
+                        'Poor leadership: Louse XVI was often seen as a weak leader.',
+                        'Financial crisis: The Seven Years War and a poor harvest in 1788 contributed to the countrys financial crisis.',
+                        'Poor economic policies: The royal family spent extravagantly and the countrys coffers were depleted.',
+                        'Exploitative social and political structures: The regime imposed heavy taxes without providing relief, which led to resentment and unrest among the poor.'
+                    ]
+                },
+                question: 'How did Napoleon Bonaparte promote the ideas of the Revolution across Europe?',
+                answer: {
+                    summary: 'The French Revolution (1789-1799 was caused by a number of factors, including:',
+                    summary_details: [
+                        'The estate System: Also known as the Ancient Regime, this system dividend people into groups based on birth.',
+                        'Unequal wealth distribution: The poor were taxed heavily while nobles enjoyed many privileges.',
+                        'Poor leadership: Louse XVI was often seen as a weak leader.',
+                        'Financial crisis: The Seven Years War and a poor harvest in 1788 contributed to the countrys financial crisis.',
+                        'Poor economic policies: The royal family spent extravagantly and the countrys coffers were depleted.',
+                        'Exploitative social and political structures: The regime imposed heavy taxes without providing relief, which led to resentment and unrest among the poor.'
+                    ]
+                }
+            }]
+        }
+    },
     getProductsData() {
         return [
             {
                 id: '1000',
                 title: 'Project Name 1',
-                description: 'Lorem ipsum dolar sit amet, consectetur, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                description: 'Description given during project creation',
                 image: 'bamboo-watch.jpg',
                 createdAt: '2023-08-01T00:00:00.000Z',
                 document_list: ['1', '2', '3'],
-                document_number: 1
+                document_number: 3,
+                objective: 'Describe the political impacts of the French Revolution on European monarchy in the eighteenth century.',
+                study_tasks: [{
+                    question: 'What were the conditions that led up to the French Revolution?',
+                    answer: {
+                        summary: 'The French Revolution (1789-1799 was caused by a number of factors, including:',
+                        summary_details: [
+                            'The estate System: Also known as the Ancient Regime, this system dividend people into groups based on birth.',
+                            'Unequal wealth distribution: The poor were taxed heavily while nobles enjoyed many privileges.',
+                            'Poor leadership: Louse XVI was often seen as a weak leader.',
+                            'Financial crisis: The Seven Years War and a poor harvest in 1788 contributed to the countrys financial crisis.',
+                            'Poor economic policies: The royal family spent extravagantly and the countrys coffers were depleted.',
+                            'Exploitative social and political structures: The regime imposed heavy taxes without providing relief, which led to resentment and unrest among the poor.'
+                        ]
+                    },
+                    question: 'What is the windspeed velocity of an unladen swallow?',
+                    answer: {
+                        summary: 'The French Revolution (1789-1799 was caused by a number of factors, including:',
+                        summary_details: [
+                            'The estate System: Also known as the Ancient Regime, this system dividend people into groups based on birth.',
+                            'Unequal wealth distribution: The poor were taxed heavily while nobles enjoyed many privileges.',
+                            'Poor leadership: Louse XVI was often seen as a weak leader.',
+                            'Financial crisis: The Seven Years War and a poor harvest in 1788 contributed to the countrys financial crisis.',
+                            'Poor economic policies: The royal family spent extravagantly and the countrys coffers were depleted.',
+                            'Exploitative social and political structures: The regime imposed heavy taxes without providing relief, which led to resentment and unrest among the poor.'
+                        ]
+                    },
+                    question: 'How did Napoleon Bonaparte promote the ideas of the Revolution across Europe?',
+                    answer: {
+                        summary: 'The French Revolution (1789-1799 was caused by a number of factors, including:',
+                        summary_details: [
+                            'The estate System: Also known as the Ancient Regime, this system dividend people into groups based on birth.',
+                            'Unequal wealth distribution: The poor were taxed heavily while nobles enjoyed many privileges.',
+                            'Poor leadership: Louse XVI was often seen as a weak leader.',
+                            'Financial crisis: The Seven Years War and a poor harvest in 1788 contributed to the countrys financial crisis.',
+                            'Poor economic policies: The royal family spent extravagantly and the countrys coffers were depleted.',
+                            'Exploitative social and political structures: The regime imposed heavy taxes without providing relief, which led to resentment and unrest among the poor.'
+                        ]
+                    }
+                }]
             },
             {
                 id: '1001',
@@ -16,7 +105,7 @@ const ProductService = {
                 description: 'Lorem ipsum dolar sit amet, consectetur, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                 image: 'black-watch.jpg',
                 createdAt: '2024-07-01T00:00:00.000Z',
-                document_list: ['1', '2', '3'],
+                document_list: ['1', '2', '3', '4', '5'],
                 document_number: 5
             },
             {
@@ -25,7 +114,7 @@ const ProductService = {
                 description: 'Lorem ipsum dolar sit amet, consectetur, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                 image: 'blue-band.jpg',
                 createdAt: '2022-10-01T00:00:00.000Z',
-                document_list: ['1', '2', '3'],
+                document_list: ['1', '2'],
                 document_number: 2
             },
             {
@@ -34,7 +123,7 @@ const ProductService = {
                 description: 'Lorem ipsum dolar sit amet, consectetur, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                 image: 'blue-t-shirt.jpg',
                 createdAt: '2024-06-01T00:00:00.000Z',
-                document_list: ['1', '2', '3'],
+                document_list: ['1', '2', '3', '4', '5', '6'],
                 document_number: 6
             }
         ];
@@ -879,6 +968,10 @@ const ProductService = {
 
     getProductsSmall() {
         return Promise.resolve(this.getProductsData().slice(0, 10));
+    },
+
+    getProduct() {
+        return Promise.resolve(this.getProductData());
     },
 
     getProducts() {

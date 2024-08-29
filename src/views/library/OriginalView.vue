@@ -14,7 +14,7 @@
                 <div class="col-12 bg-white p-3 flex flex-column border-round overflow-y-auto relative h-full">
                     <span class="text-xs">{{ author.valueOf() }}</span>
                     <span class="text-xs">Updated {{ updated_at.valueOf() }}</span>
-                    <div v-for="item in html_elements_for_page" class="text-sm">
+                    <div v-for="item in html_elements_for_original_page" class="text-sm">
                         <h1 v-if="item.element == 'h1'" class="mt-2">{{ item.text }}</h1>
                         <h2 v-if="item.element == 'h2'" class="mt-2">{{ item.text }}</h2>
                         <h3 v-if="item.element == 'h3'" class="mt-1">{{ item.text }}</h3>
@@ -40,7 +40,7 @@
     
     const dialogRef = inject("dialogRef") as any;
     let author = ref(dialogRef.value.data.authors[dialogRef.value.data.authors.length - 1]);
-    const html_elements_for_page = ref(dialogRef.value.data.html_elements);
+    const html_elements_for_original_page = ref(dialogRef.value.data.html_elements);
     let html_elements_for_pdf = dialogRef.value.data.html_elements;
     let html_to_pdf: [Object] = [null];
     let updated_at = ref(formate_date(dialogRef.value.data.updateAt));

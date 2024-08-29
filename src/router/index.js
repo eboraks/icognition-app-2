@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '@/views/HomeView.vue'
 import user_state from '@/composables/getUser';
-import AppContainer from '../views/AppContainer.vue'
-import DocXRayView from '../views/library/DocXRayView.vue'
+import AppContainer from '@/views/AppContainer.vue'
+import DocXRayView from '@/views/library/DocXRayView.vue'
 import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
 import TermsOfUse from '@/components/TermsOfUse.vue'
+import ProjectDetails from '@/views/library/ProjectDetails.vue';
 
 // route guard
 const requireAuth = (to, from, next) => {
-  //let user = auth.currentUser
   if (!user_state.user) {
     console.log('require auth: user not logged in. User: ', user_state.user)
     next({ name: 'home' })
@@ -21,7 +21,6 @@ const authenticated = (to, from, next) => {
   if (user_state.user) {
     console.log('authenticated: user logged in. From: ', from, ' To: ', to)
     next({ name: to })
-    //next({ name: 'library' })
   } else {
     next()
   }
@@ -46,6 +45,13 @@ const routes = [
     name: 'projects',
     component: AppContainer,
     beforeEnter: requireAuth
+  },
+  {
+    path: '/projectdetails/:id',
+    name: 'projectdetails',
+    component: ProjectDetails,
+    beforeEnter: requireAuth,
+    props: true
   },
   { 
     path: '/docxray/:id',
