@@ -1,4 +1,4 @@
-const ProductService = {
+const ProjectService = {
     getProductData() {
         return {
             id: '1000',
@@ -21,7 +21,9 @@ const ProductService = {
                         'Poor economic policies: The royal family spent extravagantly and the countrys coffers were depleted.',
                         'Exploitative social and political structures: The regime imposed heavy taxes without providing relief, which led to resentment and unrest among the poor.'
                     ]
-                },
+                }
+            },
+            {
                 question: 'What is the windspeed velocity of an unladen swallow?',
                 answer: {
                     summary: 'The French Revolution (1789-1799 was caused by a number of factors, including:',
@@ -33,7 +35,9 @@ const ProductService = {
                         'Poor economic policies: The royal family spent extravagantly and the countrys coffers were depleted.',
                         'Exploitative social and political structures: The regime imposed heavy taxes without providing relief, which led to resentment and unrest among the poor.'
                     ]
-                },
+                }
+            },
+            {
                 question: 'How did Napoleon Bonaparte promote the ideas of the Revolution across Europe?',
                 answer: {
                     summary: 'The French Revolution (1789-1799 was caused by a number of factors, including:',
@@ -987,4 +991,4 @@ const ProductService = {
     }
 };
 
-export default ProductService
+export default ProjectService

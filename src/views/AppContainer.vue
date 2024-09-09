@@ -1,23 +1,23 @@
 <template>
-    <div id="body-library" class="grid nested-grid grid-nogutter col-12 bg-gray-100" style="height: calc(100% - 72px - 84px);">
-        <div class="col-12 bg-white border-round border-bluegray-300 border-2 p-0 h-full">
+    <div id="body-library" class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
+        <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
             <Splitter class="grid nested-grid grid-nogutter h-full border-round border-noround-right">
-                <SplitterPanel :class="{ 'splitter-panel-container-left-small': !buttonToggleSplitterPanelLeft }" class="col-12 p-2 border-round bg-primary-800 border-noround-right splitter-panel-container-left" :minSize="1">
+                <SplitterPanel :class="{ 'splitter-panel-container-left-small': !buttonToggleSplitterPanelLeft }" class="col-12 p-2 border-round surface-500 border-noround-right splitter-panel-container-left" :minSize="1">
                     <div class="grid">
-                        <div class="col-6 text-white">
-                            <Button v-if="!buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Expand Panel"/>
-                            <h3 v-if="buttonToggleSplitterPanelLeft" class="pt-2">Filters</h3>
+                        <div class="col-6">
+                            <Button v-if="!buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0 text-black-alpha-90" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Expand Panel"/>
+                            <h3 v-if="buttonToggleSplitterPanelLeft" class="pt-2 text-black-alpha-90">Filters</h3>
                         </div>
                         <div class="col-6 text-right">
-                            <Button v-if="buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Collapse Panel"/>
+                            <Button v-if="buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0 text-black-alpha-90" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Collapse Panel"/>
                         </div>
                         <div class="w-full" v-if="buttonToggleSplitterPanelLeft">
                             <div v-if="documentsLength == 0">
-                                <div class="col-12 pt-7 mt-7">
+                                <div class="col-12 pt-7 mt-6">
                                     <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
                                 </div>
                                 <div class="col-12">
-                                    <p class="flex text-center m-auto text-white" style="max-width: 60%;" src="/src/assets/images/icons/bookmark.png">
+                                    <p class="flex text-center m-auto text-black-alpha-90" style="max-width: 60%;">
                                         You don't have any bookmark filters created yet, because you haven't bookmarked any pages.
                                     </p>
                                 </div>
@@ -57,7 +57,7 @@
                 <SplitterPanel :class="{ 'splitter-panel-container-right-big': !buttonToggleSplitterPanelLeft }" class="col-12 p-0 splitter-panel-container-right">
                     <div class="card h-full">
                         <Tabs value="0" class="h-full">
-                            <TabList class="border-bottom-1 border-bluegray-200">
+                            <TabList class="border-bottom-1 border-200">
                                 <Tab value="0">My Documents</Tab>
                                 <Tab value="1">My Projects</Tab>
                             </TabList>
@@ -88,7 +88,7 @@
     import Documents from '@/views/library/Documents.vue';
     import Projects from '@/views/library/Projects.vue';
     import { useRoute, useRouter  } from 'vue-router';
-    import Route_Location from '@/components/models/Route_Location.vue';
+    import Route_Location from '@/components/models/RouteLocation.vue';
 
     const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();

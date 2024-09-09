@@ -67,7 +67,7 @@
 import useLogout from '@/composables/useLogout';
 import useSignin from '@/composables/useLogin';
 import user_state from '@/composables/getUser';
-import Route_Location from '@/components/models/Route_Location.vue';
+import Route_Location from '@/components/models/RouteLocation.vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue'; 
 import { auth } from '@/firebase/config'

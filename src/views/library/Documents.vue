@@ -138,10 +138,6 @@ const showOriginalDialog = (data) => {
                 width: '95%'
             },
             modal: true,
-        },
-        onClose: (options) => {
-            const dataClose = options.data;
-            console.log(dataClose);
         }
     });
 };
@@ -159,6 +155,7 @@ const showXRayDialog = (data) => {
             modal: true
         },
         onClose: (options) => {
+            console.log(options);
             const dataClose = options.data;
             console.log(dataClose);
         }
@@ -178,20 +175,20 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                     <InputIcon>
                         <i class="pi pi-search" />
                     </InputIcon>
-                    <AutoComplete class="bg-gray-50 border-round-lg w-full" inputId="ac" v-model="search_term" :suggestions="items" 
+                    <AutoComplete class="surface-50 border-round-lg w-full" inputId="ac" v-model="search_term" :suggestions="items" 
                         @complete="autocompleteSearch" @keydown.enter="searchHandle"  
                         @input="inputHandle" @keydown.escape="emptied" placeholder="Search"/> 
                 </IconField>
             </div>
             <div class="col-6 flex justify-content-end pr-0">
-                <a class="pr-3 py-1" @click="onExpandAll" style="height: 2rem;"><i class="pi pi-plus text-xs"></i> Expand All</a> <a @click="onCollapseAll" class="py-1 mr-1" style="height: 2rem;"><i class="pi pi-minus text-xs"></i> Collapse All</a>
+                <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;"><i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All</a> <a @click="onCollapseAll" class="py-1 mr-1 font-semibold" style="height: 2rem;"><i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All</a>
             </div>
         </div>
         <div class="col-12 pr-0" style="height: calc(100% - 49px);">
             <div class="card h-full" v-if="!hasNoData">
                 <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocument" :value="documents" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
-                    <Column expander style="width: 4rem" />
+                    <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">
                         <template #body="slotProps">
                             <div class="flex flex-row">

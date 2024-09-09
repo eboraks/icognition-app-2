@@ -1,5 +1,5 @@
 <template>
-  <div id="siteWrapper" class="clearfix site-wrapper h-screen bg-gray-100">
+  <div id="siteWrapper" class="clearfix site-wrapper h-screen surface-100">
     <Navbar />
     <router-view/>
     <Footer />

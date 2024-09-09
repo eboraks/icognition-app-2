@@ -1,7 +1,7 @@
 <template>
   <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-blue-100 h-full">
     <Splitter class="h-full">
-      <SplitterPanel :class="{ 'splitter-panel-xray-left-full': !buttonToggleSplitterPanelRight }" class="col-12 p-0 border-round bg-gray-100 border-noround-right splitter-panel-xray-left" :minSize="1">
+      <SplitterPanel :class="{ 'splitter-panel-xray-left-full': !buttonToggleSplitterPanelRight }" class="col-12 p-0 border-round surface-100 border-noround-right splitter-panel-xray-left" :minSize="1">
         <div class="grid nested-grid grid-nogutter mx-2" style="height: calc(100% - .5rem);">
           <div class="col-12 py-0">
             <div class="col-6 pb-3 inline-flex vertical-align-middle">
@@ -32,7 +32,7 @@
               </div>
               
               <span class="text-xs mb-3">Published {{ publication_date.valueOf() }}</span>
-              <div v-for="item in html_elements_for_page.value" class="text-sm">
+              <div v-for="item in html_elements_for_page" class="text-sm">
                 <h1 v-if="item.element == 'h1'" class="mt-2"><span v-html="item.text"></span></h1>
                 <h2 v-if="item.element == 'h2'" class="mt-2"><span v-html="item.text"></span></h2>
                 <h3 v-if="item.element == 'h3'" class="mt-1"><span v-html="item.text"></span></h3>
@@ -54,7 +54,7 @@
             </TabList>
             <TabPanels>
               <TabPanel value="0">
-                <div class="flex-column my-1 h-full p-2 bg-bluegray-200">
+                <div class="flex-column my-1 h-full p-2 surface-200">
                   <div class="overflow-y-auto pr-3 py-3" style="height: calc(100% - 49.6px);">
                     <h3 class="pl-3 pb-3" v-if="dialogRef.data.is_about != null">Summary:<br/>{{ dialogRef.data.is_about }}</h3>
                     <div v-if="dialogRef.data.tldr != null">
@@ -67,14 +67,14 @@
                 </div>
               </TabPanel>
               <TabPanel value="1">
-                <div class="flex-column my-1 h-full p-2 bg-bluegray-200">
+                <div class="flex-column my-1 h-full p-2 surface-200">
                   <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
                     <div class="panel mb-3" v-for="item in qas">
                       <p class="flex text-xs justify-content-end">{{moment(item.created_at).format('DD MMM YYYY h:mm a')}}</p>
                       <div class="card">
-                        <Card class="border-1 border-round border-bluegray-300 bg-white shadow-3">
+                        <Card class="border-1 border-round border-300 bg-white shadow-3">
                           <template #header>
-                            <div class="border-1 border-round border-bluegray-300 bg-bluegray-300 flex border-bottom-1 border-noround-bottom border-top-none border-left-none border-right-none">
+                            <div class="border-1 border-round border-300 surface-300 flex border-bottom-1 border-noround-bottom border-top-none border-left-none border-right-none">
                               <p class="flex-grow-1 px-3 py-2 text-sm border-round font-semibold">{{item.question}}</p>
                               <Button icon="pi pi-times" class="bg-transparent border-transparent border-0 flex-shrink-0 text-black-alpha-90 pr-0" size="small" aria-label="Close"/>
                             </div>
@@ -83,8 +83,8 @@
                             <div class="bg-white flex flex-column">
                               <p class="flex-grow-1 pl-3 py-1 text-sm text-black-alpha-90 border-round">{{item.answer}}</p>
                               <div class="flex-row">
-                                <Button icon="pi pi-copy" class="bg-transparent border-transparent border-0 text-bluegray-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
-                                <Button icon="pi pi-clipboard" class="bg-transparent border-transparent border-0 text-bluegray-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
+                                <Button icon="pi pi-copy" class="bg-transparent border-transparent border-0 text-surface-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
+                                <Button icon="pi pi-clipboard" class="bg-transparent border-transparent border-0 text-surface-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
                               </div>
                             </div>
                           </template>
@@ -99,7 +99,7 @@
                 </div>
               </TabPanel>
               <TabPanel value="2">
-                <div class="flex-column my-1 h-full p-2 bg-bluegray-200">
+                <div class="flex-column my-1 h-full p-2 surface-200">
                   <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
                     <div class="panel mb-3">
                       <div v-for="item in highlightedTextList" class="mb-3">
@@ -126,8 +126,8 @@
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
-  import TalkifyTTSService from '@/services/TalkifyTTSService';
-  import Talkify from 'talkify-tts-api';
+  // import TalkifyTTSService from '@/services/TalkifyTTSService';
+  // import Talkify from 'talkify-tts-api';
   import useCustomQandA from '@/composables/useCustomQandA';
   import useDocQuesAnswers from '@/composables/useDocQuesAnswers';
   import useDocXRay from '@/composables/useDocXRay';
@@ -148,7 +148,7 @@
   const hightlights = ref();
   const highlight_notes_value = ref('');
   const html_elements_for_page = ref();
-  let html_elements_for_pdf = dialogRef.value.data.html_elements;
+  const html_elements_for_pdf = html_elements_for_page.value = dialogRef.value.data.html_elements;
   let html_to_pdf: [Object] = [null];
   const menu_highlight = ref();
 
@@ -168,8 +168,7 @@
         console.log("Document: ", dialogRef.value.data);
         console.log("Original Elements: ", original_elements.value);
         console.log("Questions and Answers: ", qas.value);
-        html_elements_for_page.value = ref(dialogRef.value.data.html_elements);
-        articleElements.value = addHightlights(original_elements, dialogRef.value.data.summary_citations);
+        html_elements_for_page.value = addHightlights(html_elements_for_page.value, dialogRef.value.data.summary_citations);
         if (dialogRef.value.data.summary_citations != null) {
           highlight(dialogRef.value.data.summary_citations);
         }
@@ -222,37 +221,22 @@
     }
   }
 
-  const addHightlights = (original_elements, citations) => {
-    if (original_elements != null) {
-      console.log('original_elements: ' + original_elements);
-      console.log('citations: ' + citations);
-      let html = article_html_builder(original_elements.value);
-
+  const addHightlights = (html_elements, citations) => {
+    if (html_elements != null) {
       if(citations != null) {
-        citations.forEach((citation) => {
+        html_elements.forEach(html_element => {
+          citations.forEach((citation, index) => {
         
-          if (html.includes(citation.start_str) && html.includes(citation.end_str)) {
-            html = html.replace(new RegExp(citation.start_str, 'gi'), `<span class="about">${citation.start_str}`);
-            html = html.replace(new RegExp(citation.end_str, 'gi'), `${citation.end_str}</span>`);
-          }
+            if (html_element.text.includes(citation.verbatim)) {
+              html_element.text = html_element.text.replace(new RegExp(citation.verbatim, 'gi'), `<span class="bg-highlight tooltip" id="section-${index}">${citation.verbatim}<span class="tooltiptext">${citation.verbatim}</span></span>`);
+            }
+          });
         });
       }
-      return html;
+      return html_elements;
     } else {
       return null;
     }
-  }
-
-  const article_html_builder = (elements) => {
-    let html = '';
-    elements.forEach((element) => {
-      if (element.element === 'h1') {
-        html += `<h1>${element.text}</h1>`;
-      } else if (element.element === 'p') {
-        html += `<p>${element.text}</p>`;
-      }
-    });
-    return html;
   }
 
   function formate_date(value) {

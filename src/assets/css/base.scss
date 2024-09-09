@@ -5,9 +5,9 @@
   --primary-500:#3497be!important;        // Primary Main
   --primary-800:#054761!important;        // Primary Dark
 
-  --cyan-200:rgba(0,170,255,.05)!important;  // Select Light
-  --cyan-500:rgba(0,170,255,.10)!important;  // Select Main
-  --cyan-800:rgba(0,170,255,.15)!important;  // Select Dark
+  --cyan-200:rgba(0,170,255,.95)!important;  // Select Light
+  --cyan-500:rgba(0,170,255,.9)!important;  // Select Main
+  --cyan-800:rgba(0,170,255,.85)!important;  // Select Dark
 
   --blue-100:#CDE8FC;       // Info-Link Ultralight
   --blue-200:#64B5F6;       // Info-Link Light
@@ -24,28 +24,28 @@
   --teal-200:#65d7c0;       // Secondary Light
   --teal-500:#29b998;       // Secondary Main
   --teal-800:#26796c;       // Secondary Dark
-  --teal-900:#1c4229;       // Secondary Dark
 
-  --green-200:#96d7ac;      // Success Light
-  --green-500:#4caf6e;      // Success Main
+  --green-200:#96d7AC;      // Success Light
+  --green-500:#4CAF6E;      // Success Main
   --green-800:#297945;      // Success Dark
-  --green-900:#1c4229;      // Success Text
+  --green-900:#1C4229;      // Success Text
 
   --orange-200:#FFB74D;     // Warning Light
   --orange-500:#FF9800;     // Warning Main
+  --orange-600: rgba(255, 94, 0, .73); // Notations/Comments
   --orange-800:#F57C00;     // Warning Dark
   --orange-900:#661F00;     // Warning Text
 
-  --bluegray-50: #F8FAFC;   // Slate
-  --bluegray-100: #F1F5F9;  // Slate
-  --bluegray-200: #E2E8F0;  // Slate
-  --bluegray-300: #CBD5E1;  // Slate
-  --bluegray-400: #93A3B8;  // Slate
-  --bluegray-500: #64748B;  // Slate
-  --bluegray-600: #465569;  // Slate
-  --bluegray-700: #324155;  // Slate
-  --bluegray-800: #1E293B;  // Slate
-  --bluegray-900: #0F172B;  // Slate
+  --surface-50: #F8FAFC;   // Slate
+  --surface-100: #F1F5F9;  // Slate
+  --surface-200: #E2E8F0;  // Slate
+  --surface-300: #CBD5E1;  // Slate
+  --surface-400: #93A3B8;  // Slate
+  --surface-500: #64748B;  // Slate
+  --surface-600: #465569;  // Slate
+  --surface-700: #324155;  // Slate
+  --surface-800: #1E293B;  // Slate
+  --surface-900: #0F172B;  // Slate
 
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -83,6 +83,8 @@
   --section-gap: 160px;
   --border-radius: 6px;
 
+  --p-button-primary-background: var(--primary-color);
+  --p-button-primary-border-color: var(--primary-color);
   --p-button-sm-font-size: .75rem;
   --p-card-body-padding: .25rem;
   --p-dialog-header-padding: .75rem 1.25rem;
@@ -90,11 +92,16 @@
   --p-dialog-title-font-size: 1.75rem;
   --p-dialog-title-font-weight: 600;
   --p-inputtext-padding-y: .25rem;
+  --p-message-content-padding: .25rem .5rem;
   --p-panel-content-padding: 0rem;
+  --p-panel-footer-padding: 0 1.125rem 1.125rem 1.125rem;
   --p-panel-header-background: transparent;
   --p-splitter-background: transparent;
+  --p-tabs-tab-active-border-color: var(--cyan-500);
+  --p-tabs-tab-active-color: var(--cyan-500);
   --p-tabs-tab-background: var(--vt-c-white);
   --p-tabs-tab-border-width: 0px 0px 2px 0px;
+  --p-tabs-tab-color: var(--vt-c-black);
   --p-tabs-tabpanel-background: var(--gray-200);
   --p-tabs-tabpanel-padding: 0rem;
   --p-tag-info-background: var(--blue-100);
@@ -138,7 +145,7 @@ body {
     Inter,
     -apple-system,
     BlinkMacSystemFont,
-    'Segoe UI',
+    'HarmoniaSans',
     Roboto,
     Oxygen,
     Ubuntu,
@@ -153,8 +160,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+// Reader Background colors
 .bg-highlight {
-  background-color: rgba(70, 255, 0, .45);
+  background-color: rgba(70, 255, 0, .55);
 }
 
 .bg-playfill {
@@ -167,6 +175,19 @@ body {
 
 .bg-stopfill {
   background-color: #FFECEC;
+}
+
+// Ask iCognition Background colors
+.bg-header-selected {
+  background-color: #ADCEE5;
+}
+
+.bg-body-selected {
+  background-color: #E0F1FA;
+}
+
+.bg-provenance-highlighting {
+  background-color: rgba(33, 150, 243, .78);
 }
 
 .hero-background {

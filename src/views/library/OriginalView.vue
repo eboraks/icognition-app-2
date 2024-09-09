@@ -1,5 +1,5 @@
 <template>
-    <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-2 border-blue-100 bg-gray-200 h-full">
+    <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-2 border-blue-100 surface-200 h-full">
         <div class="col-12 h-full">
             <div class="grid grid-nogutter px-3 py-2" style="height: 60px;">
                 <div class="col-6 flex vertical-align-middle">
@@ -34,8 +34,8 @@
     import pdfMake from 'pdfmake/build/pdfmake';
     import pdfFonts from 'pdfmake/build/vfs_fonts';
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
-    import TalkifyTTSService from '@/services/TalkifyTTSService';
-    import Talkify from 'talkify-tts-api';
+    // import TalkifyTTSService from '@/services/TalkifyTTSService';
+    // import Talkify from 'talkify-tts-api';
     //import ContentObject from '@/components/models/ContentObject.vue';
     
     const dialogRef = inject("dialogRef") as any;
@@ -47,12 +47,12 @@
 
     onBeforeMount(async () => {
       try {
-        const talkify_tts_api_key = TalkifyTTSService.getTalkifyTTSAPIKEY().then(data => {
-            return data;
-        });
-        const talkify_tts_host = TalkifyTTSService.getTalkifyTTSHost().then(data => {
-            return data;
-        });
+        // const talkify_tts_api_key = TalkifyTTSService.getTalkifyTTSAPIKEY().then(data => {
+        //     return data;
+        // });
+        // const talkify_tts_host = TalkifyTTSService.getTalkifyTTSHost().then(data => {
+        //     return data;
+        // });
       } catch (err) {
         console.log("Error: ", err);
       }

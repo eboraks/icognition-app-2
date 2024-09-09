@@ -1,5 +1,6 @@
 <script setup>
     import useLibrary from '@/composables/useLibrary';
+    import useStudyProject from '@/composables/useStudyProject';
     import user_state from '@/composables/getUser';
     import { ref, onMounted, computed } from 'vue'
     import AutoComplete from 'primevue/autocomplete';
@@ -8,48 +9,41 @@
     import Dialog from 'primevue/dialog';
     import moment from 'moment';
     import ProjectService from '@/services/ProjectService';
+    import StudyProject from '@/components/models/StudyProject.vue'
     import { useToast } from 'primevue/usetoast';
 
 
-    const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
-        searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
+    // const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
+    //     searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
+    const { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, 
+        postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
+        deleteStudyProject } = useStudyProject();
     let addANewStudyPointValue = ref('');
     const addStudyListError = ref('');
     const analysis_checked = ref();
     const answer_loading = ref(false);
-    const description_value = ref('');
     const fitlerCheckedIds = ref(new Map());
     let hasNoData = false;
-    let isError = false;
     const items = ref([]);
     const expandedRows = ref({});
+    const new_study_project_name = ref('');
+    const new_study_project_objective = ref('');
+    const new_study_project_study_tasks = ref([]);
     const newProjectErrorMessages = ref([]);
-    const objectiveTypeTextareaValue = ref();
-    const project_objectives_textarea_value = ref('');
-    const project_name_value = ref('');
     const projects = ref();
     const search_term = ref('');
     const selectedProject = ref();
     let showAddANewStudyPointDialog = ref(false);
     let showExamplesOfObjectiveCriteriaDialog = ref(false);
     let showExampleStudyPointsDialog = ref(false);
-    let showNewProjectDialog = ref(false);
+    const showNewProjectDialog = ref(false);
     const studyTaskList = ref([]);
     const toast = useToast();
 
     onMounted(async() => {
         try {
-            // await getDocuments(user_state.user.uid);
-            // await getSubtopics(user_state.user.uid);
-            // await getSubtopicsNodes(user_state.user.uid);
-            // await getEntitiesNames(user_state.user.uid);
-            // console.log("Subtopics: ", subtopics.value);
-            // console.log("Subtopics Nodes: ", subtopics_nodes.value);
-            // console.log("Entities Names: ", entities_names.value);
-            isError = false;
             ProjectService.getProductsMini().then((data) => (projects.value = data));
         } catch (err) {
-            isError = true;
             console.log("Error: ", err);
         }
     });
@@ -60,7 +54,6 @@
             if (index == -1) {
                 studyTaskList.value.push(addANewStudyPointValue.value);
                 addStudyListError.value = '';
-                showAddANewStudyPointDialog.value = false;
                 addANewStudyPointValue.value = '';
             } else {
                 addStudyListError.value = 'Study Point Already Exists.';
@@ -68,6 +61,12 @@
         } else {
             addStudyListError.value = 'Study Point Text is empty.';
         }
+        new_study_project_study_tasks.value = studyTaskList.value;
+    }
+
+    const addANewStudyPointThenClose = async () => {
+        addANewStudyPoint();
+        showAddANewStudyPointDialog.value = false;
     }
 
     const autocompleteSearch = (e) => {
@@ -102,44 +101,47 @@
     }
 
     const handleShowNewProjectDialogComponents = async () => {
-
         // Reset
         newProjectErrorMessages.value = [];
 
         // Project Name Error
-        if (project_name_value.value == '') {
+        if (new_study_project_name.value == '') {
             newProjectErrorMessages.value.push({id: 1, content: 'Project Name Missing.'});
         }
 
         // Descrition Error
-        if (description_value.value == '') {
-            newProjectErrorMessages.value.push({id: 2, content: 'Description Missing.'});
-        }
+        // if (description_value.value == '') {
+        //     newProjectErrorMessages.value.push({id: 2, content: 'Description Missing.'});
+        // }
 
         // Project Objectives Error
-        if (project_objectives_textarea_value.value == '') {
+        if (new_study_project_objective.value == '') {
             newProjectErrorMessages.value.push({id: 3, content: 'Project Objectives Missing.'});
         }
 
         // Study Task List Error
-        if (studyTaskList.value.length == 0) {
+        if (new_study_project_study_tasks.length == 0) {
             newProjectErrorMessages.value.push({id: 4, content: 'Study Task List is empty.'});
         }
 
         if (newProjectErrorMessages.value.length == 0) {
+            postStudyProject(new StudyProject(new_study_project_name.value, new_study_project_objective.value, new_study_project_study_tasks.value));
             clearNewProjectDialog();
         }
     }
 
     function clearNewProjectDialog() {
         showNewProjectDialog.value = false;
-        project_name_value.value = '';
-        description_value.value = '';
-        project_objectives_textarea_value.value = '';
-        studyTaskList.value = [];
+        new_study_project_name.value = '';
+        new_study_project_objective.value = '';
+        new_study_project_study_tasks.value = [];
     }
 
-    const closeAddANewStudyPoint = async () => {
+    const addANewStudyPointAndAnother = async () => {
+        addANewStudyPoint();
+    }
+
+    const closeStudyPoint = async () => {
         addANewStudyPointValue.value = '';
         showAddANewStudyPointDialog.value = false;
     }
@@ -169,31 +171,19 @@
         }
     });
 
-    const formatDate = (value) => {
-        return value.split("T")[0];
-    };
-
     const handleCancelNewProjectDialog = async () => {
         clearNewProjectDialog();
         showNewProjectDialog.value = false;
+    }
+
+    const handleNewProjectDialog = async () => {
+        showNewProjectDialog.value = !showNewProjectDialog.value;
     }
 
     function inputHandle(params) {
         if (search_term.value === '') {
             emptied();
         }
-    }
-
-    const objectiveTypeModel = ref();
-
-    const objectiveTypes = ref([
-        { name: 'Book Report', code: 'BR' },
-        { name: 'Dissertation', code: 'DI' }
-    ]);
-
-    const onCheckedIds = (checkedIds) => {
-        console.log("Library Checked Ids: ", checkedIds);
-        fitlerCheckedIds.value = checkedIds;
     }
 
     const onCollapseAll = () => {
@@ -225,37 +215,38 @@
 <template>
     <div class="col-12 grid grid-nogutter p-0" style="height: calc(100% - 53px);">
         <div class="flex flex-row w-full">
-            <div class="col-3">
-                <Button icon="pi pi-plus" class="bg-bluegray-300 border-bluegray-300 border-400 text-black-alpha-90 px-3 py-1" label="New Project" raised @click="showNewProjectDialog = true" />
+            <div class="col-5">
+                <Button icon="pi pi-plus" class="surface-300 border-300 border-400 text-black-alpha-90 px-3 py-1" label="New Project" raised @click="handleNewProjectDialog" />
             </div>
             <div class="col">
                 <IconField>
                     <InputIcon>
                         <i class="pi pi-search" />
                     </InputIcon>
-                    <AutoComplete class="bg-gray-50 border-round-lg w-full" inputId="ac" v-model="search_term" :suggestions="items" 
+                    <AutoComplete class="surface-50 border-round-lg w-full" inputId="ac" v-model="search_term" :suggestions="items" 
                         @complete="autocompleteSearch" @keydown.enter="searchHandle"  
                         @input="inputHandle" @keydown.escape="emptied" placeholder="Search"/> 
                 </IconField>
             </div>
             <div class="col-fixed flex justify-content-end pr-0" style="width: 250px;">
-                <a class="pr-3 py-1" @click="onExpandAll" style="height: 2rem;"><i class="pi pi-plus text-xs"></i> Expand All</a> <a @click="onCollapseAll" class="py-1 mr-1" style="height: 2rem;"><i class="pi pi-minus text-xs"></i> Collapse All</a>
+                <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;"><i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All</a> <a @click="onCollapseAll" class="py-1 mr-1 font-semibold" style="height: 2rem;"><i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All</a>
             </div>
         </div>
         <div class="col-12 pr-0" style="height: calc(100% - 61px);">
             <div class="card h-full" v-if="!hasNoData">
                 <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedProject" :value="projects" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
-                    <Column expander style="width: 5rem" />
+                    <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">
                         <template #body="slotProps">
                             <p class="inline-block">
+                                <i class="pi pi-box"></i>
                                 <router-link 
                                     :to="{
                                         name: 'projectdetails',
                                         params: {id: slotProps.data.id}
                                     }"
-                                    class="mt-2 py-1">{{ slotProps.data.title }}
+                                    class="mt-2 py-1 ml-2">{{ slotProps.data.title }}
                                 </router-link>
                             </p>
                         </template>
@@ -271,26 +262,6 @@
                     <template #expansion="slotProps">
                         <div class="p-4">
                             <h5>{{ slotProps.data.description }}</h5>
-                            <!-- <DataTable :value="slotProps.data.orders">
-                                <Column field="id" header="Id" sortable></Column>
-                                <Column field="customer" header="Customer" sortable></Column>
-                                <Column field="date" header="Date" sortable></Column>
-                                <Column field="amount" header="Amount" sortable>
-                                    <template #body="slotProps">
-                                        {{ formatCurrency(slotProps.data.amount) }}
-                                    </template>
-                                </Column>
-                                <Column field="status" header="Status" sortable>
-                                    <template #body="slotProps">
-                                        <Tag :value="slotProps.data.status.toLowerCase()" :severity="getOrderSeverity(slotProps.data)" />
-                                    </template>
-                                </Column>
-                                <Column headerStyle="width:4rem">
-                                    <template #body>
-                                        <Button icon="pi pi-search" />
-                                    </template>
-                                </Column>
-                            </DataTable> -->
                         </div>
                     </template>
                 </DataTable>
@@ -305,36 +276,12 @@
                     </p>
                 </div>
             </div>
-            <!-- <div class="mb-2 bg-white w-full border-round-lg">
-                <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
-            </div> -->
         </div>
-        <!-- <div class="col-12 md:col-8">
-            <div class="border-round-lg">
-                <div class="p-3" v-if="isError">{{ error }}</div>
-                <div class="flex flex-column" v-if="answer_loading">
-                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="90%" height="10rem"></Skeleton>
-                    <Skeleton class="m-1 p-1" width="80%" height="10rem"></Skeleton>
-                </div>
-                <div class="flex flex-row" v-if="resp_type =='RAGAnswer'">
-                    <AnswerCard :answer="answer" />
-                </div>
-                <div class="flex flex-row">
-                    <DataTable :projects="filteredProjects" />
-                </div>
-            </div>
-        </div> -->
     </div>
     <Dialog v-model:visible="showNewProjectDialog" modal header="New Project" :style="{ width: '90%' }">
         <template #header>
             <div class="inline-flex gap-2">
-                <span class="font-semibold text-2xl">New Project</span>
+                <h2>New Project</h2>
             </div>
         </template>
         <div class="grid grid-nested">
@@ -345,32 +292,32 @@
                 <div class="grid">
                     <div class="col-6 pr-3">
                         <div class="flex flex-column mb-2">
-                            <label for="projectname" class="pl-2 text-gray-600 text-sm w-full">Project Name *</label>
-                            <InputText v-model="project_name_value" class="flex-auto" autocomplete="off" />
+                            <label for="projectname" class="pl-2 text-600 text-sm w-full">Project Name *</label>
+                            <InputText v-model.trim.lazy="new_study_project_name" class="flex-auto" autocomplete="off" />
                         </div>
-                        <div class="flex flex-column mb-3">
-                            <label for="description" class="pl-2 text-gray-600 text-sm w-full">Description *</label>
-                            <Textarea v-model="description_value" rows="4" cols="30" />
-                        </div>
-                        <div class="flex flex-column mb-1">
-                            <span class="font-semibold text-2xl pb-1">Project Objectives *</span>
-                            <p class="text-sm text-gray-600 pb-1">Define the academic goal of this project, and ICognition will automatically
+                        <!-- <div class="flex flex-column mb-3">
+                            <label for="description" class="pl-2 text-600 text-sm w-full">Description *</label>
+                            <Textarea v-model="description_value" rows="3" cols="30" />
+                        </div> -->
+                        <div class="flex flex-column mb-1 mt-3">
+                            <h2 class="pb-1">Project Objectives *</h2>
+                            <p class="text-sm text-600 pb-1">Define the academic goal of this project, and ICognition will automatically
                                 calculate a relevancy score for each document source in this project. Be as general or as specific as you like.
                                 <a @click="showExamplesOfObjectiveCriteriaDialog = true">More Examples of Objectives</a>
                             </p>
-                            <Textarea v-model="project_objectives_textarea_value" rows="5" cols="30" placeholder="Ex: &quot;I am looking to examine contributory factors to muscle retention in a group of elderly people..&quot;" />
+                            <Textarea v-model.trim.lazy="new_study_project_objective" rows="5" cols="30" placeholder="Ex: &quot;I am looking to examine contributory factors to muscle retention in a group of elderly people..&quot;" />
                         </div>
                     </div>
                     <div class="col-6 pl-4">
                         <div class="flex flex-column mb-2">
-                            <span class="font-semibold text-2xl pb-2">Project Study Tasks *</span>
-                            <p class="text-sm text-gray-600 pb-3">Study points describe the project's specific objectives, what questions you want answered, or concepts you need to understand, to help iCognition find relevant documents in your library that have answers. A project must have at least ONE study point.
+                            <h2 class="pb-2">Project Study Tasks *</h2>
+                            <p class="text-sm text-600 pb-3">Study points describe the project's specific objectives, what questions you want answered, or concepts you need to understand, to help iCognition find relevant documents in your library that have answers. A project must have at least ONE study point.
                                 <a @click="showExampleStudyPointsDialog = true">Example Study Points</a>
                             </p>
                         </div>
                         <div class="flex flex-column mb-1">
-                            <div class="border-bluegray-300 border-1 p-2 w-full">
-                                <div v-for="studyTask in studyTaskList" class="pr-2">
+                            <div class="border-300 border-round border-2 p-2 w-full overflow-y-auto" style="height: 16rem;">
+                                <div v-for="studyTask in new_study_project_study_tasks" class="pr-2">
                                     <Tag class="mr-1 mb-1" severity="info">
                                         <div class="flex items-center gap-2 px-1">
                                             <p class="text-sm text-black-alpha-90">{{ studyTask }}</p>
@@ -380,20 +327,20 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-column col-6">
-                            <Button icon="pi pi-plus" style="width: 12rem;" class="bg-bluegray-300 border-bluegray-300 border-400 text-black-alpha-90 px-3 py-1" label="Add a Study Point" raised @click="showAddANewStudyPointDialog = true" />
+                        <div class="flex flex-column col-6 pl-0">
+                            <Button icon="pi pi-plus" style="width: 12rem;" class="surface-300 border-300 border-400 text-black-alpha-90 px-3 py-1" label="Add a Study Point" raised @click="showAddANewStudyPointDialog = true" />
                         </div>
                     </div>
                 </div>
                 <div class="grid grid-nogutter flex">
                     <div class="flex items-center gap-2 mb-2">
                         <Checkbox id="rerunanalysis" v-model="analysis_checked" binary />
-                        <label for="rerunanalysis" class="font-semibold text-xs w-24">Re-run analysis of all Project documents against this objective and its tasks, when this dialog closes.</label>
+                        <label for="rerunanalysis" class="font-semibold text-xs w-24 mt-1">Re-run analysis of all Project documents against this objective and its tasks, when this dialog closes.</label>
                     </div>
                 </div>
                 <div class="grid grid-nogutter flex justify-content-end gap-2">
-                    <Button type="button" label="Cancel" class="text-black-alpha-90 bg-bluegray-300 border-bluegray-300 border-400" severity="secondary" @click="handleCancelNewProjectDialog"></Button>
-                    <Button type="button" label="Submit" class="bg-primary-800" @click="handleShowNewProjectDialogComponents"></Button>
+                    <Button type="button" label="Cancel" class="text-black-alpha-90 surface-300 border-300 border-400" severity="secondary" @click="handleCancelNewProjectDialog"></Button>
+                    <Button type="button" label="Submit" class="bg-blue-500" @click="handleShowNewProjectDialogComponents"></Button>
                 </div>
             </div>
         </div>
@@ -442,7 +389,7 @@
                     </div>
                 </div>
                 <div class="grid grid-nogutter flex justify-content-end gap-2">
-                    <Button type="button" label="Ok" class="bg-primary-800 mt-3 flex justify-content-end" @click="showExamplesOfObjectiveCriteriaDialog = false"></Button>
+                    <Button type="button" label="Ok" class="bg-blue-500 mt-3 flex justify-content-end" @click="showExamplesOfObjectiveCriteriaDialog = false"></Button>
                 </div>
             </div>
         </div>
@@ -466,7 +413,7 @@
                     </div>
                 </div>
                 <div class="grid grid-nogutter flex justify-content-end gap-2">
-                    <Button type="button" label="Close" class="bg-primary-800 mt-3 flex justify-content-end" @click="showExampleStudyPointsDialog = false"></Button>
+                    <Button type="button" label="Close" class="bg-blue-500 mt-3 flex justify-content-end" @click="showExampleStudyPointsDialog = false"></Button>
                 </div>
             </div>
         </div>
@@ -483,12 +430,13 @@
                     <div class="col-12">
                         
                         <Tag v-if="addStudyListError != ''" severity="info" class="mb-1">{{addStudyListError}}</Tag>
-                        <Textarea v-model="addANewStudyPointValue" rows="4" cols="30" placeholder="Ex: &quot;I am looking to understand the impacts of this article.&quot;" />
+                        <Textarea v-model="addANewStudyPointValue" rows="4" cols="30" placeholder="Ex: &quot;What were the conditions that led up to the French Revolution?&quot;" />
                     </div>
                 </div>
                 <div class="grid grid-nogutter flex justify-content-end gap-2">
-                    <Button type="button" label="Cancel" class="text-black-alpha-90 mt-3 bg-bluegray-300 border-bluegray-300 border-400" severity="secondary" @click="closeAddANewStudyPoint"></Button>
-                    <Button type="button" label="Add" class="bg-primary-800 mt-3 flex justify-content-end" @click="addANewStudyPoint"></Button>
+                    <Button type="button" label="Close" class="text-black-alpha-90 mt-3 surface-400 border-300 border-400" severity="secondary" @click="closeStudyPoint"></Button>
+                    <Button type="button" label="Submit and add another" class="bg-blue-500 mt-3" @click="addANewStudyPointAndAnother"></Button>
+                    <Button type="button" label="Submit" class="bg-blue-500 mt-3 flex justify-content-end" @click="addANewStudyPointThenClose"></Button>
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@
     <div class="grid nested-grid border-round border-1 border-primary-100 m-1 shadow-2 w-full">
         <div class="col-12">
             <div class="grid">
-                <div class="col-12 align-items-center justify-content-start border-bottom-1 border-gray-200">
+                <div class="col-12 align-items-center justify-content-start border-bottom-1 border-200">
                     <h3><a class="text-xl text-color" :href="document.url" style="text-decoration: none" target="_blank">{{ document.title }}</a></h3>
                 </div>
                 <div class="col-3 overflow-hidden">
@@ -20,7 +20,7 @@
                         }" 
                         class="border-primary border-round mt-2 border-solid surface-border border-1 p-2 text-white bg-blue-600 w-full">Open XRay
                     </router-link>
-                    <button type="button" class="border-primary border-round mt-2 border-solid surface-border border-1 p-2 text-white bg-bluegray-400 w-full" @click="handleRemoveClick">Remove</button>
+                    <button type="button" class="border-primary border-round mt-2 border-solid surface-border border-1 p-2 text-white surface-400 w-full" @click="handleRemoveClick">Remove</button>
                 </div>
                 <!-- <div class="col-12">
                     <label class="text-primary-500 underline" @click="showmore = !showmore">{{ showmore_text }}</label>

@@ -57,7 +57,7 @@
                       <label for="user_email">
                         <div class="text-white">
                           <span>Full Name & Email &nbsp;</span>
-                          <span class="description required text-xs text-gray-300">(required)</span>
+                          <span class="description required text-xs text-300">(required)</span>
                         </div>
                       </label>
                       <input v-model="form_name" aria-invalid="false" aria-required="true" autocomplete="name" class="w-full p-2 text-lg" id="user_name" placeholder="Full Name" type="text" name="user_name">
