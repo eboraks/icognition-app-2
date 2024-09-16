@@ -72,12 +72,12 @@ import { useRouter } from 'vue-router';
 import { ref } from 'vue'; 
 import { auth } from '@/firebase/config'
 
-
 const { error, logout } = useLogout()
 const { login_error, login, isPending, loginGoogle } = useSignin()
-const router = useRouter();
 const menu_app = ref();
 const menu_website = ref();
+let route_location = Route_Location.WEBSITE;
+const router = useRouter();
 
 const toggleAppMenu = (event) => {
     menu_app.value.toggle(event);
@@ -131,8 +131,6 @@ const handleAccount = async () => {
 const handleNotifications = async () => {
     
 }
-
-let route_location = Route_Location.WEBSITE;
 
 const app_menu_items = ref([
     // {

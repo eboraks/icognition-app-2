@@ -94,7 +94,7 @@
   --p-inputtext-padding-y: .25rem;
   --p-message-content-padding: .25rem .5rem;
   --p-panel-content-padding: 0rem;
-  --p-panel-footer-padding: 0 1.125rem 1.125rem 1.125rem;
+  --p-panel-footer-padding: 0rem;
   --p-panel-header-background: transparent;
   --p-splitter-background: transparent;
   --p-tabs-tab-active-border-color: var(--cyan-500);
@@ -109,6 +109,10 @@
   --p-tag-padding: .1rem .25rem;
   --p-tag-primary-background: var(--blue-100);
   --p-tag-primary-color: var(--vt-c-black);
+  --p-tree-node-color: var(--vt-c-white);
+  --p-tree-node-hover-background: transparent;
+  --p-tree-node-hover-color: var(--vt-c-white);
+  --p-tree-node-toggle-button-color: var(--vt-c-white);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -192,6 +192,11 @@ a,
   top: 30%;
 }
 
+.panel-project-detail > .p-panel-content-container {
+  height: calc(100% - 70px);
+  overflow-y: scroll;
+}
+
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);

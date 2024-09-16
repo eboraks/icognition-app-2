@@ -58,6 +58,11 @@ const useStudyProject = () => {
         }
     }
 
+    const setStudyProject = async (id) => {
+        const tempstudyProject = studyProjects.value.find(o => o.id === id);
+        studyProject.value = tempstudyProject;
+    }
+
     const getRelatedEntities = async (project_id) => {
         error.value = null
         isPending.value = true
@@ -224,7 +229,7 @@ const useStudyProject = () => {
         }        
     }
 
-    return { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, deleteStudyProject}    
+    return { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, setStudyProject, deleteStudyProject}    
 
 
 }

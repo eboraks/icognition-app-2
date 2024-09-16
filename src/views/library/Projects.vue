@@ -11,13 +11,14 @@
     import ProjectService from '@/services/ProjectService';
     import StudyProject from '@/components/models/StudyProject.vue'
     import { useToast } from 'primevue/usetoast';
+    import { useRouter } from 'vue-router';
 
 
     // const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
     //     searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
     const { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, 
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
-        deleteStudyProject } = useStudyProject();
+        deleteStudyProject, setStudyProject } = useStudyProject();
     let addANewStudyPointValue = ref('');
     const addStudyListError = ref('');
     const analysis_checked = ref();
@@ -38,10 +39,12 @@
     let showExampleStudyPointsDialog = ref(false);
     const showNewProjectDialog = ref(false);
     const studyTaskList = ref([]);
+    const router = useRouter();
     const toast = useToast();
 
     onMounted(async() => {
         try {
+            getStudyProjects(user_state.user.uid);
             ProjectService.getProductsMini().then((data) => (projects.value = data));
         } catch (err) {
             console.log("Error: ", err);
@@ -50,9 +53,12 @@
 
     const addANewStudyPoint = async () => {
         if (addANewStudyPointValue.value != '') {
-            const index = studyTaskList.value.indexOf(addANewStudyPointValue.value);
-            if (index == -1) {
-                studyTaskList.value.push(addANewStudyPointValue.value);
+            const index = studyTaskList.value.find(o => o.description === addANewStudyPointValue.value);
+
+            if (index == undefined) {
+                studyTaskList.value.push({
+                    description: addANewStudyPointValue.value
+                });
                 addStudyListError.value = '';
                 addANewStudyPointValue.value = '';
             } else {
@@ -125,7 +131,7 @@
         }
 
         if (newProjectErrorMessages.value.length == 0) {
-            postStudyProject(new StudyProject(new_study_project_name.value, new_study_project_objective.value, new_study_project_study_tasks.value));
+            postStudyProject(new StudyProject(new_study_project_name.value, new_study_project_objective.value, user_state.user.uid, new_study_project_study_tasks.value));
             clearNewProjectDialog();
         }
     }
@@ -159,18 +165,6 @@
         }
     }
 
-    const filteredProjects = computed(() => {
-        if (projects.value != null) {
-            if (fitlerCheckedIds.value.size === 0) {
-                return projects.value;
-            } else {
-                return projects.value.filter(project => {
-                    return fitlerCheckedIds.value.has(project.id);
-                });
-            }   
-        }
-    });
-
     const handleCancelNewProjectDialog = async () => {
         clearNewProjectDialog();
         showNewProjectDialog.value = false;
@@ -178,6 +172,11 @@
 
     const handleNewProjectDialog = async () => {
         showNewProjectDialog.value = !showNewProjectDialog.value;
+    }
+
+    const handleProjectDetailsRoute = async (studyProjectId) => {
+        setStudyProject(studyProjectId)
+        router.push('/projectdetails');
     }
 
     function inputHandle(params) {
@@ -191,7 +190,7 @@
     };
 
     const onExpandAll = () => {
-        expandedRows.value = projects.value.reduce((acc, p) => (acc[p.id] = true) && acc, {});
+        expandedRows.value = studyProjects.value.reduce((acc, p) => (acc[p.id] = true) && acc, {});
     };
 
     const onRowCollapse = (event) => {
@@ -203,7 +202,7 @@
     };
 
     const searchHandle = async () => {
-        projects.value = null
+        studyProjects.value = null
         answer_loading.value = true;
         await searchProjects(user_state.user.uid, search_term.value);
         answer_loading.value = false; 
@@ -234,10 +233,10 @@
         </div>
         <div class="col-12 pr-0" style="height: calc(100% - 61px);">
             <div class="card h-full" v-if="!hasNoData">
-                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedProject" :value="projects" dataKey="id"
+                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedProject" :value="studyProjects" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
                     <Column expander style="width: 2rem" />
-                    <Column field="title" header="Title" class="set-background-image">
+                    <Column field="name" header="Name" class="set-background-image">
                         <template #body="slotProps">
                             <p class="inline-block">
                                 <i class="pi pi-box"></i>
@@ -246,7 +245,7 @@
                                         name: 'projectdetails',
                                         params: {id: slotProps.data.id}
                                     }"
-                                    class="mt-2 py-1 ml-2">{{ slotProps.data.title }}
+                                    class="mt-2 py-1 ml-2">{{ slotProps.data.name }}
                                 </router-link>
                             </p>
                         </template>
@@ -320,7 +319,7 @@
                                 <div v-for="studyTask in new_study_project_study_tasks" class="pr-2">
                                     <Tag class="mr-1 mb-1" severity="info">
                                         <div class="flex items-center gap-2 px-1">
-                                            <p class="text-sm text-black-alpha-90">{{ studyTask }}</p>
+                                            <p class="text-sm text-black-alpha-90">{{ studyTask.description }}</p>
                                             <a @click="deleteStudyTask(studyTask)"><i class="text-black-alpha-90 text-xs pi pi-times"></i></a> 
                                         </div>
                                     </Tag>

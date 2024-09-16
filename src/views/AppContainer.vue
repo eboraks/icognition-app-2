@@ -2,32 +2,29 @@
     <div id="body-library" class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
         <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
             <Splitter class="grid nested-grid grid-nogutter h-full border-round border-noround-right">
-                <SplitterPanel :class="{ 'splitter-panel-container-left-small': !buttonToggleSplitterPanelLeft }" class="col-12 p-2 border-round surface-500 border-noround-right splitter-panel-container-left" :minSize="1">
-                    <div class="grid">
+                <SplitterPanel :class="{ 'splitter-panel-container-left-small': !buttonToggleSplitterPanelLeft }" class="col-12 p-2 border-round bg-primary-800 border-noround-right splitter-panel-container-left" :minSize="1">
+                    <div class="grid h-full">
                         <div class="col-6">
-                            <Button v-if="!buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0 text-black-alpha-90" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Expand Panel"/>
-                            <h3 v-if="buttonToggleSplitterPanelLeft" class="pt-2 text-black-alpha-90">Filters</h3>
+                            <Button v-if="!buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0 text-white" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Expand Panel"/>
+                            <h3 v-if="buttonToggleSplitterPanelLeft" class="pt-2 text-white">Filters</h3>
                         </div>
                         <div class="col-6 text-right">
-                            <Button v-if="buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0 text-black-alpha-90" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Collapse Panel"/>
+                            <Button v-if="buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0 text-white" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Collapse Panel"/>
                         </div>
-                        <div class="w-full" v-if="buttonToggleSplitterPanelLeft">
-                            <div v-if="documentsLength == 0">
+                        <div class="w-full" style="height: calc(100% - 60px);" v-if="buttonToggleSplitterPanelLeft">
+                            <div v-if="subtopics_nodes.length == 0">
                                 <div class="col-12 pt-7 mt-6">
                                     <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
                                 </div>
                                 <div class="col-12">
-                                    <p class="flex text-center m-auto text-black-alpha-90" style="max-width: 60%;">
+                                    <p class="flex text-center m-auto text-white" style="max-width: 60%;">
                                         You don't have any bookmark filters created yet, because you haven't bookmarked any pages.
                                     </p>
                                 </div>
                             </div>
-                            <div class="w-full" v-else>
-                                <div class="mb-2 w-full border-round-lg">
-                                    <!-- <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/> -->
-                                    <!-- <div class="mb-2 bg-white w-full border-round-lg">
-                                        <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
-                                    </div> -->
+                            <div class="w-full h-full" v-else>
+                                <div class="mb-2 w-full border-round-lg h-full">
+                                    <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
                                 </div>
                                 <!-- <div class="col-12 md:col-8">
                                     <div class="border-round-lg">
@@ -63,7 +60,7 @@
                             </TabList>
                             <TabPanels>
                                 <TabPanel value="0">
-                                    <Documents/>
+                                    <Documents :documents="filteredDocuments"/>
                                 </TabPanel>
                                 <TabPanel value="1">
                                     <Projects/>
@@ -82,9 +79,10 @@
 </style>
 
 <script lang="ts" setup>
+    import SubtopicsTree from '@/components/SubtopicsTree.vue';
     import useLibrary from '@/composables/useLibrary';
     import user_state from '@/composables/getUser';
-    import { ref } from 'vue';
+    import { computed, ref, onMounted } from 'vue';
     import Documents from '@/views/library/Documents.vue';
     import Projects from '@/views/library/Projects.vue';
     import { useRoute, useRouter  } from 'vue-router';
@@ -92,29 +90,43 @@
 
     const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
-    const route  = useRoute();
+    let isError = false;
     const router  = useRouter();
-    const answer_loading = ref(false);
     const buttonToggleSplitterPanelLeft = ref(true);
-    let documentsLength = 0;
     const fitlerCheckedIds = ref(new Map());
 
+    onMounted(async() => {
+        try {
+            await getDocuments(user_state.user.uid);
+            await getSubtopics(user_state.user.uid);
+            await getSubtopicsNodes(user_state.user.uid);
+            await getEntitiesNames(user_state.user.uid);
+            console.log("Subtopics: ", subtopics.value);
+            console.log("Subtopics Nodes: ", subtopics_nodes.value.length);
+            console.log("Entities Names: ", entities_names.value);
+            isError = false;
+        } catch (err) {
+            isError = true;
+            console.log("Error: ", err);
+        }
+    });
 
-    const handleDocumentClick = async () => {
-        document.getElementsByClassName('splitter-panel-container-left')[0].classList.remove('hidden');
-        document.getElementsByClassName('splitter-panel-container-right')[0].classList.remove('splitter-panel-container-right-full');
-        router.push('\documents');
-    }
-
-    const handleProjectsClick = async () => {
-        document.getElementsByClassName('splitter-panel-container-left')[0].classList.add('hidden');
-        document.getElementsByClassName('splitter-panel-container-right')[0].classList.add('splitter-panel-container-right-full');
-        router.push('\projects');
-    }
+    const filteredDocuments = computed(() => {
+        if (documents.value != null) {
+            if (fitlerCheckedIds.value.size === 0) {
+                return documents.value;
+            } else {
+                return documents.value.filter(document => {
+                    return fitlerCheckedIds.value.has(document.id);
+                });
+            }   
+        }
+    });
 
     const onCheckedIds = (checkedIds) => {
         console.log("Library Checked Ids: ", checkedIds);
         fitlerCheckedIds.value = checkedIds;
+        console.log(fitlerCheckedIds);
     }
 
 </script>

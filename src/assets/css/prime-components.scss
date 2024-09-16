@@ -108,8 +108,27 @@
     background: transparent;
     border-color: transparent;
 
+    > .p-iconfield {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+
+        .p-inputtext {
+            width: 90%;
+        }
+    }
+    
+    .p-tree-root {
+        height: calc(100% - 2em);
+        margin-top: 1em;
+        overflow-y: scroll;
+    }
+
     .p-tree-container .p-treenode .p-treenode-content.p-treenode-selectable:not(.p-highlight):hover {
         background: transparent;
+        color: white;
+    }
+
+    .p-inputicon {
         color: white;
     }
 }

@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import moment from 'moment';
@@ -32,6 +33,7 @@ import Message from 'primevue/message';
 import Panel from 'primevue/panel';
 import Popover from 'primevue/popover';
 import ScrollPanel from 'primevue/scrollpanel';
+import Skeleton from 'primevue/skeleton';
 import Splitter from 'primevue/splitter';
 import SplitterPanel from 'primevue/splitterpanel';
 import Tab from 'primevue/tab';
@@ -77,6 +79,7 @@ onAuthStateChanged(auth, (user) => {
         app.component('Panel', Panel);
         app.component('Popover', Popover);
         app.component('ScrollPanel', ScrollPanel);
+        app.component('Skeleton', Skeleton);
         app.component('Splitter', Splitter);
         app.component('SplitterPanel', SplitterPanel);
         app.component('Tab', Tab);

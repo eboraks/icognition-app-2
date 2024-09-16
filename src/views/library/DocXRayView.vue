@@ -136,7 +136,6 @@
   const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
   const { original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
   const dialogRef = inject("dialogRef") as any;
-  const articleElements = ref('');
   const author = ref(dialogRef.value.data.authors);
   const buttonTogglePlay = ref(true);
   const buttonToggleSplitterPanelRight = ref(true);

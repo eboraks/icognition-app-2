@@ -36,7 +36,7 @@
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
     // import TalkifyTTSService from '@/services/TalkifyTTSService';
     // import Talkify from 'talkify-tts-api';
-    //import ContentObject from '@/components/models/ContentObject.vue';
+    // import ContentObject from '@/components/models/ContentObject.vue';
     
     const dialogRef = inject("dialogRef") as any;
     let author = ref(dialogRef.value.data.authors[dialogRef.value.data.authors.length - 1]);

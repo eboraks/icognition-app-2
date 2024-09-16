@@ -1,36 +1,33 @@
 <script setup>
 import useLibrary from '@/composables/useLibrary';
 import user_state from '@/composables/getUser';
-import { ref, onMounted, computed, defineAsyncComponent } from 'vue'
+import { ref, onMounted, computed, defineAsyncComponent } from 'vue';
 import AutoComplete from 'primevue/autocomplete';
 import moment from 'moment';
 import { useDialog } from 'primevue/usedialog';
 import { useToast } from 'primevue/usetoast';
 
-const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
+const { answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
     searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
 const answer_loading = ref(false);
+
 const dialog = useDialog();
-const fitlerCheckedIds = ref(new Map());
+const expandedRows = ref({});
 let hasNoData = ref();
 let isError = false;
 const items = ref([]);
-const expandedRows = ref({});
+const props = defineProps({
+    documents: Array
+});
 const search_term = ref('');
 const selectedDocument = ref();
 const toast = useToast();
 
 onMounted(async() => {
     try {
-        await getDocuments(user_state.user.uid);
-        await getSubtopics(user_state.user.uid);
-        await getSubtopicsNodes(user_state.user.uid);
         await getEntitiesNames(user_state.user.uid);
-        console.log("Subtopics: ", subtopics.value);
-        console.log("Subtopics Nodes: ", subtopics_nodes.value);
-        console.log("Entities Names: ", entities_names.value);
         isError = false;
-        await hasData(documents.value.length);
+        await hasData(props.documents.value.length);
     } catch (err) {
         isError = true;
         console.log("Error: ", err);
@@ -74,18 +71,6 @@ const emptied = () => {
     searchHandle();
 }
 
-const filteredDocuments = computed(() => {
-    if (documents.value != null) {
-        if (fitlerCheckedIds.value.size === 0) {
-            return documents.value;
-        } else {
-            return documents.value.filter(document => {
-                return fitlerCheckedIds.value.has(document.id);
-            });
-        }   
-    }
-});
-
 const hasData = async (documentsLength) => {
     if (documentsLength != null && documentsLength > 0) {
         hasNoData = false;
@@ -98,17 +83,12 @@ function inputHandle(params) {
     }
 }
 
-const onCheckedIds = (checkedIds) => {
-    console.log("Library Checked Ids: ", checkedIds);
-    fitlerCheckedIds.value = checkedIds;
-}
-
 const onCollapseAll = () => {
     expandedRows.value = null;
 };
 
 const onExpandAll = () => {
-    expandedRows.value = documents.value.reduce((acc, p) => (acc[p.id] = true) && acc, {});
+    expandedRows.value = props.documents.value.reduce((acc, p) => (acc[p.id] = true) && acc, {});
 };
 
 const onRowCollapse = (event) => {
@@ -120,7 +100,7 @@ const onRowExpand = (event) => {
 };
 
 const searchHandle = async () => {
-    documents.value = null
+    props.documents.value = null
     answer_loading.value = true;
     await searchDocuments(user_state.user.uid, search_term.value);
     answer_loading.value = false; 
@@ -186,7 +166,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
         </div>
         <div class="col-12 pr-0" style="height: calc(100% - 49px);">
             <div class="card h-full" v-if="!hasNoData">
-                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocument" :value="documents" dataKey="id"
+                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocument" :value="props.documents" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
                     <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">
