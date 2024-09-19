@@ -196,7 +196,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                     <template #expansion="slotProps">
                         <div class="p-1">
                             <div class="col-12 pb-0">
-                                <a class="mr-3" @click="showOriginalDialog(slotProps.data)">OPEN ORIGINAL</a>
+                                <a class="mr-3" :href="slotProps.data.url" target="_blank"><i class="pi pi-pen-to-square"></i> OPEN ORIGINAL</a>
                                 <a @click="showXRayDialog(slotProps.data)">OPEN X-RAY</a>
                                 <DynamicDialog class="dialog-original-xray"/>
                             </div>

@@ -131,28 +131,28 @@ const useStudyProject = () => {
     }
 
     // Post a study Project
-    const postStudyProject = async (study_project) => {
-
-        console.log('postStudyProject -> study_project: ', study_project)
-        //Fetch post with request.study_project
+    async function postStudyProject(study_project) {
         try {
-            let response = await fetch(`${base_url}/study_project`, {
+            await fetch(`${base_url}/study_project`, {
                 method: 'post',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(study_project)
+            }).then(response => {
+                console.log('postStudyProject -> response: ', response)
+                if (response.status == 200) {
+                    let studyProject = response.json();
+                    console.log(`postStudyProject accepted, seding id ${studyProject.id} to render Study Project`);
+                }
+            }).catch (err => {
+                console.log('postStudyProject -> error: ', err);
             })
             
-            console.log('postStudyProject -> response: ', response)
-            if (response.status == 202) {
-                let studyProject = await response.json()
-                console.log(`postStudyProject accepted, seding id ${studyProject.id} to render Study Project`)
-            }
         } catch (err) {
-            console.log('postStudyProject -> error: ', err)
-        }        
+            console.log('postStudyProject -> error: ', err);
+        }
     }
 
     const postProjectDocumentLink = async (project_document) => {

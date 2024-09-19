@@ -93,8 +93,8 @@ const toggleWebsiteMenu = (event) => {
 auth.onAuthStateChanged((_user) => {
     if (user_state.user) {
         console.log('User is logged in. Current user is: ', user_state.user)
-        if (route_location == Route_Location.WEBSITE) {
-            router.push('/documents');
+        if (route_location == Route_Location.WEBSITE || route_location == Route_Location.DOCUMENTS || route_location == Route_Location.PROJECTS) {
+            router.push({ name: route_location });
         }
     }
 });
@@ -173,7 +173,16 @@ router.afterEach((to, from) => {
         document.body.classList.remove('route-app');
         document.body.classList.add('route-website');
     } else {
-        route_location = Route_Location.APP;
+        switch (to.name) {
+            case 'projects':
+                route_location = Route_Location.PROJECTS;
+                break;
+            case 'documents':
+                route_location = Route_Location.DOCUMENTS;
+                break;
+            default:
+                route_location = Route_Location.APP;
+        }
         document.body.classList.remove('route-website');
         document.body.classList.add('route-app');
     }

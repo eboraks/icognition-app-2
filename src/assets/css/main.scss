@@ -219,8 +219,9 @@ a,
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
-  background-color: #555;
-  color: #fff;
+  background-color: var(--vt-c-white);
+  border: 1px solid var(--surface-700);
+  color: var(--surface-800);
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;

@@ -45,7 +45,6 @@ import Tag from 'primevue/tag';
 import Textarea from 'primevue/textarea';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
-import Tooltip from 'primevue/tooltip';
 import Tree from 'primevue/tree';
 
 // Firebase
@@ -91,7 +90,6 @@ onAuthStateChanged(auth, (user) => {
         app.component('Textarea', Textarea);
         app.component('Toast', Toast);
         app.component('ToastService', ToastService);
-        app.component('Tooltip', Tooltip);
         app.component('Tree', Tree);
         app.use(DialogService);
         app.use(ToastService);

@@ -60,25 +60,32 @@
                                 </div>
                                 <div class="col-12">
                                     <p class="font-semibold mb-1">Study Tasks</p>
-                                    <Panel toggleable v-for="study_task in studyProject.tasks" class="surface-200 mb-3">
+                                    <Panel toggleable :collapsed="index != 0" v-for="(study_task, index) in studyProject.tasks" class="surface-200 mb-3">
                                         <template #header class="">
-                                            <p class="font-semibold ml-3 flex-order-1">{{ study_task.description.match(/\'(.*?)\'/gm) }}</p>
+                                            <p class="font-semibold ml-3 flex-order-1">{{ study_task.description }}</p>
                                         </template>
                                         <template #footer>
+                                            
                                             <!-- <div class="col-12 flex flex-column">
                                                 <p>{{ study_task.answer.summary }}</p>
                                                 <li v-for="summary_detail in study_task.answer.summary_details">{{ summary_detail }}</li>
                                             </div> -->
                                             
-                                            <div class="col-12 flex flex-row p-0">
-                                                <div class="col-10">
-                                                    <p class="mt-2">Sources:</p>
+                                            <div class="col-12 flex flex-column p-0">
+                                                <div class="col-12">
+                                                    <p class="">{{ study_task.ai_explanation }}</p>
                                                 </div>
-                                                <div class="col-2 flex justify-content-end">
-                                                    <Button class="mr-2" severity="success" icon="pi pi-check" rounded aria-label="Status" size="small" />
-                                                    <a @click="" class="mr-2"><i class="pi pi-trash text-600"></i></a>
-                                                    <a @click="" class="mr-2"><i class="pi pi-refresh text-600"></i></a>
+                                                <div class="col-12 flex flex-row">
+                                                    <div class="col-10">
+                                                        <p class="mt-2">Sources:</p>
+                                                    </div>
+                                                    <div class="col-2 flex justify-content-end">
+                                                        <Button class="mr-2" severity="success" icon="pi pi-check" rounded aria-label="Status" size="small" />
+                                                        <a @click="" class="mr-2"><i class="pi pi-trash text-600"></i></a>
+                                                        <a @click="" class="mr-2"><i class="pi pi-refresh text-600"></i></a>
+                                                    </div>
                                                 </div>
+                                                
                                             </div>
                                         </template>
                                     </Panel>

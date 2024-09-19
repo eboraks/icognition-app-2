@@ -1,5 +1,4 @@
 <script setup>
-    import useLibrary from '@/composables/useLibrary';
     import useStudyProject from '@/composables/useStudyProject';
     import user_state from '@/composables/getUser';
     import { ref, onMounted, computed } from 'vue'
@@ -8,7 +7,6 @@
     import Checkbox from 'primevue/checkbox';
     import Dialog from 'primevue/dialog';
     import moment from 'moment';
-    import ProjectService from '@/services/ProjectService';
     import StudyProject from '@/components/models/StudyProject.vue'
     import { useToast } from 'primevue/usetoast';
     import { useRouter } from 'vue-router';
@@ -23,7 +21,6 @@
     const addStudyListError = ref('');
     const analysis_checked = ref();
     const answer_loading = ref(false);
-    const fitlerCheckedIds = ref(new Map());
     let hasNoData = false;
     const items = ref([]);
     const expandedRows = ref({});
@@ -31,7 +28,7 @@
     const new_study_project_objective = ref('');
     const new_study_project_study_tasks = ref([]);
     const newProjectErrorMessages = ref([]);
-    const projects = ref();
+    const router = useRouter();
     const search_term = ref('');
     const selectedProject = ref();
     let showAddANewStudyPointDialog = ref(false);
@@ -39,13 +36,11 @@
     let showExampleStudyPointsDialog = ref(false);
     const showNewProjectDialog = ref(false);
     const studyTaskList = ref([]);
-    const router = useRouter();
     const toast = useToast();
 
     onMounted(async() => {
         try {
             getStudyProjects(user_state.user.uid);
-            ProjectService.getProductsMini().then((data) => (projects.value = data));
         } catch (err) {
             console.log("Error: ", err);
         }
@@ -131,7 +126,7 @@
         }
 
         if (newProjectErrorMessages.value.length == 0) {
-            postStudyProject(new StudyProject(new_study_project_name.value, new_study_project_objective.value, user_state.user.uid, new_study_project_study_tasks.value));
+            await postStudyProject(new StudyProject(new_study_project_name.value, new_study_project_objective.value, user_state.user.uid, new_study_project_study_tasks.value));
             clearNewProjectDialog();
         }
     }
@@ -252,15 +247,15 @@
                     </Column>
                     <Column field="Created" header="Created">
                         <template #body="slotProps">
-                            {{ moment(slotProps.data.createdAt).format('DD MMM YYYY h:mm a') }}
+                            {{ moment(slotProps.data.created_at).format('DD MMM YYYY h:mm a') }}
                         </template>
                     </Column>
                     <Column field="document_number" header="# Documents"></Column>
                     <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
 
                     <template #expansion="slotProps">
-                        <div class="p-4">
-                            <h5>{{ slotProps.data.description }}</h5>
+                        <div class="p-2">
+                            <h5>{{ slotProps.data.objective }}</h5>
                         </div>
                     </template>
                 </DataTable>

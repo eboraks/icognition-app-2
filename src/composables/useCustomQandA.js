@@ -6,7 +6,7 @@ const useCustomQandA = () => {
     const answerResponse = ref(null)
     const document = ref(null)
     const error = ref(null)
-    const isAskPending = ref(false)
+    const isAskPending = ref(true)
     
     const baseurl = import.meta.env.VITE_APP_API_BASE_URL
     

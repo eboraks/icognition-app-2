@@ -53,7 +53,7 @@
                 </SplitterPanel>
                 <SplitterPanel :class="{ 'splitter-panel-container-right-big': !buttonToggleSplitterPanelLeft }" class="col-12 p-0 splitter-panel-container-right">
                     <div class="card h-full">
-                        <Tabs value="0" class="h-full">
+                        <Tabs v-model:value="currentTab" class="h-full">
                             <TabList class="border-bottom-1 border-200">
                                 <Tab value="0">My Documents</Tab>
                                 <Tab value="1">My Projects</Tab>
@@ -85,11 +85,12 @@
     import { computed, ref, onMounted } from 'vue';
     import Documents from '@/views/library/Documents.vue';
     import Projects from '@/views/library/Projects.vue';
-    import { useRoute, useRouter  } from 'vue-router';
+    import { useRouter  } from 'vue-router';
     import Route_Location from '@/components/models/RouteLocation.vue';
 
     const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
+    const currentTab = ref('0');
     let isError = false;
     const router  = useRouter();
     const buttonToggleSplitterPanelLeft = ref(true);
@@ -97,6 +98,9 @@
 
     onMounted(async() => {
         try {
+            if (router.currentRoute.value.name == Route_Location.PROJECTS) {
+                currentTab.value = '1';
+            }
             await getDocuments(user_state.user.uid);
             await getSubtopics(user_state.user.uid);
             await getSubtopicsNodes(user_state.user.uid);
@@ -124,9 +128,7 @@
     });
 
     const onCheckedIds = (checkedIds) => {
-        console.log("Library Checked Ids: ", checkedIds);
         fitlerCheckedIds.value = checkedIds;
-        console.log(fitlerCheckedIds);
     }
 
 </script>
