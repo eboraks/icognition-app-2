@@ -1,23 +1,66 @@
 <script setup lang="ts">
+    import moment from 'moment';
+    import useLibrary from '@/composables/useLibrary';
     import useStudyProject from '@/composables/useStudyProject';
-    import { ref, onBeforeMount } from 'vue';
-    import { useRouter, useRoute } from 'vue-router';
+    import user_state from '@/composables/getUser';
+    import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
 
-    const { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, 
+    const { studyProjects, studyProject, iserrorStudyProject, isPendingStudyProject, getStudyProjects, getStudyProject, postStudyTask, 
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
         deleteStudyProject } = useStudyProject();
+    const { documents, answer, iserrorLibrary, resp_type, isPendingLibrary, getDocuments, getSubtopics, subtopics,
+        searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
+    const fitlerCheckedIds = ref(new Map());
     const projectDescription = ref(false);
     const projectTitle = ref(false);
+    const qas = ref([]);
+    const question = ref('');
     const router = useRouter();
+    const selectedDocuments = ref([]);
 
-    onBeforeMount(async() => {
+    onMounted(async() => {
         try {
-            getStudyProject(router.currentRoute.value.params.id);
-            console.log('project details', studyProject);
+            await getDocuments(user_state.user.uid);
+            await getSubtopicsNodes(user_state.user.uid);
+            await getStudyProject(router.currentRoute.value.params.id);
+            console.log("Subtopics Nodes: ", subtopics_nodes.value.length);
+            console.log('Project Details Documents:', documents);
         } catch (err) {
             console.log("Error: ", err);
         }
     });
+
+    const handleApply = async () => {
+        if (!selectedDocuments.value) {
+            return;
+        }
+
+        selectedDocuments.value.forEach(selectedDocument => {
+            postProjectDocumentLink({project_id: studyProject.value.id, document_id: selectedDocument.id});
+        });
+    }
+
+    const handleAsk = async () => {
+        console.log("Asking question: ", question.value, " project_id: ", studyProject.value.id);
+        if (!question.value) {
+            answer.value = 'Please enter a question';
+            return;
+        }
+        // await askQuestion(dialogRef.value.data.id, question.value);
+
+        // if (isAskPending.value) {
+        //     answer.value = 'Please wait for the answer';
+        // } else {
+        //     answer.value = answerResponse.value.answer;
+        // }
+
+        // qas.value.push(new DocumentAnswer(question.value, answer.value));
+    }
+
+    const onCheckedIds = (checkedIds) => {
+        fitlerCheckedIds.value = checkedIds;
+    }
 
 </script>
 
@@ -25,7 +68,7 @@
     <div class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
         <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
             <Splitter class="grid nested-grid grid-nogutter h-full border-round border-noround-right">
-                <SplitterPanel class="col-12" :minSize="1">
+                <SplitterPanel class="col-12 p-0 splitter-panel-container-66" :minSize="1">
                     <Panel class="h-full panel-project-detail">
                         <template #header>
                             <div class="col-12 grid grid-nogutter p-3">
@@ -93,6 +136,85 @@
                             </div>
                         </template>
                     </Panel>
+                </SplitterPanel>
+                <SplitterPanel class="col-12 p-0 splitter-panel-container-34" :minSize="1">
+                    <div class="card h-full">
+                        <Tabs value="0" class="h-full">
+                            <TabList class="border-bottom-1 border-200">
+                                <Tab value="0"><i class="pi pi-th-large"></i> Entities by Source</Tab>
+                                <Tab value="1"><i class="pi pi-sparkles"></i> Ask iCognition</Tab>
+                                <Tab value="2"><i class="pi pi-clone"></i> Related Documents</Tab>
+                            </TabList>
+                            <TabPanels>
+                                <TabPanel value="0">
+                                    <div v-if="subtopics_nodes.length == 0">
+                                        <div class="col-12 pt-7 mt-6">
+                                            <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
+                                        </div>
+                                        <div class="col-12">
+                                            <p class="flex text-center m-auto text-white" style="max-width: 60%;">
+                                                You don't have any bookmark filters created yet, because you haven't bookmarked any pages.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="w-full h-full" v-else>
+                                        <div class="mb-2 w-full border-round-lg h-full">
+                                            <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
+                                        </div>
+                                    </div>
+                                </TabPanel>
+                                <TabPanel value="1">
+                                    <div class="flex-column my-1 h-full p-2 surface-100">
+                                        <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
+                                            <div class="panel mb-3" v-for="item in qas">
+                                                <p class="flex text-xs justify-content-end">{{moment(item.created_at).format('DD MMM YYYY h:mm a')}}</p>
+                                                <div class="card">
+                                                    <Card class="border-1 border-round border-300 bg-white shadow-3">
+                                                        <template #header>
+                                                            <div class="border-1 border-round border-300 surface-300 flex border-bottom-1 border-noround-bottom border-top-none border-left-none border-right-none">
+                                                            <p class="flex-grow-1 px-3 py-2 text-sm border-round font-semibold">{{item.question}}</p>
+                                                            <Button icon="pi pi-times" class="bg-transparent border-transparent border-0 flex-shrink-0 text-black-alpha-90 pr-0" size="small" aria-label="Close"/>
+                                                            </div>
+                                                        </template>
+                                                        <template #content class="p-0">
+                                                            <div class="bg-white flex flex-column">
+                                                            <p class="flex-grow-1 pl-3 py-1 text-sm text-black-alpha-90 border-round">{{item.answer}}</p>
+                                                            <div class="flex-row">
+                                                                <Button icon="pi pi-copy" class="bg-transparent border-transparent border-0 text-surface-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
+                                                                <Button icon="pi pi-clipboard" class="bg-transparent border-transparent border-0 text-surface-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
+                                                            </div>
+                                                            </div>
+                                                        </template>
+                                                    </Card>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex p-2 pr-0 bg-white">
+                                            <InputText class="flex-grow-1 p-0" type="text" v-model="question" />
+                                            <Button class="flex-shrink-0 px-3 py-1 ml-1" label="Ask" @click="handleAsk" />
+                                        </div>
+                                    </div>
+                                </TabPanel>
+                                <TabPanel value="2">
+                                    <div class="flex-column my-1 h-full p-2 surface-100">
+                                        <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
+
+                                        </div>
+                                        <div class="flex p-2 pr-0 bg-white">
+                                            <MultiSelect v-model="selectedDocuments" display="chip" :options="documents" optionLabel="title" filter placeholder="Select Documents" class="w-full md:w-80" style="max-width: 85%;">
+                                                <template #option="slotProps">
+                                                    <div class="flex items-center">
+                                                        <div>{{ slotProps.option.title }}</div>
+                                                    </div>
+                                                </template>
+                                            </MultiSelect>
+                                            <Button class="flex-shrink-0 px-3 py-1 ml-1" label="Apply" @click="handleApply" />
+                                        </div>
+                                    </div>
+                                </TabPanel>
+                            </TabPanels>
+                        </Tabs>
+                    </div>
                 </SplitterPanel>
             </Splitter>
         </div>

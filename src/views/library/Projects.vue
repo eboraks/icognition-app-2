@@ -16,7 +16,7 @@
     //     searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
     const { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, 
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
-        deleteStudyProject, setStudyProject } = useStudyProject();
+        deleteStudyProject } = useStudyProject();
     let addANewStudyPointValue = ref('');
     const addStudyListError = ref('');
     const analysis_checked = ref();
@@ -167,11 +167,6 @@
 
     const handleNewProjectDialog = async () => {
         showNewProjectDialog.value = !showNewProjectDialog.value;
-    }
-
-    const handleProjectDetailsRoute = async (studyProjectId) => {
-        setStudyProject(studyProjectId)
-        router.push('/projectdetails');
     }
 
     function inputHandle(params) {

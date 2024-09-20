@@ -30,6 +30,7 @@ import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
 import Menu from 'primevue/menu';
 import Message from 'primevue/message';
+import MultiSelect from 'primevue/multiselect';
 import Panel from 'primevue/panel';
 import Popover from 'primevue/popover';
 import ScrollPanel from 'primevue/scrollpanel';
@@ -75,6 +76,7 @@ onAuthStateChanged(auth, (user) => {
         app.component('InputText', InputText);
         app.component('Menu', Menu);
         app.component('Message', Message);
+        app.component('MultiSelect', MultiSelect);
         app.component('Panel', Panel);
         app.component('Popover', Popover);
         app.component('ScrollPanel', ScrollPanel);

@@ -1,4 +1,5 @@
 // Function that makes http request to get library data
+import StudyProject from '@/components/models/StudyProject.vue';
 import { ref } from 'vue';
 
 const useStudyProject = () => {
@@ -6,7 +7,7 @@ const useStudyProject = () => {
     const projectDocumentLink = ref();
     const projectDocumentUnlink = ref();
     const relatedEntitites = ref();
-    const studyProject = ref();
+    const studyProject = ref(new StudyProject('', '', '', [{description: ''}]));
     const studyProjects = ref();
     const studyTask = ref();
     const studyTasks = ref();
@@ -56,11 +57,6 @@ const useStudyProject = () => {
             isPending.value = false
             console.log("Error: ", error.value)
         }
-    }
-
-    const setStudyProject = async (id) => {
-        const tempstudyProject = studyProjects.value.find(o => o.id === id);
-        studyProject.value = tempstudyProject;
     }
 
     const getRelatedEntities = async (project_id) => {
@@ -229,7 +225,7 @@ const useStudyProject = () => {
         }        
     }
 
-    return { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, setStudyProject, deleteStudyProject}    
+    return { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, deleteStudyProject}    
 
 
 }

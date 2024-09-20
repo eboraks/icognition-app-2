@@ -1,7 +1,7 @@
 <template>
   <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-blue-100 h-full">
     <Splitter class="h-full">
-      <SplitterPanel :class="{ 'splitter-panel-xray-left-full': !buttonToggleSplitterPanelRight }" class="col-12 p-0 border-round surface-100 border-noround-right splitter-panel-xray-left" :minSize="1">
+      <SplitterPanel :class="{ 'splitter-panel-container-full': !buttonToggleSplitterPanelRight }" class="col-12 p-0 border-round surface-100 border-noround-right splitter-panel-container-66" :minSize="1">
         <div class="grid nested-grid grid-nogutter mx-2" style="height: calc(100% - .5rem);">
           <div class="col-12 py-0">
             <div class="col-6 pb-3 inline-flex vertical-align-middle">
@@ -46,7 +46,7 @@
           </div>
         </div>
       </SplitterPanel>
-      <SplitterPanel :class="{ 'hidden': !buttonToggleSplitterPanelRight }" class="col-12 p-0 splitter-panel-xray-right">
+      <SplitterPanel :class="{ 'hidden': !buttonToggleSplitterPanelRight }" class="col-12 p-0 splitter-panel-container-34">
         <div class="card h-full">
           <Tabs value="0" class="h-full">
             <TabList>
