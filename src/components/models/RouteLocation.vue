@@ -3,7 +3,7 @@
         APP = 'app',
         DOCUMENTS = 'documents',
         PROJECTS = 'projects',
-        WEBSITE = 'website'
+        HOME = 'home'
     }
     export default Route_Location
 </script>

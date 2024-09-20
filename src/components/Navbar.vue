@@ -76,7 +76,7 @@ const { error, logout } = useLogout()
 const { login_error, login, isPending, loginGoogle } = useSignin()
 const menu_app = ref();
 const menu_website = ref();
-let route_location = Route_Location.WEBSITE;
+let route_location = Route_Location.HOME;
 const router = useRouter();
 
 const toggleAppMenu = (event) => {
@@ -93,8 +93,11 @@ const toggleWebsiteMenu = (event) => {
 auth.onAuthStateChanged((_user) => {
     if (user_state.user) {
         console.log('User is logged in. Current user is: ', user_state.user)
-        if (route_location == Route_Location.WEBSITE || route_location == Route_Location.DOCUMENTS || route_location == Route_Location.PROJECTS) {
+        console.log(route_location);
+        if (route_location == Route_Location.DOCUMENTS || route_location == Route_Location.PROJECTS) {
             router.push({ name: route_location });
+        } else if (route_location == Route_Location.HOME || route_location == undefined) {
+            router.push('documents');
         }
     }
 });
@@ -169,7 +172,7 @@ let website_menu_items = ref([
 
 router.afterEach((to, from) => {
     if (to.name == undefined || to.name == 'home') {
-        route_location = Route_Location.WEBSITE;
+        route_location = Route_Location.HOME;
         document.body.classList.remove('route-app');
         document.body.classList.add('route-website');
     } else {
