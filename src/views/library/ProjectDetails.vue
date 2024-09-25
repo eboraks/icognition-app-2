@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import Default_Status from '@/components/models/DefaultStatus.vue';
     import moment from 'moment';
     import useLibrary from '@/composables/useLibrary';
     import useStudyProject from '@/composables/useStudyProject';
@@ -9,8 +10,11 @@
     const { studyProjects, studyProject, iserrorStudyProject, isPendingStudyProject, getStudyProjects, getStudyProject, postStudyTask, 
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
         deleteStudyProject } = useStudyProject();
-    const { documents, answer, iserrorLibrary, resp_type, isPendingLibrary, getDocuments, getSubtopics, subtopics,
+    const { docs, answer, iserrorLibrary, resp_type, isPendingLibrary, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
+    const breadcrumbs = ref([
+        { label: 'Projects', url:'/projects' }
+    ]);
     const fitlerCheckedIds = ref(new Map());
     const projectDescription = ref(false);
     const projectTitle = ref(false);
@@ -25,7 +29,6 @@
             await getSubtopicsNodes(user_state.user.uid);
             await getStudyProject(router.currentRoute.value.params.id);
             console.log("Subtopics Nodes: ", subtopics_nodes.value.length);
-            console.log('Project Details Documents:', documents);
         } catch (err) {
             console.log("Error: ", err);
         }
@@ -66,12 +69,19 @@
 
 <template>
     <div class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
+        <Breadcrumb :model="breadcrumbs" >
+            <template #item="{ item }">
+                <a class="cursor-pointer" :href="item.url">
+                    {{item.label}} /
+                </a>
+            </template>
+        </Breadcrumb>
         <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
             <Splitter class="grid nested-grid grid-nogutter h-full border-round border-noround-right">
                 <SplitterPanel class="col-12 p-0 splitter-panel-container-66" :minSize="1">
                     <Panel class="h-full panel-project-detail">
                         <template #header>
-                            <div class="col-12 grid grid-nogutter p-3">
+                            <div class="col-12 grid grid-nogutter p-0">
                                 <div class="col-6">
                                     <h2 v-if="projectTitle == false" class="font-bold">{{ studyProject.name }}</h2>
                                     <InputText v-if="projectTitle == true" v-model="studyProject.name" aria-invalid="false" aria-required="true" class="w-full px-2 text-lg" type="text" />
@@ -88,8 +98,8 @@
                         <template #footer>
                             <div class="col-12 grid grid-nogutter flex-column flex overflow-y-auto p-3" style="height: calc(100% - 70px);">
                                 <div class="col-12 flex flex-row">
-                                    <div class="col-9 pl-0">
-                                        <p class="font-semibold">Objective</p>
+                                    <div class="col-9 p-0 pb-1">
+                                        <p class="font-semibold pb-1">Objective</p>
                                         <p v-if="projectDescription == false" class="mb-2">{{ studyProject.objective }}</p>
                                         <InputText v-if="projectDescription == true" v-model="studyProject.objective" aria-invalid="false" aria-required="true" class="w-full px-2 text-lg" type="text" />
                                     </div>
@@ -123,7 +133,9 @@
                                                         <p class="mt-2">Sources:</p>
                                                     </div>
                                                     <div class="col-2 flex justify-content-end">
-                                                        <Button class="mr-2" severity="success" icon="pi pi-check" rounded aria-label="Status" size="small" />
+                                                        <Button class="mr-2 bg-green-500" v-if="study_task.status == Default_Status.SUCCESS" severity="success" icon="pi pi-check" rounded aria-label="Status" size="small" />
+                                                        <Button class="mr-2 bg-orange-500" v-if="study_task.status == Default_Status.PENDING" severity="warning" icon="pi pi-check" rounded aria-label="Status" size="small" />
+                                                        <Button class="mr-2 bg-red-500" v-if="study_task.status == Default_Status.ERROR" severity="error" icon="pi pi-check" rounded aria-label="Status" size="small" />
                                                         <a @click="" class="mr-2"><i class="pi pi-trash text-600"></i></a>
                                                         <a @click="" class="mr-2"><i class="pi pi-refresh text-600"></i></a>
                                                     </div>
@@ -164,8 +176,8 @@
                                     </div>
                                 </TabPanel>
                                 <TabPanel value="1">
-                                    <div class="flex-column my-1 h-full p-2 surface-100">
-                                        <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
+                                    <div class="flex-column my-1 h-full surface-100">
+                                        <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 54px);">
                                             <div class="panel mb-3" v-for="item in qas">
                                                 <p class="flex text-xs justify-content-end">{{moment(item.created_at).format('DD MMM YYYY h:mm a')}}</p>
                                                 <div class="card">
@@ -190,18 +202,18 @@
                                             </div>
                                         </div>
                                         <div class="flex p-2 pr-0 bg-white">
-                                            <InputText class="flex-grow-1 p-0" type="text" v-model="question" />
+                                            <InputText class="flex-grow-1 p-2" type="text" v-model="question" />
                                             <Button class="flex-shrink-0 px-3 py-1 ml-1" label="Ask" @click="handleAsk" />
                                         </div>
                                     </div>
                                 </TabPanel>
                                 <TabPanel value="2">
-                                    <div class="flex-column my-1 h-full p-2 surface-100">
-                                        <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
+                                    <div class="flex-column my-1 h-full surface-100">
+                                        <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 63.59px);">
 
                                         </div>
                                         <div class="flex p-2 pr-0 bg-white">
-                                            <MultiSelect v-model="selectedDocuments" display="chip" :options="documents" optionLabel="title" filter placeholder="Select Documents" class="w-full md:w-80" style="max-width: 85%;">
+                                            <MultiSelect v-model="selectedDocuments" display="chip" :options="docs" optionLabel="title" filter placeholder="Select Documents" class="w-full md:w-80" style="max-width: 85%;">
                                                 <template #option="slotProps">
                                                     <div class="flex items-center">
                                                         <div>{{ slotProps.option.title }}</div>

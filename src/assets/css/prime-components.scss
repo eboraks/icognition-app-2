@@ -28,6 +28,10 @@
     font-weight: var(--p-dialog-title-font-weight);
 }
 
+.p-fileupload-choose-button {
+    background-color: var(--primary-color);
+}
+
 .p-floatlabel {
     &:has(input:focus) label {
         display: none;
@@ -42,13 +46,15 @@
     }
 }
 
-.p-iconfield .p-inputtext {
-    padding-left: 2rem;
-}
+.p-iconfield {
+    .p-inputtext {
+        padding-left: 2rem;
+    }
 
-.p-inputicon {
-    top: 30%;
-    z-index: 1;
+    .p-inputicon {
+        top: 20%;
+        z-index: 1;
+    }
 }
 
 .p-inputtext {
@@ -121,7 +127,7 @@
     .p-tree-root {
         height: calc(100% - 2em);
         margin-top: 1em;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     .p-tree-container .p-treenode .p-treenode-content.p-treenode-selectable:not(.p-highlight):hover {

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 const useLibrary = () => {
 
-    const documents = ref([])
+    const docs = ref([])
     const answer = ref(null)
     const resp_type = ref(null)
     const error = ref(null)
@@ -25,8 +25,8 @@ const useLibrary = () => {
             if (!res.ok) {
                 throw Error('Could not fetch the data for that resource')
             }
-            documents.value = await res.json();
-            console.log("Library documents: ", documents);
+            docs.value = await res.json();
+            console.log("Library documents: ", docs);
             isPending.value = false
         } catch (err) {
             console.error(err)
@@ -59,19 +59,17 @@ const useLibrary = () => {
             }
             resp_type.value = res.headers.get("icognitoin-answer-type")
             const results = await res.json()
-
             if (results.failure != undefined) {
                 error.value = results.failure
             } else {
-                documents.value = results.documents_display
+                docs.value = results.documents_display
                 //If range answer is present, set the answer value
                 if (results.rag_answer != undefined) {
                     answer.value = results.rag_answer.answer
                 }    
             }
-            
 
-            console.log("Library documents: ", documents.value)
+            console.log("Library documents: ", docs.value)
             console.log("Answer: ", answer.value)
             isPending.value = false
         } catch (err) {
@@ -135,7 +133,7 @@ const useLibrary = () => {
         }
     }
 
-    return { documents, answer, resp_type, error, isPending, getDocuments, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names}    
+    return { docs, answer, resp_type, error, isPending, getDocuments, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names}    
 
 
 }

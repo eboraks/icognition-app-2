@@ -194,7 +194,7 @@ a,
 
 .panel-project-detail > .p-panel-content-container {
   height: calc(100% - 70px);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 @media (hover: hover) {

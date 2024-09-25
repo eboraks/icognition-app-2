@@ -34,8 +34,8 @@
                     <div class="card h-full">
                         <Tabs v-model:value="currentTab" class="h-full">
                             <TabList class="border-bottom-1 border-200">
-                                <Tab value="0">My Documents</Tab>
-                                <Tab value="1">My Projects</Tab>
+                                <Tab value="0" @click="tabClick('Documents')">My Documents</Tab>
+                                <Tab value="1" @click="tabClick('Projects')">My Projects</Tab>
                             </TabList>
                             <TabPanels>
                                 <TabPanel value="0">
@@ -67,7 +67,7 @@
     import { useRouter  } from 'vue-router';
     import Route_Location from '@/components/models/RouteLocation.vue';
 
-    const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
+    const { docs, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
     const currentTab = ref('0');
     let isError = false;
@@ -95,11 +95,11 @@
     });
 
     const filteredDocuments = computed(() => {
-        if (documents.value != null) {
+        if (docs.value != null) {
             if (fitlerCheckedIds.value.size === 0) {
-                return documents.value;
+                return docs.value;
             } else {
-                return documents.value.filter(document => {
+                return docs.value.filter(document => {
                     return fitlerCheckedIds.value.has(document.id);
                 });
             }   
@@ -108,6 +108,11 @@
 
     const onCheckedIds = (checkedIds) => {
         fitlerCheckedIds.value = checkedIds;
+    }
+
+    const tabClick = async (openTab) => {
+        console.log(openTab);
+        
     }
 
 </script>

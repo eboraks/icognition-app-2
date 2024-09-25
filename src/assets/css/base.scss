@@ -83,8 +83,12 @@
   --section-gap: 160px;
   --border-radius: 6px;
 
+  --p-breadcrumb-background: transparent;
+  --p-breadcrumb-padding: 0em 0em .25em .25em;
   --p-button-primary-background: var(--primary-color);
   --p-button-primary-border-color: var(--primary-color);
+  --p-button-primary-hover-background: transparent;
+  --p-button-primary-hover-border-color: transparent;
   --p-button-sm-font-size: .75rem;
   --p-card-body-padding: .25rem;
   --p-dialog-header-padding: .75rem 1.25rem;

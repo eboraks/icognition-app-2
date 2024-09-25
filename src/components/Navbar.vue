@@ -69,15 +69,26 @@ import useSignin from '@/composables/useLogin';
 import user_state from '@/composables/getUser';
 import Route_Location from '@/components/models/RouteLocation.vue';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue'; 
+import { onBeforeMount, ref } from 'vue'; 
 import { auth } from '@/firebase/config'
 
 const { error, logout } = useLogout()
 const { login_error, login, isPending, loginGoogle } = useSignin()
+let isError = false;
 const menu_app = ref();
 const menu_website = ref();
-let route_location = Route_Location.HOME;
+let route_location = Route_Location.HOME as string;
 const router = useRouter();
+
+
+onBeforeMount(async() => {
+    try {
+        route_location = router.currentRoute.value.name as string;
+    } catch (err) {
+        isError = true;
+        console.log("Error: ", err);
+    }
+})
 
 const toggleAppMenu = (event) => {
     menu_app.value.toggle(event);
@@ -118,12 +129,12 @@ const handleLogout = async () => {
 const handleGoogleLogin = async () => {
     try {
         await loginGoogle().then(() => {
-            console.log('Login successful using Google: ', user_state.user)
+            console.log('Login successful using Google: ', user_state.user);
         }).catch(error => {
             console.log(error);
         });
     } catch (error) {
-        console.log('Login failed using Google: ', user_state.user)
+        console.log('Login failed using Google: ', user_state.user);
     }
 }
 

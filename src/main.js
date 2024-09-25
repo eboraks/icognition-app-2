@@ -15,12 +15,14 @@ import 'primeicons/primeicons.css'
 
 // PrimeVue Components
 import AutoComplete from 'primevue/autocomplete';
+import Breadcrumb from 'primevue/breadcrumb';
 import Button from 'primevue/button';
 import ButtonGroup from 'primevue/buttongroup';
 import Card from 'primevue/card';
 import Checkbox from 'primevue/checkbox';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
+import Dialog from 'primevue/dialog';
 import DialogService from 'primevue/dialogservice';
 import DynamicDialog from 'primevue/dynamicdialog';
 import Fieldset from 'primevue/fieldset';
@@ -62,12 +64,14 @@ onAuthStateChanged(auth, (user) => {
     if (!app) {
         app = createApp(App)
         app.component('AutoComplete', AutoComplete);
+        app.component('Breadcrumb', Breadcrumb);
         app.component('Button', Button);
         app.component('ButtonGroup', ButtonGroup);
         app.component('Card', Card);
         app.component('Checkbox', Checkbox);
         app.component('Column', Column);
         app.component('DataTable', DataTable);
+        app.component('Dialog', Dialog);
         app.component('DynamicDialog', DynamicDialog);
         app.component('Fieldset', Fieldset);
         app.component('FloatLabel', FloatLabel);

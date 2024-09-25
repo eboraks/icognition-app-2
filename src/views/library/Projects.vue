@@ -204,10 +204,10 @@
 <template>
     <div class="col-12 grid grid-nogutter p-0" style="height: calc(100% - 53px);">
         <div class="flex flex-row w-full">
-            <div class="col-5">
+            <div class="col-5 mt-1">
                 <Button icon="pi pi-plus" class="surface-300 border-300 border-400 text-black-alpha-90 px-3 py-1" label="New Project" raised @click="handleNewProjectDialog" />
             </div>
-            <div class="col">
+            <div class="col mt-1">
                 <IconField>
                     <InputIcon>
                         <i class="pi pi-search" />
@@ -217,8 +217,8 @@
                         @input="inputHandle" @keydown.escape="emptied" placeholder="Search"/> 
                 </IconField>
             </div>
-            <div class="col-fixed flex justify-content-end pr-0" style="width: 250px;">
-                <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;"><i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All</a> <a @click="onCollapseAll" class="py-1 mr-1 font-semibold" style="height: 2rem;"><i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All</a>
+            <div class="col-fixed flex justify-content-end pr-0 mt-1" style="width: 250px;">
+                <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;" tabindex="0"><i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All</a> <a @click="onCollapseAll" class="py-1 mr-1 font-semibold" style="height: 2rem;" tabindex="0"><i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All</a>
             </div>
         </div>
         <div class="col-12 pr-0" style="height: calc(100% - 61px);">
