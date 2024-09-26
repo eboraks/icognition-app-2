@@ -165,7 +165,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                 <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;" tabindex="0">
                     <i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All
                 </a>
-                <a @click="onCollapseAll" class="py-1 mr-2 font-semibold" style="height: 2rem;" tabindex="0">
+                <a @click="onCollapseAll" class="py-1 mr-3 font-semibold" style="height: 2rem;" tabindex="0">
                     <i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All
                 </a>
                 <Button type="button" label="Upload Documents" class="p-2 mr-2 bg-primary-500" @click="showUploadFileDialog = !showUploadFileDialog"/>
@@ -206,7 +206,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                                 <h5>Summary: {{ slotProps.data.is_about}}</h5>
                             </div>
                             <div class="col-12">
-                                <Tag v-for="entity of slotProps.data.entities_and_concepts" :value="entity.name" :severity="warn" class="m-1" />
+                                <Tag v-for="entity of slotProps.data.entities_and_concepts" :value="entity.name" severity="info" class="m-1" />
                             </div>
                         </div>
                     </template>
@@ -224,10 +224,10 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
             </div>
         </div>
     </div>
-    <Dialog v-model:visible="showUploadFileDialog" modal header="Upload Files" :style="{ width: '60%' }">
+    <Dialog v-model:visible="showUploadFileDialog" modal header="Upload Document(s)" :style="{ width: '60%' }">
         <template #header>
             <div class="inline-flex gap-2">
-                <span class="font-semibold text-2xl">Upload Files</span>
+                <span class="font-semibold text-2xl">Upload Document(s)</span>
             </div>
         </template>
         <div class="grid grid-nested">

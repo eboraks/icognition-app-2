@@ -69,16 +69,16 @@
                 </div>
               </TabPanel>
               <TabPanel value="1">
-                <div class="flex-column my-1 h-full p-2 surface-100">
+                <div class="flex-column my-1 h-full p-0 surface-100">
                   <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
-                    <div class="panel mb-3" v-for="item in qas">
+                    <div class="panel mb-3" v-for="(item, index) in qas">
                       <p class="flex text-xs justify-content-end">{{moment(item.created_at).format('DD MMM YYYY h:mm a')}}</p>
                       <div class="card">
                         <Card class="border-1 border-round border-300 bg-white shadow-3">
                           <template #header>
                             <div class="border-1 border-round border-300 surface-300 flex border-bottom-1 border-noround-bottom border-top-none border-left-none border-right-none">
                               <p class="flex-grow-1 px-3 py-2 text-sm border-round font-semibold">{{item.question}}</p>
-                              <Button icon="pi pi-times" class="bg-transparent border-transparent border-0 flex-shrink-0 text-black-alpha-90 pr-0" size="small" aria-label="Close"/>
+                              <Button icon="pi pi-times" class="bg-transparent border-transparent border-0 flex-shrink-0 text-black-alpha-90 pr-0" size="small" aria-label="Close" @click="qasRemove(index)"/>
                             </div>
                           </template>
                           <template #content class="p-0">
@@ -96,7 +96,7 @@
                   </div>
                   <div class="flex p-2 pr-0 bg-white">
                     <InputText class="flex-grow-1 p-0" type="text" v-model="question" />
-                    <Button class="flex-shrink-0 px-3 py-1 ml-1" label="Ask" @click="handleAsk" />
+                    <Button class="flex-shrink-0 px-3 py-1 mx-1 bg-primary-500" label="Ask" @click="handleAsk" />
                   </div>
                 </div>
               </TabPanel>
@@ -355,7 +355,12 @@
       answer.value = answerResponse.value.answer;
     }
 
-    qas.value.push(new DocumentAnswer(question.value, answer.value));
+    qas.value.push({question: question.value, answer: answer.value, created_at: moment()});
+    question.value = '';
+  }
+
+  const qasRemove = async (index) => {
+    qas.value.splice(index, 1);
   }
 
   const setupArticleHTML = async (html_elements, citations) => {
