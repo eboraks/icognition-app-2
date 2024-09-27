@@ -133,8 +133,8 @@
   import useCustomQandA from '@/composables/useCustomQandA';
   import useDocQuesAnswers from '@/composables/useDocQuesAnswers';
   import useDocXRay from '@/composables/useDocXRay';
-  import DocumentAnswer from '@/components/models/DocumentAnswer.vue';
-  import DocumentQuestion from '@/components/models/DocumentQuestion.vue';
+  // import DocumentAnswer from '@/components/models/DocumentAnswer.vue';
+  // import DocumentQuestion from '@/components/models/DocumentQuestion.vue';
 
   const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
   const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
