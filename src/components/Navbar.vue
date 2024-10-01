@@ -12,7 +12,7 @@
             <!-- Background -->
             <div class="flex col-12 pb-0">
                 <!-- Title and nav wrapper -->
-                <div class="col-2 md:col-4">
+                <div class="col-3" style="min-width: 15em;">
                     <div class="header-title app-header-title mt-2" data-animation-role="header-element">
                         <div class="header-title-logo">
                             <a href="/" data-animation-role="header-element">
@@ -23,9 +23,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-8 md:col-4 text-center">
-                    <!-- Title -->
-                    <div class="header-title website-header-title" data-animation-role="header-element">
+                <div class="col-6 text-center flex align-content-center flex-wrap">
+                    <!-- Title / App Routing -->
+                    <div class="app-header-routing" data-animation-role="header-element">
+                        <Button label="Documents" aria-label="Documents" class="bg-primary border-transparent border-0 text-white border-noround-right" @click="router.push('Documents')" rounded />
+                        <Button label="Projects" aria-label="Projects" class="bg-transparent border-1 border-0 text-black-alpha-90 border-noround-left" @click="router.push('Projects')" rounded />
+                    </div>
+                    <div class="header-title website-header-title w-full" data-animation-role="header-element">
                         <div class="header-title-logo md:pt-3 xs:pt-3">
                             <a href="/" data-animation-role="header-element">
                                 <img
@@ -37,7 +41,7 @@
                 </div>
 
                 <!-- Actions -->
-                <div class="col-2 md:col-4 md:flex pr-3 align-items-center justify-content-end">
+                <div class="col-3 md:flex pr-3 align-items-center justify-content-end">
                     <div class="hidden md:flex website-login-logout">
                         <div v-if="user_state.user" class="text-right">
                             <button type="button" class="login-with-google-btn mr-2" @click="handleLogout">
@@ -50,11 +54,11 @@
                             </button>
                         </div>
                     </div>
-                    <div class="card pl-2 py-4 justify-center md:hidden webite-login-menu">
-                        <Button type="button" icon="pi pi-bars" @click="toggleWebsiteMenu" aria-haspopup="true" aria-controls="overlay_menu" />
+                    <div class="card pl-2 py-4 justify-content-end flex md:hidden webite-login-menu">
+                        <Button type="button" class="bg-primary text-white" icon="pi pi-bars" @click="toggleWebsiteMenu" aria-haspopup="true" aria-controls="overlay_menu" />
                         <Menu ref="menu_website" id="overlay_menu" :model="website_menu_items" :popup="true" />
                     </div>
-                    <div class="card px-4 py-2 app-profile">
+                    <div class="card px-4 py-2 flex justify-content-end app-profile">
                         <Button icon="pi pi-user" severity="info" @click="toggleAppMenu" rounded aria-haspopup="true" aria-controls="overlay_menu" aria-label="User"/>
                         <Menu ref="menu_app" id="overlay_menu" :model="app_menu_items" :popup="true" />
                     </div>

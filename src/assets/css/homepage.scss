@@ -1,4 +1,8 @@
 .route-website {
+    .app-header-routing {
+        display: none!important;
+    }
+
     .app-header-title {
         display: none!important;
     }
@@ -9,6 +13,7 @@
 
     .website-header-title {
         display: block;
+        justify-content: center;
     }
 
     .website-login-logout {

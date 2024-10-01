@@ -2,7 +2,7 @@
     <div id="body-library" class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
         <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
             <Splitter class="grid nested-grid grid-nogutter h-full border-round border-noround-right">
-                <SplitterPanel :class="{ 'splitter-panel-container-small': !buttonToggleSplitterPanelLeft }" class="col-12 p-2 border-round bg-primary-800 border-noround-right splitter-panel-container-25" :minSize="1">
+                <SplitterPanel :class="{ 'splitter-panel-container-small': !buttonToggleSplitterPanelLeft }" class="col-12 p-2 border-round bg-primary-800 border-noround-right" :size="25" :minSize="1">
                     <div class="grid h-full">
                         <div class="col-6">
                             <Button v-if="!buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0 text-white" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Expand Panel"/>
@@ -30,22 +30,9 @@
                         </div>
                     </div>
                 </SplitterPanel>
-                <SplitterPanel :class="{ 'splitter-panel-container-big': !buttonToggleSplitterPanelLeft }" class="col-12 p-0 splitter-panel-container-75">
+                <SplitterPanel :class="{ 'splitter-panel-container-big': !buttonToggleSplitterPanelLeft }" class="col-12 p-0" :size="75">
                     <div class="card h-full">
-                        <Tabs v-model:value="currentTab" class="h-full">
-                            <TabList class="border-bottom-1 border-200">
-                                <Tab value="0" @click="tabClick('Documents')">My Documents</Tab>
-                                <Tab value="1" @click="tabClick('Projects')">My Projects</Tab>
-                            </TabList>
-                            <TabPanels>
-                                <TabPanel value="0">
-                                    <Documents :documents="filteredDocuments"/>
-                                </TabPanel>
-                                <TabPanel value="1">
-                                    <Projects/>
-                                </TabPanel>
-                            </TabPanels>
-                        </Tabs>
+                        <Documents :documents="filteredDocuments"/>
                     </div>
                 </SplitterPanel>
             </Splitter>
@@ -109,10 +96,4 @@
     const onCheckedIds = (checkedIds) => {
         fitlerCheckedIds.value = checkedIds;
     }
-
-    const tabClick = async (openTab) => {
-        console.log(openTab);
-        
-    }
-
 </script>

@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import HomeView from '@/views/HomeView.vue';
 import user_state from '@/composables/getUser';
-import AppContainer from '@/views/AppContainer.vue'
-import DocXRayView from '@/views/library/DocXRayView.vue'
-import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
-import TermsOfUse from '@/components/TermsOfUse.vue'
+import DocumentContainer from '@/views/DocumentContainer.vue';
+import DocXRayView from '@/views/library/DocXRayView.vue';
+import PrivacyPolicy from '@/components/PrivacyPolicy.vue';
+import Projects from '@/views/library/Projects.vue';
+import TermsOfUse from '@/components/TermsOfUse.vue';
 import ProjectDetails from '@/views/library/ProjectDetails.vue';
 
 // route guard
@@ -37,13 +38,13 @@ const routes = [
   {
     path: '/documents',
     name: 'documents',
-    component: AppContainer,
+    component: DocumentContainer,
     beforeEnter: requireAuth
   },
   {
     path: '/projects',
     name: 'projects',
-    component: AppContainer,
+    component: Projects,
     beforeEnter: requireAuth
   },
   {

@@ -161,20 +161,20 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                         @input="inputHandle" @keydown.escape="emptied" placeholder="Search"/> 
                 </IconField>
             </div>
-            <div class="col-6 flex justify-content-end pr-0 mt-1">
+            <div class="col-6 flex align-content-center flex-wrap justify-content-end pr-0">
                 <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;" tabindex="0">
                     <i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All
                 </a>
                 <a @click="onCollapseAll" class="py-1 mr-3 font-semibold" style="height: 2rem;" tabindex="0">
                     <i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All
                 </a>
-                <Button type="button" label="Upload Documents" class="p-2 mr-2 bg-primary-500" @click="showUploadFileDialog = !showUploadFileDialog"/>
+                <Button type="button" label="Upload Documents" aria-label="Upload Documents" class="p-2 mr-2 bg-primary-500" @click="showUploadFileDialog = !showUploadFileDialog"/>
             </div>
         </div>
-        <div class="col-12 pr-0" style="height: calc(100% - 49px);" v-if="props.documents.length != 0">
+        <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0">
             <div class="card h-full">
                 <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocument" :value="props.documents" dataKey="id"
-                        @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="h-full relative">
+                        @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full relative">
                     <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">
                         <template #body="slotProps">

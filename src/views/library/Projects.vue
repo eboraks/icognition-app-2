@@ -202,67 +202,74 @@
 </script>
 
 <template>
-    <div class="col-12 grid grid-nogutter p-0" style="height: calc(100% - 53px);">
-        <div class="flex flex-row w-full">
-            <div class="col-5 mt-1">
-                <Button icon="pi pi-plus" class="surface-300 border-300 border-400 text-black-alpha-90 px-3 py-1" label="New Project" raised @click="handleNewProjectDialog" />
-            </div>
-            <div class="col mt-1">
-                <IconField>
-                    <InputIcon>
-                        <i class="pi pi-search" />
-                    </InputIcon>
-                    <AutoComplete class="surface-50 border-round-lg w-full" inputId="ac" v-model="search_term" :suggestions="items" 
-                        @complete="autocompleteSearch" @keydown.enter="searchHandle"  
-                        @input="inputHandle" @keydown.escape="emptied" placeholder="Search"/> 
-                </IconField>
-            </div>
-            <div class="col-fixed flex justify-content-end pr-0 mt-1" style="width: 250px;">
-                <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;" tabindex="0"><i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All</a> <a @click="onCollapseAll" class="py-1 mr-1 font-semibold" style="height: 2rem;" tabindex="0"><i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All</a>
-            </div>
-        </div>
-        <div class="col-12 pr-0" style="height: calc(100% - 61px);">
-            <div class="card h-full" v-if="!hasNoData">
-                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedProject" :value="studyProjects" dataKey="id"
-                        @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
-                    <Column expander style="width: 2rem" />
-                    <Column field="name" header="Name" class="set-background-image">
-                        <template #body="slotProps">
-                            <p class="inline-block">
-                                <i class="pi pi-box"></i>
-                                <router-link 
-                                    :to="{
-                                        name: 'projectdetails',
-                                        params: {id: slotProps.data.id}
-                                    }"
-                                    class="mt-2 py-1 ml-2">{{ slotProps.data.name }}
-                                </router-link>
-                            </p>
-                        </template>
-                    </Column>
-                    <Column field="Created" header="Created">
-                        <template #body="slotProps">
-                            {{ moment(slotProps.data.created_at).format('DD MMM YYYY h:mm a') }}
-                        </template>
-                    </Column>
-                    <Column field="document_number" header="# Documents"></Column>
-                    <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-
-                    <template #expansion="slotProps">
-                        <div class="p-2">
-                            <h5>{{ slotProps.data.objective }}</h5>
-                        </div>
-                    </template>
-                </DataTable>
-            </div>
-            <div class="card" v-if="hasNoData">
-                <div class="col-12 pt-7 mt-7">
-                    <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
+    <div id="body-library" class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
+        <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
+            <div class="col-12 grid grid-nogutter p-0" style="height: calc(100% - 53px);">
+                <div class="flex flex-row w-full">
+                    <div class="col-6 mt-1">
+                        <IconField>
+                            <InputIcon>
+                                <i class="pi pi-search" />
+                            </InputIcon>
+                            <AutoComplete class="surface-50 border-round-lg w-full" inputId="ac" v-model="search_term" :suggestions="items" 
+                                @complete="autocompleteSearch" @keydown.enter="searchHandle"  
+                                @input="inputHandle" @keydown.escape="emptied" placeholder="Search"/> 
+                        </IconField>
+                    </div>
+                    <div class="col-6 flex align-content-center flex-wrap justify-content-end pr-0">
+                        <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;" tabindex="0">
+                            <i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All
+                        </a>
+                        <a @click="onCollapseAll" class="py-1 mr-3 font-semibold" style="height: 2rem;" tabindex="0">
+                            <i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All
+                        </a>
+                        <Button type="button" icon="pi pi-plus" label="New Project" aria-label="New Project" class="p-2 mr-2 bg-primary-500" @click="handleNewProjectDialog" />
+                    </div>
                 </div>
-                <div class="col-12">
-                    <p class="flex text-center m-auto" style="max-width: 60%;" src="/src/assets/images/icons/bookmark.png">
-                        You don't have any bookmark topics created yet, because you haven't bookmarked any pages.
-                    </p>
+                <div class="col-12 pr-0" style="height: calc(100% - 61px);">
+                    <div class="card h-full" v-if="!hasNoData">
+                        <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedProject" :value="studyProjects" dataKey="id"
+                                @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
+                            <Column expander style="width: 2rem" />
+                            <Column field="name" header="Name" class="set-background-image">
+                                <template #body="slotProps">
+                                    <p class="inline-block">
+                                        <i class="pi pi-box"></i>
+                                        <router-link 
+                                            :to="{
+                                                name: 'projectdetails',
+                                                params: {id: slotProps.data.id}
+                                            }"
+                                            class="mt-2 py-1 ml-2">{{ slotProps.data.name }}
+                                        </router-link>
+                                    </p>
+                                </template>
+                            </Column>
+                            <Column field="Created" header="Created">
+                                <template #body="slotProps">
+                                    {{ moment(slotProps.data.created_at).format('DD MMM YYYY h:mm a') }}
+                                </template>
+                            </Column>
+                            <Column field="document_number" header="# Documents"></Column>
+                            <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
+
+                            <template #expansion="slotProps">
+                                <div class="p-2">
+                                    <h5>{{ slotProps.data.objective }}</h5>
+                                </div>
+                            </template>
+                        </DataTable>
+                    </div>
+                    <div class="card" v-if="hasNoData">
+                        <div class="col-12 pt-7 mt-7">
+                            <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
+                        </div>
+                        <div class="col-12">
+                            <p class="flex text-center m-auto" style="max-width: 60%;" src="/src/assets/images/icons/bookmark.png">
+                                You don't have any bookmark topics created yet, because you haven't bookmarked any pages.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
