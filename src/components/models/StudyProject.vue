@@ -1,5 +1,6 @@
 <script lang="ts">
     import StudyTask from './StudyTask.vue'
+    import Doc from './Doc.vue'
     class StudyProject {
         id: number;
         name: string | null;
@@ -8,6 +9,7 @@
         user_id: string;
         tasks: [StudyTask] | null;
         created_at: Date;
+        related_docs: [Doc] | null;
 
         constructor(name: string | null, objective: string | null, user_id: string, tasks:[StudyTask] | null) {
             this.name = name;

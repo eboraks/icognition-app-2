@@ -6,10 +6,11 @@
     import user_state from '@/composables/getUser';
     import { ref, onMounted } from 'vue';
     import { useRouter } from 'vue-router';
+import StudyProject from '@/components/models/StudyProject.vue';
 
     const { studyProjects, studyProject, iserrorStudyProject, isPendingStudyProject, getStudyProjects, getStudyProject, postStudyTask, 
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
-        deleteStudyProject } = useStudyProject();
+        deleteStudyProject, candidateDocs, getCandidatesDocs } = useStudyProject();
     const { docs, answer, iserrorLibrary, resp_type, isPendingLibrary, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
     const breadcrumbs = ref([
@@ -25,15 +26,15 @@
 
     onMounted(async() => {
         try {
-            await getDocuments(user_state.user.uid);
-            await getSubtopicsNodes(user_state.user.uid);
+            await getCandidatesDocs(router.currentRoute.value.params.id);
+            //await getSubtopicsNodes(user_state.user.uid);
             await getStudyProject(router.currentRoute.value.params.id);
-            console.log("Subtopics Nodes: ", subtopics_nodes.value.length);
+            console.log("Seleced Documents: ", selectedDocuments.value);    
         } catch (err) {
             console.log("Error: ", err);
         }
     });
-
+7
     const handleApply = async () => {
         if (!selectedDocuments.value) {
             return;
@@ -131,6 +132,14 @@
                                                 <div class="col-12 flex flex-row">
                                                     <div class="col-10">
                                                         <p class="mt-2">Sources:</p>
+                                                        <ul v-for="citation in study_task.citations">
+                                                            <li class="text-xs">{{ citation.document_title }}</li>
+                                                            <p class="text-xs">Quote:</p> 
+                                                            <ul v-for="text in citation.text_reference">
+                                                                <p class="text-xs">{{ text.verbatim_text }}</p>
+                                                            </ul>
+
+                                                        </ul>
                                                     </div>
                                                     <div class="col-2 flex justify-content-end">
                                                         <Button class="mr-2 bg-green-500" v-if="study_task.status == Default_Status.SUCCESS" severity="success" icon="pi pi-check" rounded aria-label="Status" size="small" />
@@ -210,10 +219,13 @@
                                 <TabPanel value="2">
                                     <div class="flex-column my-1 h-full surface-100">
                                         <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 63.59px);">
+                                            <div v-for="doc in studyProject.related_docs">
+                                                <div>{{doc.title}} - {{ doc.cosine_similarity }}</div>
+                                            </div>
 
                                         </div>
                                         <div class="flex p-2 pr-0 bg-white">
-                                            <MultiSelect v-model="selectedDocuments" display="chip" :options="docs" optionLabel="title" filter placeholder="Select Documents" class="w-full md:w-80" style="max-width: 85%;">
+                                            <MultiSelect v-model="selectedDocuments" display="chip" :options="candidateDocs" optionLabel="title" filter placeholder="Select Documents" class="w-full md:w-80" style="max-width: 85%;">
                                                 <template #option="slotProps">
                                                     <div class="flex items-center">
                                                         <div>{{ slotProps.option.title }}</div>

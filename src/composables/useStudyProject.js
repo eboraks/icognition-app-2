@@ -7,6 +7,7 @@ const useStudyProject = () => {
     const projectDocumentLink = ref();
     const projectDocumentUnlink = ref();
     const relatedEntitites = ref();
+    const candidateDocs = ref();
     const studyProject = ref(new StudyProject('', '', '', [{description: ''}]));
     const studyProjects = ref();
     const studyTask = ref();
@@ -28,7 +29,7 @@ const useStudyProject = () => {
                 throw Error('Could not fetch the data for that resource')
             }
             studyProjects.value = await res.json();
-            console.log("Study Projects: ", studyProjects);
+            console.log("Study Projects: ", studyProjects.value);
             isPending.value = false
         } catch (err) {
             console.error(err)
@@ -49,7 +50,7 @@ const useStudyProject = () => {
                 throw Error('Could not fetch the data for that resource')
             }
             studyProject.value = await res.json();
-            console.log("Study Project: ", studyProject);
+            console.log("Study Project: ", studyProject.value);
             isPending.value = false
         } catch (err) {
             console.error(err)
@@ -71,6 +72,25 @@ const useStudyProject = () => {
             }
             relatedEntitites.value = await res.json();
             console.log("Study Project: ", relatedEntitites);
+            isPending.value = false
+        } catch (err) {
+            console.error(err)
+            error.value = err.message
+            isPending.value = false
+            console.log("Error: ", error.value)
+        }
+    }
+
+    const getCandidatesDocs = async (project_id) => {
+        error.value = null
+        isPending.value = true
+        try {
+            const url = `${base_url}/study_project/${project_id}/candidate_documents`
+            const res = await fetch(url)
+            if (!res.ok) {
+                throw Error(`Could not fetch the data for that resource: ${url}`)
+            }
+            candidateDocs.value = await res.json();
             isPending.value = false
         } catch (err) {
             console.error(err)
@@ -225,7 +245,11 @@ const useStudyProject = () => {
         }        
     }
 
-    return { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, deleteStudyProject}    
+    return {
+        studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject,
+        postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject,
+        postProjectDocumentLink, postProjectDocumentUnlink, deleteStudyProject, candidateDocs, getCandidatesDocs
+    }    
 
 
 }
