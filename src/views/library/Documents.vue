@@ -218,7 +218,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                                 <h5>Summary: {{ slotProps.data.is_about}}</h5>
                             </div>
                             <div class="col-12">
-                                <Tag v-for="entity of slotProps.data.entities_and_concepts" :value="entity.name" severity="info" class="m-1 text-700" />
+                                <Tag v-for="entity of slotProps.data.entities_and_concepts" :value="entity.name" severity="info" class="mr-1 text-700 mb-1 px-2" />
                             </div>
                         </div>
                     </template>
