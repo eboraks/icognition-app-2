@@ -9,7 +9,7 @@
                 <div class="col-12 pb-5">
                   <div class="flex flex-column justify-content-center">
                     <div class="text-2xl text-primary-800 font-bold line-height-2">
-                      <h2>For people with dyslexia, iCognition changes the rules of the game.</h2>
+                      <h2 class="line-height-1">For people with dyslexia, iCognition changes the rules of the game.</h2>
                     </div>
                   </div>
                 </div>
@@ -178,7 +178,7 @@
         <div class="content-wrapper">
           <div class="content grid text-center text-4xl text-tertiary font-medium m-auto content-transform-text">
             <div class="block m-auto py-5 m-0">
-              <h3>Transform tedious text into bright insight with iCognition – the ultimate super-boost for dyslexic learners!&nbsp;</h3>
+              <h3 class="line-height-1">Transform tedious text into bright insight with iCognition – the ultimate super-boost for dyslexic learners!&nbsp;</h3>
             </div>
           </div>
         </div>

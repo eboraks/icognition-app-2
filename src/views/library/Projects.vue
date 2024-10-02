@@ -1,7 +1,7 @@
 <script setup>
     import useStudyProject from '@/composables/useStudyProject';
     import user_state from '@/composables/getUser';
-    import { ref, onMounted, computed } from 'vue'
+    import { ref, onMounted, computed, watch } from 'vue'
     import AutoComplete from 'primevue/autocomplete';
     import Button from 'primevue/button';
     import Checkbox from 'primevue/checkbox';
@@ -21,6 +21,7 @@
     const addStudyListError = ref('');
     const analysis_checked = ref();
     const answer_loading = ref(false);
+    const hasCheck = ref(false);
     let hasNoData = false;
     const items = ref([]);
     const expandedRows = ref({});
@@ -30,10 +31,11 @@
     const newProjectErrorMessages = ref([]);
     const router = useRouter();
     const search_term = ref('');
-    const selectedProject = ref();
+    const selectedProjects = ref();
     let showAddANewStudyPointDialog = ref(false);
     let showExamplesOfObjectiveCriteriaDialog = ref(false);
     let showExampleStudyPointsDialog = ref(false);
+    const showFooterSelect = ref(false);
     const showNewProjectDialog = ref(false);
     const studyTaskList = ref([]);
     const toast = useToast();
@@ -45,6 +47,17 @@
             console.log("Error: ", err);
         }
     });
+
+    watch(
+        () => selectedProjects.value,
+        () => {
+            if (selectedProjects.value.length > 0) {
+                showFooterSelect.value = true;
+            } else {
+                showFooterSelect.value = false;
+            }
+        }
+    )
 
     const addANewStudyPoint = async () => {
         if (addANewStudyPointValue.value != '') {
@@ -153,6 +166,12 @@
         searchHandle();
     }
 
+    const deletedStudyProject = async () => {
+        selectedProjects.value.forEach(selectedProject => {
+            deleteStudyProject(selectedProject.id);
+        });
+    }
+
     const deleteStudyTask = async (description) => {
         const index = studyTaskList.value.indexOf(description);
         if (index > -1) {
@@ -204,7 +223,7 @@
 <template>
     <div id="body-library" class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
         <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
-            <div class="col-12 grid grid-nogutter p-0" style="height: calc(100% - 53px);">
+            <div class="col-12 grid grid-nogutter p-0" style="height: calc(100% - 53px);" :class="{'projectHeightLarge': showFooterSelect}">
                 <div class="flex flex-row w-full">
                     <div class="col-6 mt-1">
                         <IconField>
@@ -228,7 +247,7 @@
                 </div>
                 <div class="col-12 pr-0" style="height: calc(100% - 61px);">
                     <div class="card h-full" v-if="!hasNoData">
-                        <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedProject" :value="studyProjects" dataKey="id"
+                        <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedProjects" :value="studyProjects" dataKey="id"
                                 @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
                             <Column expander style="width: 2rem" />
                             <Column field="name" header="Name" class="set-background-image">
@@ -269,6 +288,18 @@
                                 You don't have any bookmark topics created yet, because you haven't bookmarked any pages.
                             </p>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="showFooterSelect" class="col-12 grid grid-nogutter p-0">
+                <div class="flex bg-green-500 flex-row w-full">
+                    <div class="col-6">
+                        <p class="inline mr-3 text-black-alpha-90">{{ selectedProjects.length }} Checked Item<span v-if="selectedProjects.length > 1">s</span></p>
+                        <Button type="button" label="Clear" aria-label="Clear" class="p-2 mr-2 bg-white text-black-alpha-90" @click="selectedProjects = []" />
+                    </div>
+                    <div class="col-6 flex flex-flow justify-content-end">
+                        <Button type="button" label="Remove" aria-label="Remove" class="p-2 mr-2 bg-white text-black-alpha-90" @click="deletedStudyProject" />
+                        <!-- <Button type="button" label="Archive" aria-label="Archive" class="p-2 mr-2 bg-white text-black-alpha-90" @click="selectedProjects.value = []" /> -->
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 <script setup>
 import useLibrary from '@/composables/useLibrary';
 import user_state from '@/composables/getUser';
-import { ref, onMounted, computed, defineAsyncComponent } from 'vue';
+import { ref, onMounted, computed, defineAsyncComponent, watch } from 'vue';
 import AutoComplete from 'primevue/autocomplete';
 import FileUpload from 'primevue/fileupload';
 import moment from 'moment';
@@ -22,7 +22,8 @@ const props = defineProps({
     documents: Array
 });
 const search_term = ref('');
-const selectedDocument = ref();
+const selectedDocuments = ref();
+const showFooterSelect = ref(false);
 let showUploadFileDialog = ref(false);
 const toast = useToast();
 
@@ -37,6 +38,17 @@ onMounted(async() => {
         console.log("Error: ", err);
     }
 });
+
+watch(
+    () => selectedDocuments.value,
+    () => {
+        if (selectedDocuments.value.length > 0) {
+            showFooterSelect.value = true;
+        } else {
+            showFooterSelect.value = false;
+        }
+    }
+)
 
 const autocompleteSearch = (e) => {
     console.log("Autocomplete Search: ", e.query);
@@ -149,7 +161,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
 </script>
 
 <template>
-    <div class="col-12 grid p-0 pl-2 grid-nogutter h-full">
+    <div class="col-12 grid p-0 grid-nogutter h-full">
         <div class="flex flex-row w-full">
             <div class="col-6 mt-1">
                 <IconField>
@@ -171,9 +183,9 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                 <Button type="button" label="Upload Documents" aria-label="Upload Documents" class="p-2 mr-2 bg-primary-500" @click="showUploadFileDialog = !showUploadFileDialog"/>
             </div>
         </div>
-        <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0">
+        <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0" :class="{'projectHeightLarge': showFooterSelect}">
             <div class="card h-full">
-                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocument" :value="props.documents" dataKey="id"
+                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocuments" :value="props.documents" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full relative">
                     <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">
@@ -221,6 +233,18 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                 <p class="flex text-center m-auto" style="max-width: 60%;" src="/src/assets/images/icons/bookmark.png">
                     You don't have any bookmark topics created yet, because you haven't bookmarked any pages.
                 </p>
+            </div>
+        </div>
+        <div v-if="showFooterSelect" class="col-12 grid grid-nogutter p-0">
+            <div class="flex bg-green-500 flex-row w-full">
+                <div class="col-6">
+                    <p class="inline mr-3 text-black-alpha-90">{{ selectedDocuments.length }} Checked Item<span v-if="selectedDocuments.length > 1">s</span></p>
+                    <Button type="button" label="Clear" aria-label="Clear" class="p-2 mr-2 bg-white text-black-alpha-90" @click="selectedDocuments = []" />
+                </div>
+                <div class="col-6 flex flex-flow justify-content-end">
+                    <Button type="button" label="Remove" aria-label="Remove" class="p-2 mr-2 bg-white text-black-alpha-90" @click="deletedStudyProject" />
+                    <!-- <Button type="button" label="Archive" aria-label="Archive" class="p-2 mr-2 bg-white text-black-alpha-90" @click="selectedDocuments.value = []" /> -->
+                </div>
             </div>
         </div>
     </div>
