@@ -71,9 +71,9 @@
     <div class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
         <Breadcrumb :model="breadcrumbs" >
             <template #item="{ item }">
-                <a class="cursor-pointer" :href="item.url">
+                <router-link class="cursor-pointer" to="/Projects">
                     {{item.label}} /
-                </a>
+                </router-link>
             </template>
         </Breadcrumb>
         <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">

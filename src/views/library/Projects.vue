@@ -223,7 +223,7 @@
 <template>
     <div id="body-library" class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
         <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
-            <div class="col-12 grid grid-nogutter p-0" style="height: calc(100% - 53px);" :class="{'projectHeightLarge': showFooterSelect}">
+            <div class="col-12 grid grid-nogutter p-0" style="height: calc(100% - 51px);">
                 <div class="flex flex-row w-full">
                     <div class="col-6 mt-1">
                         <IconField>
@@ -248,7 +248,7 @@
                 <div class="col-12 pr-0" style="height: calc(100% - 61px);">
                     <div class="card h-full" v-if="!hasNoData">
                         <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedProjects" :value="studyProjects" dataKey="id"
-                                @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative overflow-y-auto">
+                                @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 1rem" class="h-full relative text-xs overflow-y-auto">
                             <Column expander style="width: 2rem" />
                             <Column field="name" header="Name" class="set-background-image">
                                 <template #body="slotProps">

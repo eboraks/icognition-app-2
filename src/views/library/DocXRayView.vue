@@ -1,15 +1,15 @@
 <template>
   <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-blue-100 h-full">
     <Splitter class="h-full">
-      <SplitterPanel :class="{ 'splitter-panel-container-full': !buttonToggleSplitterPanelRight }" class="col-12 p-0 border-round surface-100 border-noround-right splitter-panel-container-66" :minSize="1">
+      <SplitterPanel :class="{ 'splitter-panel-container-full': !buttonToggleSplitterPanelRight }" class="col-12 p-0 border-round surface-100 border-noround-right"  :size="66" :minSize="1">
         <div class="grid nested-grid grid-nogutter mx-2" style="height: calc(100% - .5rem);">
-          <div class="col-12 py-0">
-            <div class="col-6 pb-3 inline-flex vertical-align-middle">
+          <div class="col-12 py-0 max-h-3rem">
+            <div class="col-6 p-0 inline-flex">
               <a class="font-bold pt-2 pl-1 mr-3" :href="dialogRef.data.url" target="_blank"><i class="pi pi-pen-to-square"></i> Open Original</a>
               <a class="font-bold pt-2 pl-1" @click="handleDownloadClick"><i class="pi pi-download mr-1"></i>Download...</a>
             </div>
-            <div class="col-6 inline-flex justify-content-end">
-              <Button type="button" icon="pi pi-comment" class="text-black-alpha-90 bg-white mx-2 border-blue-100" @click="toggleHighlightMenu" rounded aria-haspopup="true" aria-controls="overlay_menu" />
+            <div class="col-6 p-0 inline-flex justify-content-end">
+              <Button type="button" icon="pi pi-comment" class="text-black-alpha-90 bg-white my-1 border-blue-100" @click="toggleHighlightMenu" rounded aria-haspopup="true" aria-controls="overlay_menu" style="height: 2.5em; width: 2.5em;" />
               <Popover ref="menu_highlight" class="mt-2">
                 <div class="grid flex flex-column w-[25rem]">
                   <div class="col-12">
@@ -23,7 +23,7 @@
               </Popover>
               <!-- <Button :class="{ 'hidden': !buttonTogglePlay }" class="text-black-alpha-90 bg-white mx-2 border-blue-100" icon="pi pi-stop" @click="buttonTogglePlay = !buttonTogglePlay" rounded />
               <Button :class="{ 'hidden': buttonTogglePlay }" class="text-black-alpha-90 bg-white mx-2 border-blue-100" icon="pi pi-play" @click="buttonTogglePlay = !buttonTogglePlay" rounded /> -->
-              <Button class="text-black-alpha-90 bg-white ml-2 border-blue-100" icon="pi pi-cog" @click="buttonToggleSplitterPanelRight = !buttonToggleSplitterPanelRight" rounded />
+              <Button class="text-black-alpha-90 bg-white ml-2 my-1 border-blue-100" icon="pi pi-cog" @click="buttonToggleSplitterPanelRight = !buttonToggleSplitterPanelRight" rounded  style="height: 2.5em; width: 2.5em;" />
             </div>
           </div>
           
@@ -46,7 +46,7 @@
           </div>
         </div>
       </SplitterPanel>
-      <SplitterPanel :class="{ 'hidden': !buttonToggleSplitterPanelRight }" class="col-12 p-0 splitter-panel-container-34">
+      <SplitterPanel :class="{ 'hidden': !buttonToggleSplitterPanelRight }" class="col-12 p-0" :size="34">
         <div class="card h-full">
           <Tabs value="0" class="h-full">
             <TabList>
@@ -70,7 +70,7 @@
               </TabPanel>
               <TabPanel value="1">
                 <div class="flex-column my-1 h-full p-0 surface-100">
-                  <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
+                  <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 44px);">
                     <div class="panel mb-3" v-for="(item, index) in qas">
                       <p class="flex text-xs justify-content-end">{{moment(item.created_at).format('DD MMM YYYY h:mm a')}}</p>
                       <div class="card">

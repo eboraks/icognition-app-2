@@ -186,7 +186,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
         <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0" :class="{'projectHeightLarge': showFooterSelect}">
             <div class="card h-full">
                 <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocuments" :value="props.documents" dataKey="id"
-                        @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full relative">
+                        @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full text-xs relative">
                     <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">
                         <template #body="slotProps">
@@ -196,7 +196,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                             </div>
                         </template>
                     </Column>
-                    <Column field="Last Updated" header="Last Updated" headerStyle="min-width: 12rem;" sortable >
+                    <Column field="Added to Library" header="Added to Library" headerStyle="min-width: 12rem;" sortable >
                         <template #body="slotProps">
                             {{ moment(slotProps.data.updatedAt).format('DD MMM YYYY h:mm a') }}
                         </template>
@@ -218,7 +218,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                                 <h5>Summary: {{ slotProps.data.is_about}}</h5>
                             </div>
                             <div class="col-12">
-                                <Tag v-for="entity of slotProps.data.entities_and_concepts" :value="entity.name" severity="info" class="m-1" />
+                                <Tag v-for="entity of slotProps.data.entities_and_concepts" :value="entity.name" severity="info" class="m-1 text-700" />
                             </div>
                         </div>
                     </template>

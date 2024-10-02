@@ -35,7 +35,7 @@ const onNodeUnselect = (node) => {
     <div class="sticky justify-content-center h-full">
         <Tree v-model:selectionKeys="selectedKey" :value="nodes" 
             selectionMode="checkbox" 
-            class="w-full text-sm p-0 text-white h-full" 
+            class="w-full text-xs p-0 text-white h-full" 
             :filter="true"
             v-on:node-select="onNodeSelect"
             v-on:node-unselect="onNodeUnselect">

@@ -25,9 +25,9 @@
                 </div>
                 <div class="col-6 text-center flex align-content-center flex-wrap">
                     <!-- Title / App Routing -->
-                    <div class="app-header-routing" data-animation-role="header-element">
-                        <Button label="Documents" aria-label="Documents" class="bg-primary border-transparent border-0 text-white border-noround-right" @click="router.push('Documents')" rounded />
-                        <Button label="Projects" aria-label="Projects" class="bg-transparent border-1 border-0 text-black-alpha-90 border-noround-left" @click="router.push('Projects')" rounded />
+                    <div class="app-header-routing flex flex-row" data-animation-role="header-element">
+                        <p :class="{'selectedRoute': router.currentRoute.value.name == 'documents'}" class="mr-3 text-lg cursor-pointer" @click="router.push('Documents')">My Documents</p>
+                        <p :class="{'selectedRoute': router.currentRoute.value.name == 'projects'}" class="mr-3 text-lg cursor-pointer" @click="router.push('Projects')" >My Projects</p>
                     </div>
                     <div class="header-title website-header-title w-full" data-animation-role="header-element">
                         <div class="header-title-logo md:pt-3 xs:pt-3">

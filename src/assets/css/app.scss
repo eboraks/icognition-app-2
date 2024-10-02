@@ -1,6 +1,6 @@
 .route-app {
     .app-header-routing {
-        display: block!important;
+        display: flex!important;
     }
 
     .app-header-title {
@@ -35,7 +35,7 @@
     }
 
     .projectHeightLarge {
-        height: calc(100% - 53px - 53px);
+        height: calc(100% - 53px - 53px)!important;
     }
 
     #header {
@@ -54,6 +54,11 @@
                 color: white;
             }
         }
+    }
+
+    .selectedRoute {
+        font-weight: 700;
+        color: var(--primary-500);
     }
 
     .splitter-panel-container-small {
