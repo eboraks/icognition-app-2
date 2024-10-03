@@ -121,13 +121,13 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" >
   import { inject, ref, onBeforeMount } from 'vue';
   import DocxrayService from '@/services/DocxrayService';
   import moment from 'moment';
-  import pdfMake from 'pdfmake/build/pdfmake';
-  import pdfFonts from 'pdfmake/build/vfs_fonts';
-  (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+  import * as pdfFonts from '@/components/models/vfs_fonts.vue';
+  import  pdfMake from "pdfmake/build/pdfmake";
+  (<any>pdfMake).vfs = pdfFonts.default;
   // import TalkifyTTSService from '@/services/TalkifyTTSService';
   // import Talkify from 'talkify-tts-api';
   import useCustomQandA from '@/composables/useCustomQandA';
