@@ -95,7 +95,7 @@
                     </div>
                   </div>
                   <div class="flex p-2 pr-0 bg-white">
-                    <InputText class="flex-grow-1 p-0" type="text" v-model="question" />
+                    <InputText @keyup.enter="handleAsk" class="flex-grow-1 p-0" type="text" v-model="question" />
                     <Button class="flex-shrink-0 px-3 py-1 mx-1 bg-primary-500" label="Ask" @click="handleAsk" />
                   </div>
                 </div>
@@ -139,7 +139,7 @@
   import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
 
   const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
-  const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
+  const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers(); 
   const { original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
   const dialogRef = inject("dialogRef") as any;
   const author = ref(dialogRef.value.data.authors);

@@ -6,6 +6,9 @@
     import user_state from '@/composables/getUser';
     import { ref, onMounted } from 'vue';
     import { useRouter } from 'vue-router';
+    import AskQuestion from '@/components/models/AskQuestion.vue';
+    import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
+    import useCustomQandA from '@/composables/useCustomQandA';
 
     const { studyProjects, studyProject, iserrorStudyProject, isPendingStudyProject, getStudyProjects, getStudyProject, postStudyTask, 
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
@@ -15,6 +18,7 @@
     const breadcrumbs = ref([
         { label: 'Projects', url:'/projects' }
     ]);
+    const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
     const fitlerCheckedIds = ref(new Map());
     const projectDescription = ref(false);
     const projectTitle = ref(false);
@@ -50,14 +54,16 @@
             answer.value = 'Please enter a question';
             return;
         }
-        // await askQuestion(dialogRef.value.data.id, question.value);
+        let askQuestionPayload = new AskQuestion(question.value, null, studyProject.value.id);
+        await askQuestion(askQuestionPayload);
 
-        // if (isAskPending.value) {
-        //     answer.value = 'Please wait for the answer';
-        // } else {
-        //     answer.value = answerResponse.value.answer;
-        // }
-
+        if (isAskPending.value) {
+           answer.value = 'Please wait for the answer';
+        } else {
+            answer.value = answerResponse.value.answer;
+        }
+        console.log("Answer: ", answer.value);
+        qas.value.push({question: question.value, answer: answer.value, created_at: moment()});
         // qas.value.push(new DocumentAnswer(question.value, answer.value));
     }
 
@@ -202,7 +208,7 @@
                                             </div>
                                         </div>
                                         <div class="flex p-2 pr-0 bg-white">
-                                            <InputText class="flex-grow-1 p-2" type="text" v-model="question" />
+                                            <InputText @keyup.enter="handleAsk" class="flex-grow-1 p-2" type="text" v-model="question" />
                                             <Button class="flex-shrink-0 px-3 py-1 ml-1" label="Ask" @click="handleAsk" />
                                         </div>
                                     </div>
