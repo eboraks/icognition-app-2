@@ -92,6 +92,13 @@
     }
 }
 
+.p-splitter-gutter {
+    width: .5em;
+
+    .p-splitter-gutter-handle {
+        width: .5em!important;
+    }
+}
 
 .p-tab {
     font-weight: 500;

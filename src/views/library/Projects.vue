@@ -6,6 +6,7 @@
     import Button from 'primevue/button';
     import Checkbox from 'primevue/checkbox';
     import Dialog from 'primevue/dialog';
+    import GridSelection from '@/components/GridSelection.vue';
     import moment from 'moment';
     import StudyProject from '@/components/models/StudyProject.vue'
     import { useToast } from 'primevue/usetoast';
@@ -218,6 +219,10 @@
         console.log("Search handle, answer: ", answer.value)   
     }
 
+    const unselectProjects = async () => {
+        selectedProjects.value = [];
+    }
+
 </script>
 
 <template>
@@ -291,18 +296,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="showFooterSelect" class="col-12 grid grid-nogutter p-0">
-                <div class="flex bg-green-500 flex-row w-full">
-                    <div class="col-6">
-                        <p class="inline mr-3 text-black-alpha-90">{{ selectedProjects.length }} Checked Item<span v-if="selectedProjects.length > 1">s</span></p>
-                        <Button type="button" label="Clear" aria-label="Clear" class="p-2 mr-2 bg-white text-black-alpha-90" @click="selectedProjects = []" />
-                    </div>
-                    <div class="col-6 flex flex-flow justify-content-end">
-                        <Button type="button" label="Remove" aria-label="Remove" class="p-2 mr-2 bg-white text-black-alpha-90" @click="deletedStudyProject" />
-                        <!-- <Button type="button" label="Archive" aria-label="Archive" class="p-2 mr-2 bg-white text-black-alpha-90" @click="selectedProjects.value = []" /> -->
-                    </div>
-                </div>
-            </div>
+            <GridSelection v-if="showFooterSelect" :selectedItems="selectedProjects" :method="deleteStudyProject" :origin="'projects'" @unselectProjects="unselectProjects" />
         </div>
     </div>
     <Dialog v-model:visible="showNewProjectDialog" modal header="New Project" :style="{ width: '90%' }">
@@ -355,7 +349,7 @@
                             </div>
                         </div>
                         <div class="flex flex-column col-6 pl-0">
-                            <Button icon="pi pi-plus" style="width: 12rem;" class="surface-300 border-300 border-400 text-black-alpha-90 px-3 py-1" label="Add a Study Point" raised @click="showAddANewStudyPointDialog = true" />
+                            <Button icon="pi pi-plus" style="width: 12rem;" class="surface-300 border-300 border-400 text-black-alpha-90 px-3 py-1" label="Add a Study Point" @click="showAddANewStudyPointDialog = true" />
                         </div>
                     </div>
                 </div>

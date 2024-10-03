@@ -4,17 +4,19 @@ import user_state from '@/composables/getUser';
 import { ref, onMounted, computed, defineAsyncComponent, watch } from 'vue';
 import AutoComplete from 'primevue/autocomplete';
 import FileUpload from 'primevue/fileupload';
+import GridSelection from '@/components/GridSelection.vue';
 import moment from 'moment';
 import { useDialog } from 'primevue/usedialog';
 import { useToast } from 'primevue/usetoast';
 
 const { docs, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
-    searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
+    searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument } = useLibrary();
 const answer_loading = ref(false);
 
 const dialog = useDialog();
 const expandedRows = ref({});
 const fileupload = ref([]);
+const fitlerCheckedIds = ref(new Map());
 let hasNoData = ref();
 let isError = false;
 const items = ref([]);
@@ -87,6 +89,18 @@ const emptied = () => {
     searchHandle();
 }
 
+const filteredDocuments = computed(() => {
+    if (docs.value != null) {
+        if (fitlerCheckedIds.value.size === 0) {
+            return docs.value;
+        } else {
+            return docs.value.filter(doc => {
+                return fitlerCheckedIds.value.has(doc.id);
+            });
+        }   
+    }
+});
+
 const hasData = async (documentsLength) => {
     if (documentsLength != null && documentsLength > 0) {
         hasNoData = false;
@@ -97,6 +111,11 @@ function inputHandle(params) {
     if (search_term.value === '') {
         emptied();
     }
+}
+
+const onCheckedIds = (checkedIds) => {
+    console.log("Library Checked Ids: ", checkedIds);
+    fitlerCheckedIds.value = checkedIds;
 }
 
 const onCollapseAll = () => {
@@ -156,6 +175,10 @@ const onUpload = async (e) => {
 
 };
 
+const unselectDocuments = async () => {
+    selectedDocuments.value = [];
+}
+
 const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.vue'));
 
 </script>
@@ -180,7 +203,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                 <a @click="onCollapseAll" class="py-1 mr-3 font-semibold" style="height: 2rem;" tabindex="0">
                     <i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All
                 </a>
-                <Button type="button" label="Upload Documents" aria-label="Upload Documents" class="p-2 mr-2 bg-primary-500" @click="showUploadFileDialog = !showUploadFileDialog"/>
+                <Button type="button" label="Upload PDF" aria-label="Upload PDF" class="p-2 mr-2 bg-primary-500" @click="showUploadFileDialog = !showUploadFileDialog"/>
             </div>
         </div>
         <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0" :class="{'projectHeightLarge': showFooterSelect}">
@@ -235,18 +258,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                 </p>
             </div>
         </div>
-        <div v-if="showFooterSelect" class="col-12 grid grid-nogutter p-0">
-            <div class="flex bg-green-500 flex-row w-full">
-                <div class="col-6">
-                    <p class="inline mr-3 text-black-alpha-90">{{ selectedDocuments.length }} Checked Item<span v-if="selectedDocuments.length > 1">s</span></p>
-                    <Button type="button" label="Clear" aria-label="Clear" class="p-2 mr-2 bg-white text-black-alpha-90" @click="selectedDocuments = []" />
-                </div>
-                <div class="col-6 flex flex-flow justify-content-end">
-                    <Button type="button" label="Remove" aria-label="Remove" class="p-2 mr-2 bg-white text-black-alpha-90" @click="deletedStudyProject" />
-                    <!-- <Button type="button" label="Archive" aria-label="Archive" class="p-2 mr-2 bg-white text-black-alpha-90" @click="selectedDocuments.value = []" /> -->
-                </div>
-            </div>
-        </div>
+        <GridSelection v-if="showFooterSelect" :selectedItems="selectedDocuments" :method="deleteDocument" :origin="'documents'" @unselectDocuments="unselectDocuments" />
     </div>
     <Dialog v-model:visible="showUploadFileDialog" modal header="Upload Document(s)" :style="{ width: '60%' }">
         <template #header>

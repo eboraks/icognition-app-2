@@ -222,7 +222,7 @@ const useStudyProject = () => {
             }
         } catch (err) {
             console.log('deleteStudyProject -> error: ', err)
-        }        
+        }
     }
 
     return { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, deleteStudyProject}    

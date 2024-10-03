@@ -26,8 +26,8 @@
                 <div class="col-6 text-center flex align-content-center flex-wrap">
                     <!-- Title / App Routing -->
                     <div class="app-header-routing flex flex-row" data-animation-role="header-element">
-                        <p :class="{'selectedRoute': router.currentRoute.value.name == 'documents'}" class="mr-3 text-lg cursor-pointer" @click="router.push('Documents')">My Documents</p>
-                        <p :class="{'selectedRoute': router.currentRoute.value.name == 'projects'}" class="mr-3 text-lg cursor-pointer" @click="router.push('Projects')" >My Projects</p>
+                        <p :class="{'selectedRoute': router.currentRoute.value.name == 'documents'}" class="mr-3 text-lg cursor-pointer" @click="router.push('/Documents')">My Documents</p>
+                        <p :class="{'selectedRoute': router.currentRoute.value.name == 'projects'}" class="mr-3 text-lg cursor-pointer" @click="router.push('/Projects')" >My Projects</p>
                     </div>
                     <div class="header-title website-header-title w-full" data-animation-role="header-element">
                         <div class="header-title-logo md:pt-3 xs:pt-3">

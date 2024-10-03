@@ -1,6 +1,6 @@
 <template>
   <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-blue-100 h-full">
-    <Splitter class="h-full">
+    <Splitter class="h-full w-full">
       <SplitterPanel :class="{ 'splitter-panel-container-full': !buttonToggleSplitterPanelRight }" class="col-12 p-0 border-round surface-100 border-noround-right"  :size="66" :minSize="1">
         <div class="grid nested-grid grid-nogutter mx-2" style="height: calc(100% - .5rem);">
           <div class="col-12 py-0 max-h-3rem">
@@ -27,7 +27,7 @@
             </div>
           </div>
           
-          <div class="col-12 border-1 border-round border-solid mb-3 border-blue-100 overflow-y-auto" style="height: calc(100% - 62.95px);">
+          <div class="col-12 border-1 border-round border-solid mb-3 border-blue-100 overflow-y-auto" style="height: calc(100% - 3em);">
             <div class="col-12 bg-white px-3 py-2 flex flex-column border-round h-auto min-h-full">
               <div class="flex-row">
                 <span class="text-sm" v-for="item in author">{{ item }} </span>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import Tree from 'primevue/tree';
 
 const selectedKey = ref(null)
@@ -44,8 +44,3 @@ const onNodeUnselect = (node) => {
 
 </template>
 
-<style scoped>
-
-
-
-</style>

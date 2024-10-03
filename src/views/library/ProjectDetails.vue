@@ -11,10 +11,7 @@
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
         deleteStudyProject } = useStudyProject();
     const { docs, answer, iserrorLibrary, resp_type, isPendingLibrary, getDocuments, getSubtopics, subtopics,
-        searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
-    const breadcrumbs = ref([
-        { label: 'Projects', url:'/projects' }
-    ]);
+        searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument } = useLibrary();
     const fitlerCheckedIds = ref(new Map());
     const projectDescription = ref(false);
     const projectTitle = ref(false);
@@ -69,17 +66,10 @@
 
 <template>
     <div class="grid nested-grid grid-nogutter col-12 surface-100" style="height: calc(100% - 72px - 84px);">
-        <Breadcrumb :model="breadcrumbs" >
-            <template #item="{ item }">
-                <router-link class="cursor-pointer" to="/Projects">
-                    {{item.label}} /
-                </router-link>
-            </template>
-        </Breadcrumb>
         <div class="col-12 bg-white border-round border-300 border-2 p-0 h-full">
             <Splitter class="grid nested-grid grid-nogutter h-full border-round border-noround-right">
-                <SplitterPanel class="col-12 p-0 splitter-panel-container-66" :minSize="1">
-                    <Panel class="h-full panel-project-detail">
+                <SplitterPanel class="col-12 p-0" :minSize="1" :size="66">
+                    <Panel class="h-full panel-project-detail border-none">
                         <template #header>
                             <div class="col-12 grid grid-nogutter p-0">
                                 <div class="col-6">
@@ -149,7 +139,7 @@
                         </template>
                     </Panel>
                 </SplitterPanel>
-                <SplitterPanel class="col-12 p-0 splitter-panel-container-34" :minSize="1">
+                <SplitterPanel class="col-12 p-0" :minSize="1" :size="34">
                     <div class="card h-full">
                         <Tabs value="0" class="h-full">
                             <TabList class="border-bottom-1 border-200">

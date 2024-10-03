@@ -62,11 +62,11 @@
     }
 
     .splitter-panel-container-small {
-        flex-basis: 65px!important;
+        flex-basis: 4em!important;
     }
 
     .splitter-panel-container-big {
-        flex-basis: calc(100% - 65px)!important;
+        flex-basis: calc(100% - 4.5em) !important
     }
 
     .splitter-panel-container-25 {
@@ -87,6 +87,10 @@
 
     .splitter-panel-container-full {
         flex-basis: 100%!important;
+
+        + div {
+            display: none;
+        }
     }
 
     .splitter-panel-container-none {

@@ -3,14 +3,15 @@ import { ref } from 'vue';
 
 const useLibrary = () => {
 
-    const docs = ref([])
-    const answer = ref(null)
-    const resp_type = ref(null)
-    const error = ref(null)
-    const isPending = ref(false)
-    const subtopics = ref([])
-    const subtopics_nodes = ref([])
-    const entities_names = ref([])
+    const doc = ref();
+    const docs = ref([]);
+    const answer = ref(null);
+    const resp_type = ref(null);
+    const error = ref(null);
+    const isPending = ref(false);
+    const subtopics = ref([]);
+    const subtopics_nodes = ref([]);
+    const entities_names = ref([]);
     
     const baseurl = import.meta.env.VITE_APP_API_BASE_URL
     console.log("Base URL: ", baseurl)
@@ -133,7 +134,31 @@ const useLibrary = () => {
         }
     }
 
-    return { docs, answer, resp_type, error, isPending, getDocuments, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names}    
+    // Delete a study Project
+    const deleteDocument = async (document_id) => {
+
+        console.log('deleteDocument -> document_id: ', document_id)
+        //Fetch post with request.study_project
+        try {
+            let response = await fetch(`${base_url}/document/${document_id}`, {
+                method: 'delete',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            })
+            
+            console.log('deleteDocument -> response: ', response)
+            if (response.status == 202) {
+                let doc = await response.json()
+                console.log(`deleteDocument accepted, document id ${document_id} to deleted Document`)
+            }
+        } catch (err) {
+            console.log('deleteDocument -> error: ', err)
+        }        
+    }
+
+    return { docs, answer, resp_type, error, isPending, getDocuments, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument}    
 
 
 }
