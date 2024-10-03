@@ -1,5 +1,5 @@
 <script lang="ts">
-    class DocumentAnswer {
+    class AskQuestionAnswer {
         question: string;
         answer: string;
         documents_used: [string] | null;
@@ -11,5 +11,5 @@
             this.answer = answer;
         }
     }
-    export default DocumentAnswer
+    export default AskQuestionAnswer;
 </script>

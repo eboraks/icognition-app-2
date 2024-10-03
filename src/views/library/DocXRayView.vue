@@ -135,6 +135,8 @@
   import useDocXRay from '@/composables/useDocXRay';
   // import DocumentAnswer from '@/components/models/DocumentAnswer.vue';
   // import DocumentQuestion from '@/components/models/DocumentQuestion.vue';
+  import AskQuestion from '@/components/models/AskQuestion.vue';
+  import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
 
   const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
   const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
@@ -347,7 +349,8 @@
       answer.value = 'Please enter a question';
       return;
     }
-    await askQuestion(dialogRef.value.data.id, question.value);
+    let askQuestionPayload = new AskQuestion(question.value, dialogRef.value.data.id, null);
+    await askQuestion(askQuestionPayload);
 
     if (isAskPending.value) {
       answer.value = 'Please wait for the answer';

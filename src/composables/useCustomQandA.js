@@ -1,28 +1,31 @@
 // Function that makes http request to get library data
 import { ref } from 'vue';
+import AskQuestion from '@/components/models/AskQuestion.vue';
+import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';  
 
 const useCustomQandA = () => {
 
-    const answerResponse = ref(null)
+    const answerResponse = ref(new AskQuestionAnswer('', ''))
     const document = ref(null)
     const error = ref(null)
     const isAskPending = ref(true)
+    const question = ref(new AskQuestion(''))
+
     
     const baseurl = import.meta.env.VITE_APP_API_BASE_URL
     
-    const askQuestion = async (doc_id, question_text) => {
+    const askQuestion = async (askQuestionPayload) => {
         error.value = null
         isAskPending.value = true
         try {
-            const url = `${baseurl}/document/question`
-            const payload = { document_id: doc_id, question: question_text }
-            console.log("URL: ", url, JSON.stringify(payload))
+            const url = `${baseurl}/ask_question`
+            console.log("URL: ", url, JSON.stringify(askQuestionPayload))
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(askQuestionPayload)
             });
             
             if (!res.ok) {
