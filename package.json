@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gcp-dev": "vite --mode gcp.development",
+    "dev-build": "vite build --mode gcp.development"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
