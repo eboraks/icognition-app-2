@@ -27,3 +27,9 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Deploy to Firebase
+1. Authenticate: 
+```firebase login --reauth```
+2. 
+``` firebase deploy```

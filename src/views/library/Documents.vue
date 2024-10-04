@@ -89,17 +89,7 @@ const emptied = () => {
     searchHandle();
 }
 
-const filteredDocuments = computed(() => {
-    if (docs.value != null) {
-        if (fitlerCheckedIds.value.size === 0) {
-            return docs.value;
-        } else {
-            return docs.value.filter(doc => {
-                return fitlerCheckedIds.value.has(doc.id);
-            });
-        }   
-    }
-});
+const filteredDocuments = ref();
 
 const hasData = async (documentsLength) => {
     if (documentsLength != null && documentsLength > 0) {
@@ -141,7 +131,7 @@ const searchHandle = async () => {
     answer_loading.value = false; 
     console.log("Search handle, answer: ", resp_type.value)
     console.log('documents from searchHandle', docs.value);
-    props.documents.value = docs.value;
+    filteredDocuments.value = docs.value;
     console.log('props.documents', props.documents.value);
 };
 
@@ -208,14 +198,14 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
         </div>
         <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0" :class="{'projectHeightLarge': showFooterSelect}">
             <div class="card h-full">
-                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocuments" :value="props.documents" dataKey="id"
+                <DataTable v-model:filters="filteredDocuments" v-model:expandedRows="expandedRows" v-model:selection="selectedDocuments" :value="props.documents" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full text-xs relative">
                     <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">
                         <template #body="slotProps">
-                            <div class="flex flex-row">
-                                <img :src="slotProps.data.image_url" :alt="slotProps.data.image_url" class="vertical-align-middle shadow-lg inline-block" width="32" />
-                                <a @click="showXRayDialog(slotProps.data)" tabindex="0"><p class="inline-block my-auto px-2 text-black-alpha-90 overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;">{{slotProps.data.title}}</p></a>
+                            <div class="flex flex-row align-items-center">
+                                <i class="pi pi-globe"></i>
+                                <a @click="showXRayDialog(slotProps.data)" tabindex="0"><p class="my-auto px-2 text-black-alpha-90 overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;">{{slotProps.data.title}}</p></a>
                             </div>
                         </template>
                     </Column>
@@ -231,7 +221,7 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                     </Column>
                     <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
                     <template #expansion="slotProps">
-                        <div class="p-1">
+                        <div class="p-1 pl-5">
                             <div class="col-12 pb-0">
                                 <a class="mr-3" :href="slotProps.data.url" target="_blank"><i class="pi pi-pen-to-square"></i> OPEN ORIGINAL</a>
                                 <a @click="showXRayDialog(slotProps.data)" tabindex="0">OPEN X-RAY</a>
@@ -240,9 +230,9 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                             <div class="col-12 pt-1">
                                 <h5>Summary: {{ slotProps.data.is_about}}</h5>
                             </div>
-                            <div class="col-12">
+                            <!-- <div class="col-12">
                                 <Tag v-for="entity of slotProps.data.entities_and_concepts" :value="entity.name" severity="info" class="mr-1 text-700 mb-1 px-2" />
-                            </div>
+                            </div> -->
                         </div>
                     </template>
                 </DataTable>

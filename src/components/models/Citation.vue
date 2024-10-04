@@ -4,6 +4,7 @@
         id: number;
         text_reference: [VerbatimText] | null;
         document_id: string | null;
+        document_title: string | null;
         task_id: number | null;
         created_at: Date;
 

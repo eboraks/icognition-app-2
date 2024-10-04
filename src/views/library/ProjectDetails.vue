@@ -6,12 +6,17 @@
     import user_state from '@/composables/getUser';
     import { ref, onMounted } from 'vue';
     import { useRouter } from 'vue-router';
+    import AskQuestion from '@/components/models/AskQuestion.vue';
+    import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
+    import useCustomQandA from '@/composables/useCustomQandA';
+    import StudyProject from '@/components/models/StudyProject.vue';
 
     const { studyProjects, studyProject, iserrorStudyProject, isPendingStudyProject, getStudyProjects, getStudyProject, postStudyTask, 
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
-        deleteStudyProject } = useStudyProject();
+        deleteStudyProject, candidateDocs, getCandidatesDocs } = useStudyProject();
     const { docs, answer, iserrorLibrary, resp_type, isPendingLibrary, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument } = useLibrary();
+    const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
     const fitlerCheckedIds = ref(new Map());
     const projectDescription = ref(false);
     const projectTitle = ref(false);
@@ -22,10 +27,9 @@
 
     onMounted(async() => {
         try {
-            await getDocuments(user_state.user.uid);
-            await getSubtopicsNodes(user_state.user.uid);
+            await getCandidatesDocs(router.currentRoute.value.params.id);
             await getStudyProject(router.currentRoute.value.params.id);
-            console.log("Subtopics Nodes: ", subtopics_nodes.value.length);
+            console.log("Seleced Documents: ", selectedDocuments.value); 
         } catch (err) {
             console.log("Error: ", err);
         }
@@ -47,15 +51,15 @@
             answer.value = 'Please enter a question';
             return;
         }
-        // await askQuestion(dialogRef.value.data.id, question.value);
-
-        // if (isAskPending.value) {
-        //     answer.value = 'Please wait for the answer';
-        // } else {
-        //     answer.value = answerResponse.value.answer;
-        // }
-
-        // qas.value.push(new DocumentAnswer(question.value, answer.value));
+        let askQuestionPayload = new AskQuestion(question.value, null, studyProject.value.id);
+        await askQuestion(askQuestionPayload);
+        if (isAskPending.value) {
+           answer.value = 'Please wait for the answer';
+        } else {
+            answer.value = answerResponse.value.answer;
+        }
+        console.log("Answer: ", answer.value);
+        qas.value.push({question: question.value, answer: answer.value, created_at: moment()});
     }
 
     const onCheckedIds = (checkedIds) => {
@@ -121,6 +125,13 @@
                                                 <div class="col-12 flex flex-row">
                                                     <div class="col-10">
                                                         <p class="mt-2">Sources:</p>
+                                                        <ul v-for="citation in study_task.citations">
+                                                            <li class="text-xs">{{ citation.document_title }}</li>
+                                                            <p class="text-xs">Quote:</p> 
+                                                            <ul v-for="text in citation.text_reference">
+                                                                <p class="text-xs">{{ text.verbatim_text }}</p>
+                                                            </ul>
+                                                        </ul>
                                                     </div>
                                                     <div class="col-2 flex justify-content-end">
                                                         <Button class="mr-2 bg-green-500" v-if="study_task.status == Default_Status.SUCCESS" severity="success" icon="pi pi-check" rounded aria-label="Status" size="small" />
@@ -143,12 +154,12 @@
                     <div class="card h-full">
                         <Tabs value="0" class="h-full">
                             <TabList class="border-bottom-1 border-200">
-                                <Tab value="0"><i class="pi pi-th-large"></i> Entities by Source</Tab>
+                                <!-- <Tab value="0"><i class="pi pi-th-large"></i> Entities by Source</Tab> -->
                                 <Tab value="1"><i class="pi pi-sparkles"></i> Ask iCognition</Tab>
                                 <Tab value="2"><i class="pi pi-clone"></i> Related Documents</Tab>
                             </TabList>
                             <TabPanels>
-                                <TabPanel value="0">
+                                <!-- <TabPanel value="0">
                                     <div v-if="subtopics_nodes.length == 0">
                                         <div class="col-12 pt-7 mt-6">
                                             <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
@@ -164,7 +175,7 @@
                                             <SubtopicsTree :nodes="subtopics_nodes" @checkedIdsEvent="onCheckedIds"/>
                                         </div>
                                     </div>
-                                </TabPanel>
+                                </TabPanel> -->
                                 <TabPanel value="1">
                                     <div class="flex-column my-1 h-full surface-100">
                                         <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 54px);">
@@ -192,7 +203,7 @@
                                             </div>
                                         </div>
                                         <div class="flex p-2 pr-0 bg-white">
-                                            <InputText class="flex-grow-1 p-2" type="text" v-model="question" />
+                                            <InputText @keyup.enter="handleAsk" class="flex-grow-1 p-2" type="text" v-model="question" />
                                             <Button class="flex-shrink-0 px-3 py-1 ml-1" label="Ask" @click="handleAsk" />
                                         </div>
                                     </div>
@@ -200,10 +211,12 @@
                                 <TabPanel value="2">
                                     <div class="flex-column my-1 h-full surface-100">
                                         <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 63.59px);">
-
+                                            <div v-for="doc in studyProject.related_docs">
+                                                <div>{{doc.title}} - {{ doc.cosine_similarity }}</div>
+                                            </div>
                                         </div>
                                         <div class="flex p-2 pr-0 bg-white">
-                                            <MultiSelect v-model="selectedDocuments" display="chip" :options="docs" optionLabel="title" filter placeholder="Select Documents" class="w-full md:w-80" style="max-width: 85%;">
+                                            <MultiSelect v-model="selectedDocuments" display="chip" :options="candidateDocs" optionLabel="title" filter placeholder="Select Documents" class="w-full md:w-80" style="max-width: 85%;">
                                                 <template #option="slotProps">
                                                     <div class="flex items-center">
                                                         <div>{{ slotProps.option.title }}</div>

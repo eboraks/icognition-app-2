@@ -1,4 +1,5 @@
 <script setup>
+    import useLibrary from '@/composables/useLibrary';
     import useStudyProject from '@/composables/useStudyProject';
     import user_state from '@/composables/getUser';
     import { ref, onMounted, computed, watch } from 'vue'
@@ -12,12 +13,11 @@
     import { useToast } from 'primevue/usetoast';
     import { useRouter } from 'vue-router';
 
-
-    // const { documents, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
-    //     searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
+    const { documents, answer, isLibraryerror, resp_type, isLibraryPending, getDocuments, getSubtopics, subtopics,
+        searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
     const { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, 
         postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, 
-        deleteStudyProject } = useStudyProject();
+        deleteStudyProject, searchProjects } = useStudyProject();
     let addANewStudyPointValue = ref('');
     const addStudyListError = ref('');
     const analysis_checked = ref();
@@ -43,6 +43,7 @@
 
     onMounted(async() => {
         try {
+            getEntitiesNames(user_state.user.uid);
             getStudyProjects(user_state.user.uid);
         } catch (err) {
             console.log("Error: ", err);

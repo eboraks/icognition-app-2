@@ -50,12 +50,12 @@
         <div class="card h-full">
           <Tabs value="0" class="h-full">
             <TabList>
-              <Tab value="0">Summary</Tab>
+              <!-- <Tab value="0">Summary</Tab> -->
               <Tab value="1">Ask iCognition</Tab>
               <Tab value="2">Notes</Tab>
             </TabList>
             <TabPanels>
-              <TabPanel value="0">
+              <!-- <TabPanel value="0">
                 <div class="flex-column my-1 h-full p-2 surface-100">
                   <div class="overflow-y-auto pr-3 py-3" style="height: calc(100% - 49.6px);">
                     <p class="pl-3 pb-3 line-height-2" v-if="dialogRef.data.is_about != null">{{ dialogRef.data.is_about }}</p>
@@ -67,7 +67,7 @@
                     </div>
                   </div>
                 </div>
-              </TabPanel>
+              </TabPanel> -->
               <TabPanel value="1">
                 <div class="flex-column my-1 h-full p-0 surface-100">
                   <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 44px);">
@@ -95,7 +95,7 @@
                     </div>
                   </div>
                   <div class="flex p-2 pr-0 bg-white">
-                    <InputText class="flex-grow-1 p-0" type="text" v-model="question" />
+                    <InputText @keyup.enter="handleAsk" class="flex-grow-1 p-0" type="text" v-model="question" />
                     <Button class="flex-shrink-0 px-3 py-1 mx-1 bg-primary-500" label="Ask" @click="handleAsk" />
                   </div>
                 </div>
@@ -133,8 +133,8 @@
   import useCustomQandA from '@/composables/useCustomQandA';
   import useDocQuesAnswers from '@/composables/useDocQuesAnswers';
   import useDocXRay from '@/composables/useDocXRay';
-  // import DocumentAnswer from '@/components/models/DocumentAnswer.vue';
-  // import DocumentQuestion from '@/components/models/DocumentQuestion.vue';
+  import AskQuestion from '@/components/models/AskQuestion.vue';
+  import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
 
   const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
   const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
@@ -347,7 +347,8 @@
       answer.value = 'Please enter a question';
       return;
     }
-    await askQuestion(dialogRef.value.data.id, question.value);
+    let askQuestionPayload = new AskQuestion(question.value, dialogRef.value.data.id, null);
+    await askQuestion(askQuestionPayload);
 
     if (isAskPending.value) {
       answer.value = 'Please wait for the answer';

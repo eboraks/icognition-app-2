@@ -7,6 +7,7 @@ const useStudyProject = () => {
     const projectDocumentLink = ref();
     const projectDocumentUnlink = ref();
     const relatedEntitites = ref();
+    const candidateDocs = ref();
     const studyProject = ref(new StudyProject('', '', '', [{description: ''}]));
     const studyProjects = ref();
     const studyTask = ref();
@@ -28,7 +29,7 @@ const useStudyProject = () => {
                 throw Error('Could not fetch the data for that resource')
             }
             studyProjects.value = await res.json();
-            console.log("Study Projects: ", studyProjects);
+            console.log("Study Projects: ", studyProjects.value);
             isPending.value = false
         } catch (err) {
             console.error(err)
@@ -49,7 +50,7 @@ const useStudyProject = () => {
                 throw Error('Could not fetch the data for that resource')
             }
             studyProject.value = await res.json();
-            console.log("Study Project: ", studyProject);
+            console.log("Study Project: ", studyProject.value);
             isPending.value = false
         } catch (err) {
             console.error(err)
@@ -71,6 +72,25 @@ const useStudyProject = () => {
             }
             relatedEntitites.value = await res.json();
             console.log("Study Project: ", relatedEntitites);
+            isPending.value = false
+        } catch (err) {
+            console.error(err)
+            error.value = err.message
+            isPending.value = false
+            console.log("Error: ", error.value)
+        }
+    }
+
+    const getCandidatesDocs = async (project_id) => {
+        error.value = null
+        isPending.value = true
+        try {
+            const url = `${base_url}/study_project/${project_id}/candidate_documents`
+            const res = await fetch(url)
+            if (!res.ok) {
+                throw Error(`Could not fetch the data for that resource: ${url}`)
+            }
+            candidateDocs.value = await res.json();
             isPending.value = false
         } catch (err) {
             console.error(err)
@@ -197,7 +217,7 @@ const useStudyProject = () => {
             }
         } catch (err) {
             console.log('postProjectDocumentUnlink -> error: ', err)
-        }        
+        }
     }
 
 
@@ -225,8 +245,34 @@ const useStudyProject = () => {
         }
     }
 
-    return { studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject, postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject, postProjectDocumentLink, postProjectDocumentUnlink, deleteStudyProject}    
+    const searchProjects = async (user_id, search_term) => {
+        console.log('searchProjects -> user_id: ', user_id)
+        //Fetch post with request.user_id
+        try {
+            let response = await fetch(`${base_url}/study_project/${user_id}/search`, {
+                method: 'post',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(search_term)
+            })
+            
+            console.log('searchProjects -> response: ', response)
+            if (response.status == 202) {
+                let searchResult = await response.json()
+                console.log(`searchProjects accepted, ${searchResult}`);
+            }
+        } catch (err) {
+            console.log('searchProjects -> error: ', err)
+        }
+    }
 
+    return {
+        studyProjects, studyProject, error, isPending, getStudyProjects, getStudyProject,
+        postStudyTask, postStudyTasks, getRelatedEntities, postStudyProject,
+        postProjectDocumentLink, postProjectDocumentUnlink, deleteStudyProject, candidateDocs, getCandidatesDocs, searchProjects
+    }
 
 }
 
