@@ -267,7 +267,7 @@
         }
       ]
     }
-    pdfMake.createPdf(docDefinition).download(`${dialogRef.value.data.title.substr(0, 20)}.pdf`);
+    //pdfMake.createPdf(docDefinition).download(`${dialogRef.value.data.title.substr(0, 20)}.pdf`);
   }
 
   const handleHighlightNotesAdd = async () => {
