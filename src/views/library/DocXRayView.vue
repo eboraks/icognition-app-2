@@ -34,8 +34,9 @@
               </div>
               
               <!-- span class="text-sm mb-3">Published {{ publication_date.valueOf() }}</span-->
-              <div><document_component @data-changed="handleDataChange"/></div>
+              <div><document_component /></div>
               <div class="text-sm" width="200px" v-html="pageHTML"></div>
+              <!-- Old code, not sure it's needed -->
               <!--div v-for="item in html_elements_for_page" class="text-sm">
                 <h1 v-if="item.element == 'h1'" class="mt-2"><span v-html="item.text"></span></h1>
                 <h2 v-if="item.element == 'h2'" class="mt-2"><span v-html="item.text"></span></h2>
@@ -324,7 +325,7 @@ const document_component = () => {
 
   return h(
     'div',
-    { id: 'document', class: 'bar',  onMounted: () => {console.log("------")} }, // props
+    { id: 'document', class: 'bar' }, // props
     [
       children
     ],
@@ -357,7 +358,7 @@ const taggleCitation = async (index) => {
   console.log("Taggle Citation: ", index, " item: ", qas.value[index].citations);
   pageHTML.value = article_html_builder(original_elements.value, qas.value[index].citations, qas.value[index].question);
   citations.value = qas.value[index].citations;
-  //scrollToElement.value.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  scrollToElement.value.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
   
 }
 
@@ -371,7 +372,7 @@ const addCitiationHightlights = (text, citations = null, tooltiptext = null, hig
       citations.forEach((citation, index) => {
         if (text.includes(citation.verbatim_text)) {
           text = text.replace(new RegExp(citation.verbatim_text, 'gi'),
-            `<span class="${hightlight_style} tooltip" id="section">${citation.verbatim_text}<span class="tooltiptext">${tooltiptext}</span></span>`);
+            `<span class="${hightlight_style} tooltip" id="section-${index}">${citation.verbatim_text}<span class="tooltiptext">${tooltiptext}</span></span>`);
         }
       });
       return text;
