@@ -33,15 +33,17 @@
                 <span class="text-sm" v-for="item in author">{{ item }} </span>
               </div>
               
-              <span class="text-sm mb-3">Published {{ publication_date.valueOf() }}</span>
-              <div v-for="item in html_elements_for_page" class="text-sm">
+              <!-- span class="text-sm mb-3">Published {{ publication_date.valueOf() }}</span-->
+              <div><document_component @data-changed="handleDataChange"/></div>
+              <div class="text-sm" width="200px" v-html="pageHTML"></div>
+              <!--div v-for="item in html_elements_for_page" class="text-sm">
                 <h1 v-if="item.element == 'h1'" class="mt-2"><span v-html="item.text"></span></h1>
                 <h2 v-if="item.element == 'h2'" class="mt-2"><span v-html="item.text"></span></h2>
                 <h3 v-if="item.element == 'h3'" class="mt-1"><span v-html="item.text"></span></h3>
                 <h4 v-if="item.element == 'h4'" class="mt-1"><span v-html="item.text"></span></h4>
                 <h5 v-if="item.element == 'h5'" class="mt-1"><span v-html="item.text"></span></h5>
                 <p v-if="item.element == 'p'"><span v-html="item.text"></span></p>
-              </div>
+              </div-->
             </div>
           </div>
         </div>
@@ -50,12 +52,12 @@
         <div class="card h-full">
           <Tabs value="0" class="h-full">
             <TabList>
-              <!-- <Tab value="0">Summary</Tab> -->
+              <Tab value="0">Summary</Tab>
               <Tab value="1">Ask iCognition</Tab>
               <Tab value="2">Notes</Tab>
             </TabList>
             <TabPanels>
-              <!-- <TabPanel value="0">
+              <TabPanel value="0">
                 <div class="flex-column my-1 h-full p-2 surface-100">
                   <div class="overflow-y-auto pr-3 py-3" style="height: calc(100% - 49.6px);">
                     <p class="pl-3 pb-3 line-height-2" v-if="dialogRef.data.is_about != null">{{ dialogRef.data.is_about }}</p>
@@ -67,7 +69,7 @@
                     </div>
                   </div>
                 </div>
-              </TabPanel> -->
+              </TabPanel>
               <TabPanel value="1">
                 <div class="flex-column my-1 h-full p-0 surface-100">
                   <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 44px);">
@@ -78,6 +80,7 @@
                           <template #header>
                             <div class="border-1 border-round border-300 surface-300 flex border-bottom-1 border-noround-bottom border-top-none border-left-none border-right-none">
                               <p class="flex-grow-1 px-3 py-2 text-sm border-round font-semibold">{{item.question}}</p>
+                              <Button type="button" size="small" label="Hightlight Citation" icon="pi pi-code" @click="taggleCitation(index)" />
                               <Button icon="pi pi-times" class="bg-transparent border-transparent border-0 flex-shrink-0 text-black-alpha-90 pr-0" size="small" aria-label="Close" @click="qasRemove(index)"/>
                             </div>
                           </template>
@@ -122,8 +125,8 @@
 </template>
 
 <script setup lang="ts" >
-  import { inject, ref, onBeforeMount } from 'vue';
-  import DocxrayService from '@/services/DocxrayService';
+  import { inject, ref, onMounted, h , onBeforeMount} from 'vue';
+  //import DocxrayService from '@/services/DocxrayService';
   import moment from 'moment';
   import * as pdfFonts from '@/components/models/vfs_fonts.vue';
   import  pdfMake from "pdfmake/build/pdfmake";
@@ -134,24 +137,29 @@
   import useDocQuesAnswers from '@/composables/useDocQuesAnswers';
   import useDocXRay from '@/composables/useDocXRay';
   import AskQuestion from '@/components/models/AskQuestion.vue';
-  import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
-
+  
   const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
   const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
-  const { original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
+  const { doc, original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
   const dialogRef = inject("dialogRef") as any;
   const author = ref(dialogRef.value.data.authors);
   const buttonTogglePlay = ref(true);
   const buttonToggleSplitterPanelRight = ref(true);
-  const citations = ref();
+  const citations_families = ref([]);
   const highlightedFromWhere = ref();
-  const highlightedText = ref('');
+const highlightedText = ref('');
+  const scrollToElement = ref();
   const highlightedTextList = ref([]);
   let highlightedTextListId = 0;
-  const hightlights = ref();
+  const citations = ref();
+const html_elements_for_page = ref([]);
+  const html_elements_for_pdf = ref([]);
   const highlight_notes_value = ref('');
-  const html_elements_for_page = ref();
-  const html_elements_for_pdf = html_elements_for_page.value = dialogRef.value.data.html_elements;
+const html_elements = ref();
+  const pageHTML = ref('');
+  
+  
+  //const html_elements_for_pdf = html_elements_for_page.value = dialogRef.value.data.html_elements;
   let html_to_pdf: [Object] = [null];
   const menu_highlight = ref();
 
@@ -171,18 +179,30 @@
         console.log("Document: ", dialogRef.value.data);
         console.log("Original Elements: ", original_elements.value);
         console.log("Questions and Answers: ", qas.value);
-        html_elements_for_page.value = addHightlights(html_elements_for_page.value, dialogRef.value.data.summary_citations);
-        if (dialogRef.value.data.summary_citations != null) {
-          highlight(dialogRef.value.data.summary_citations);
-        }
-        DocxrayService.getCitations().then((data) => (citations.value = data));
-        DocxrayService.getHighlights().then((data) => (hightlights.value = data));
+
+        // html_elements_for_page.value = original_elements.value is a repetative, but it is needed to tell the compiler wait for the data to be loaded
+        // html_elements_for_page.value is used in the document_component
+        html_elements_for_page.value = original_elements.value;
+        citations.value = dialogRef.value.data.summary_citations;
+        
+        //Generate docment for html
+        pageHTML.value = article_html_builder(original_elements.value, dialogRef.value.data.summary_citations, 'Summary');
+
+        //citations_families.value.push({ 'citations': dialogRef.value.data.summary_citations, 'family': 'Summary' });
+        //runHightlights(); //addHightlights(html_elements.value, citations_families.value[0].citations, citations_families.value[0].family);
+
+        //if (dialogRef.value.data.summary_citations != null) {
+        //  highlight(dialogRef.value.data.summary_citations);
+        //}
+        //DocxrayService.getCitations().then((data) => (citations.value = data));
+        //DocxrayService.getHighlights().then((data) => (hightlights.value = data));
         // create an object that can be seen as html
-        setupArticleHTML(dialogRef.value.data.html_elements, citations);
+        //setupArticleHTML(dialogRef.value.data.html_elements, citations);
       } catch (err) {
         console.log("Error: ", err);
       }
   });
+
 
   function add_to_pdf(element, text): Object {
     switch(element) {
@@ -224,23 +244,169 @@
     }
   }
 
-  const addHightlights = (html_elements, citations) => {
-    if (html_elements != null) {
+const handleDataChange = () => {
+  console.log("Data Change: ");
+}
+
+const document_component = () => {
+
+  const build_citation_span = (element, citations, tooltiptext) => {
+
+    let text = element.text
+    citations.forEach((citation, index) => {
+      if (text.includes(citation.verbatim_text)) {
+        text = text.replace(new RegExp(citation.verbatim_text, 'gi'), `|${citation.verbatim_text}|`);
+      }
+    }); 
+    let text_array = text.split('|');
+
+      //Iterate and create the elements with h(, { class: 'mt-2', innerHTML: element.text });
+    let nodes = [];
+      let citation_exits = false;
+      let citations_texts = citations.map(citation => citation.verbatim_text)
+      text_array.forEach((item, index) => {
+        if (item.trim() != '') {
+          if (citations_texts.includes(item)) {
+            let tooltip_node = h('span', { class: 'tooltiptext', innerHTML: tooltiptext }, []);
+            nodes.push(h('p',
+              { class: 'bg-highlight tooltip', id: 'section-' + index, innerHTML: item },
+              [tooltip_node]
+            ))
+            citation_exits = true;
+          } else {
+            nodes.push(h('span', { class: 'mt-2', innerHTML: item }));
+          }
+        }
+      });
+    //Return the element with the citation hightlighted
+    if (citation_exits) {
+      return (h(element.element, { class: 'mt-2 citation', ref: scrollToElement }, nodes));
+    } else {
+      return (h(element.element, { class: 'mt-2 no-citation' }, nodes));
+    }
+  }
+
+  const markCitations = (element, tooltiptext) => {
+
+  //, citations = null, tooltiptext = null, hightlight_style = "bg-highlight"
+  let node_results = null;
+  if(citations.value != null) {
+
+    let found_citations = [];
+    citations.value.forEach((citation, index) => {
+      if (element.text.includes(citation.verbatim_text)) { found_citations.push(citation); }
+    });
+
+    if (found_citations.length > 0) {
+      let citiation_instances = [];
+      
+      citiation_instances.push(build_citation_span(element, found_citations, tooltiptext));
+  
+      return citiation_instances;
+    } else {
+      return h(element.element, { class: 'mt-2 yy', innerHTML: element.text })
+    }
+    
+  } else {
+    console.log("No citations found");
+    return h(element.element, { class: 'mt-2 yy', innerHTML: element.text })
+  }
+  
+  }//End of addCitiationHightlights2
+
+  let children = [];
+  html_elements_for_page.value.forEach((element) => {
+    let node1 = markCitations(element, 'Summary YY'); 
+    children.push(node1);
+    //children.push(h(element.element, { class: 'mt-2', innerHTML: element.text }));
+  });
+
+
+  return h(
+    'div',
+    { id: 'document', class: 'bar',  onMounted: () => {console.log("------")} }, // props
+    [
+      children
+    ],
+    );
+}
+
+const article_html_builder = (elements, citations, tooltiptext) => {
+  let html = '';
+  elements.forEach((element) => {
+    if (element.element === 'h1') {
+      html += `<h1 class="mt-2">${addCitiationHightlights(element.text, citations, tooltiptext)}</h1>`;
+    } else if (element.element === 'h2') {
+      html += `<h2 class="mt-2">${addCitiationHightlights(element.text, citations, tooltiptext)}</h2>`;
+    } else if (element.element === 'h3') {
+      html += `<h3 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h3>`;
+    } else if (element.element === 'h4') {
+      html += `<h4 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h4>`;
+    } else if (element.element === 'h5') {
+      html += `<h5 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h5>`;
+    } else if (element.element === 'p') {
+      html += `<p class="text-left font-medium">${addCitiationHightlights(element.text, citations, tooltiptext)}</p>`;
+    }
+  });
+  return html;
+}
+
+
+const taggleCitation = async (index) => {
+
+  console.log("Taggle Citation: ", index, " item: ", qas.value[index].citations);
+  pageHTML.value = article_html_builder(original_elements.value, qas.value[index].citations, qas.value[index].question);
+  citations.value = qas.value[index].citations;
+  //scrollToElement.value.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  
+}
+
+
+  
+
+const addCitiationHightlights = (text, citations = null, tooltiptext = null, hightlight_style = "bg-highlight") => {
+
+  if (text != null) {
+    if(citations != null) {
+      citations.forEach((citation, index) => {
+        if (text.includes(citation.verbatim_text)) {
+          text = text.replace(new RegExp(citation.verbatim_text, 'gi'),
+            `<span class="${hightlight_style} tooltip" id="section">${citation.verbatim_text}<span class="tooltiptext">${tooltiptext}</span></span>`);
+        }
+      });
+      return text;
+    } else {
+      console.log("No citations found");
+      return text;
+    }
+  } else {
+    return null;
+  }
+}
+
+  const addHightlights = (html_elements, citations, family) => { 
+    let _html_elements = html_elements;
+    if (_html_elements != null) {
       if(citations != null) {
-        html_elements.forEach(html_element => {
+        _html_elements.forEach(html_element => {
           citations.forEach((citation, index) => {
-        
-            if (html_element.text.includes(citation.verbatim)) {
-              html_element.text = html_element.text.replace(new RegExp(citation.verbatim, 'gi'), `<span class="bg-highlight tooltip" id="section-${index}">${citation.verbatim}<span class="tooltiptext">${citation.verbatim}</span></span>`);
+
+            if (html_element.text.includes(citation.verbatim_text)) {
+              html_element.text = html_element.text.replace(new RegExp(citation.verbatim_text, 'gi'),
+                `<span class="bg-highlight tooltip" id="section-${index}">${citation.verbatim_text}<span class="tooltiptext">${family}</span></span>`);
             }
           });
         });
+        return _html_elements;
+      } else {
+        console.log("No citations found");
+        return _html_elements;
       }
-      return html_elements;
     } else {
       return null;
     }
   }
+
 
   function formate_date(value) {
     return moment(value).format('hh:mm a, MM-DD-YYYY');
@@ -329,6 +495,8 @@
     // playlist.play();
   }  
 
+
+//I think this method is not relevent anymore
   const highlight = (source_sentences) => {
     const sentences_map = new Map(Object.entries(source_sentences));
     console.log("Highlighting", source_sentences);
