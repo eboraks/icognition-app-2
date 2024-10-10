@@ -1,8 +1,7 @@
 <script setup>
 import useLibrary from '@/composables/useLibrary';
 import user_state from '@/composables/getUser';
-import { ref, onMounted, computed, defineAsyncComponent, watch } from 'vue';
-import AutoComplete from 'primevue/autocomplete';
+import { ref, onMounted, defineAsyncComponent, watch } from 'vue';
 import FileUpload from 'primevue/fileupload';
 import GridSelection from '@/components/GridSelection.vue';
 import moment from 'moment';
@@ -52,61 +51,11 @@ watch(
     }
 )
 
-const autocompleteSearch = (e) => {
-    console.log("Autocomplete Search: ", e.query);
 
-    items.value = entities_names.value;
-    console.log("query length ", e.query.length);
-    if (e.query.length > 1) {
-        items.value = [];
-        
-        const words = e.query.trim().split(/\s+/);
-        const lastWord = words[words.length - 1];
-
-        if (e.query.endsWith(' ')) {
-            items.value = entities_names.value.filter(entname => !e.query.includes(entname.toLowerCase())).map((item) => {
-                return e.query + item;
-            });
-            
-        } else {
-            items.value = entities_names.value.filter((item) => {
-                return item.toLowerCase().startsWith(lastWord.toLowerCase());
-            }).map((item) => {
-                words.pop();
-                return words.join(' ') + ' ' + item;
-            });
-            if (items.value.length == 0) {
-                return e.query;
-            }
-        }
-        return e.query;
-    }
-}
-
-const emptied = () => {
-    console.log("Emptied");
-    search_term.value = '';
-    searchHandle();
-}
 
 const filteredDocuments = ref();
 
-const hasData = async (documentsLength) => {
-    if (documentsLength != null && documentsLength > 0) {
-        hasNoData = false;
-    }
-}
 
-function inputHandle(params) {
-    if (search_term.value === '') {
-        emptied();
-    }
-}
-
-const onCheckedIds = (checkedIds) => {
-    console.log("Library Checked Ids: ", checkedIds);
-    fitlerCheckedIds.value = checkedIds;
-}
 
 const onCollapseAll = () => {
     expandedRows.value = null;
@@ -124,16 +73,7 @@ const onRowExpand = (event) => {
     toast.add({ severity: 'info', summary: 'Documents Expanded', detail: event.data.title, life: 3000 });
 };
 
-const searchHandle = async () => {
-    console.log('props.documents', props.documents.value);
-    answer_loading.value = true;
-    await searchDocuments(user_state.user.uid, search_term.value);
-    answer_loading.value = false; 
-    console.log("Search handle, answer: ", resp_type.value)
-    console.log('documents from searchHandle', docs.value);
-    filteredDocuments.value = docs.value;
-    console.log('props.documents', props.documents.value);
-};
+
 
 const showXRayDialog = (data) => {
     dialog.open(XRayView, {
@@ -155,15 +95,7 @@ const showXRayDialog = (data) => {
     });
 };
 
-const onUpload = async (e) => {
-    console.log(e);
-    // files.value = event.files;
-    // files.value.forEach((file) => {
-    //     totalSize.value += parseInt(formatSize(file.size));
-    // });
-    console.log('fileupload ', fileupload.value);
 
-};
 
 const unselectDocuments = async () => {
     selectedDocuments.value = [];
@@ -171,34 +103,17 @@ const unselectDocuments = async () => {
 
 const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.vue'));
 
+defineExpose({
+    onCollapseAll, onExpandAll
+});
+
 </script>
 
 <template>
     <div class="col-12 grid p-0 grid-nogutter h-full">
-        <div class="flex flex-row w-full">
-            <div class="col-6 mt-1">
-                <IconField>
-                    <InputIcon>
-                        <i class="pi pi-search" />
-                    </InputIcon>
-                    <AutoComplete class="surface-50 border-round-lg w-full" inputId="ac" v-model="search_term" :suggestions="items" 
-                        @complete="autocompleteSearch" @keydown.enter="searchHandle"  
-                        @input="inputHandle" @keydown.escape="emptied" placeholder="Search"/> 
-                </IconField>
-            </div>
-            <div class="col-6 flex align-content-center flex-wrap justify-content-end pr-0">
-                <a class="pr-3 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;" tabindex="0">
-                    <i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All
-                </a>
-                <a @click="onCollapseAll" class="py-1 mr-3 font-semibold" style="height: 2rem;" tabindex="0">
-                    <i class="pi pi-minus text-black-alpha-90 text-xs"></i> Collapse All
-                </a>
-                <Button type="button" label="Upload PDF" aria-label="Upload PDF" class="p-2 mr-2 bg-primary-500" @click="showUploadFileDialog = !showUploadFileDialog"/>
-            </div>
-        </div>
         <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0" :class="{'projectHeightLarge': showFooterSelect}">
             <div class="card h-full">
-                <DataTable v-model:filters="filteredDocuments" v-model:expandedRows="expandedRows" v-model:selection="selectedDocuments" :value="props.documents" dataKey="id"
+                <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocuments" :value="props.documents" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full text-xs relative">
                     <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">

@@ -1,26 +1,29 @@
 // Function that makes http request to get library data
 import { ref } from 'vue';
+import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
 
 const useLibrary = () => {
 
     const doc = ref();
     const docs = ref([]);
     const answer = ref(null);
+    const answerResponse = ref(new AskQuestionAnswer('', ''));
     const resp_type = ref(null);
     const error = ref(null);
     const isPending = ref(false);
     const subtopics = ref([]);
     const subtopics_nodes = ref([]);
     const entities_names = ref([]);
+    const baseurl = ref(import.meta.env.VITE_APP_API_BASE_URL)
     
-    const baseurl = import.meta.env.VITE_APP_API_BASE_URL
+    //const baseurl = import.meta.env.VITE_APP_API_BASE_URL
     console.log("Base URL: ", baseurl)
 
     const getDocuments = async (user_id) => {
         error.value = null
         isPending.value = true
         try {
-            const url = `${baseurl}/documents_plus/user/${user_id}`
+            const url = `${baseurl.value}/documents_plus/user/${user_id}`
             console.log("URL: ", url)
             const res = await fetch(url)
             if (!res.ok) {
@@ -47,7 +50,7 @@ const useLibrary = () => {
                 query: search_term,
                 user_id: user_id
             };
-            const res = await fetch(`${baseurl}/search`, {
+            const res = await fetch(`${baseurl.value}/search`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -67,6 +70,7 @@ const useLibrary = () => {
                 //If range answer is present, set the answer value
                 if (results.rag_answer != undefined) {
                     answer.value = results.rag_answer.answer
+                    answerResponse.value = results.rag_answer
                 }    
             }
 
@@ -84,7 +88,7 @@ const useLibrary = () => {
         error.value = null
         isPending.value = true
         try {
-            const res = await fetch(`${baseurl}/subtopics/${user_id}`)
+            const res = await fetch(`${baseurl.value}/subtopics/${user_id}`)
             if (!res.ok) {
                 throw Error('Could not fetch the data for that resource')
             }
@@ -104,7 +108,7 @@ const useLibrary = () => {
         isPending.value = true
         console.log("User id: ", user_id)
         try {
-            const res = await fetch(`${baseurl}/filter_nodes/${user_id}`)
+            const res = await fetch(`${baseurl.value}/filter_nodes/${user_id}`)
             if (!res.ok) {
                 throw Error('Could not fetch the data for that resource')
             }
@@ -121,7 +125,7 @@ const useLibrary = () => {
     const getEntitiesNames = async (user_id) => {
         error.value = null
         try {
-            const res = await fetch(`${baseurl}/entities_names/${user_id}`)
+            const res = await fetch(`${baseurl.value}/entities_names/${user_id}`)
             if (!res.ok) {
                 throw Error('Could not fetch the data for that resource')
             }
@@ -158,7 +162,12 @@ const useLibrary = () => {
         }        
     }
 
-    return { docs, answer, resp_type, error, isPending, getDocuments, getSubtopics, subtopics, searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument}    
+    return {
+        docs, answer, answerResponse, resp_type, error,
+        isPending, getDocuments, getSubtopics, subtopics,
+        searchDocuments, subtopics_nodes, getSubtopicsNodes,
+        getEntitiesNames, entities_names, deleteDocument, baseurl
+    }    
 
 
 }
