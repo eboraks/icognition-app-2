@@ -10,19 +10,17 @@
             </div>
             <div class="col-6 p-0 inline-flex justify-content-end">
               <Button type="button" icon="pi pi-comment" class="text-black-alpha-90 bg-white my-1 border-blue-100" @click="toggleHighlightMenu" rounded aria-haspopup="true" aria-controls="overlay_menu" style="height: 2.5em; width: 2.5em;" />
-              <Popover ref="menu_highlight" class="mt-2">
+              <Popover ref="menuHighlight" class="mt-2">
                 <div class="grid flex flex-column w-[25rem]">
                   <div class="col-12">
                     <p>Add Notation</p>
-                    <Textarea v-model="highlight_notes_value" rows="4" cols="30" />
+                    <Textarea v-model="highlightNotesValue" rows="4" cols="30" />
                   </div>
                   <div class="col-12 pt-0 flex justify-content-end">
                     <Button type="button" label="Add Note" class="bg-primary-800" @click="handleHighlightNotesAdd"></Button>
                   </div>
                 </div>
               </Popover>
-              <!-- <Button :class="{ 'hidden': !buttonTogglePlay }" class="text-black-alpha-90 bg-white mx-2 border-blue-100" icon="pi pi-stop" @click="buttonTogglePlay = !buttonTogglePlay" rounded />
-              <Button :class="{ 'hidden': buttonTogglePlay }" class="text-black-alpha-90 bg-white mx-2 border-blue-100" icon="pi pi-play" @click="buttonTogglePlay = !buttonTogglePlay" rounded /> -->
               <Button class="text-black-alpha-90 bg-white ml-2 my-1 border-blue-100" icon="pi pi-cog" @click="buttonToggleSplitterPanelRight = !buttonToggleSplitterPanelRight" rounded  style="height: 2.5em; width: 2.5em;" />
             </div>
           </div>
@@ -34,14 +32,10 @@
               </div>
               
               <span class="text-sm mb-3">Published {{ publication_date.valueOf() }}</span>
-              <div v-for="item in html_elements_for_page" class="text-sm">
-                <h1 v-if="item.element == 'h1'" class="mt-2"><span v-html="item.text"></span></h1>
-                <h2 v-if="item.element == 'h2'" class="mt-2"><span v-html="item.text"></span></h2>
-                <h3 v-if="item.element == 'h3'" class="mt-1"><span v-html="item.text"></span></h3>
-                <h4 v-if="item.element == 'h4'" class="mt-1"><span v-html="item.text"></span></h4>
-                <h5 v-if="item.element == 'h5'" class="mt-1"><span v-html="item.text"></span></h5>
-                <p v-if="item.element == 'p'"><span v-html="item.text"></span></p>
+              <div v-if="xRayIsPending" class="flex flex-flow justify-content-center">
+                <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
               </div>
+              <document_component />
             </div>
           </div>
         </div>
@@ -50,24 +44,26 @@
         <div class="card h-full">
           <Tabs value="0" class="h-full">
             <TabList>
-              <!-- <Tab value="0">Summary</Tab> -->
+              <Tab value="0">Summary</Tab>
               <Tab value="1">Ask iCognition</Tab>
               <Tab value="2">Notes</Tab>
             </TabList>
             <TabPanels>
-              <!-- <TabPanel value="0">
-                <div class="flex-column my-1 h-full p-2 surface-100">
-                  <div class="overflow-y-auto pr-3 py-3" style="height: calc(100% - 49.6px);">
-                    <p class="pl-3 pb-3 line-height-2" v-if="dialogRef.data.is_about != null">{{ dialogRef.data.is_about }}</p>
-                    <div v-if="dialogRef.data.tldr != null">
-                      <p class="pl-3">Key Points:</p>
-                      <ul>
-                        <li v-for="item in dialogRef.data.tldr">{{ item }}</li>
-                      </ul>
+              <TabPanel value="0">
+                <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-blue-100 surface-100 h-full">
+                  <div class="flex-column mx-2 my-2 mt-3 border-round border-1 border-blue-100 bg-white">
+                    <div class="overflow-y-auto pr-3 py-3" style="height: calc(100% - 49.6px);">
+                      <p class="pl-3 pb-3 line-height-2" v-if="dialogRef.data.is_about != null">{{ dialogRef.data.is_about }}</p>
+                      <div v-if="dialogRef.data.tldr != null">
+                        <p class="pl-3">Key Points:</p>
+                        <ul>
+                          <li v-for="item in dialogRef.data.tldr">{{ item }}</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </TabPanel> -->
+              </TabPanel>
               <TabPanel value="1">
                 <div class="flex-column my-1 h-full p-0 surface-100">
                   <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 44px);">
@@ -83,10 +79,12 @@
                           </template>
                           <template #content class="p-0">
                             <div class="bg-white flex flex-column">
-                              <p class="flex-grow-1 pl-3 py-1 text-sm text-black-alpha-90 border-round">{{item.answer}}</p>
+                              <div class="flex-row ml-3">
+                                <p class="flex-grow-1 py-1 text-sm text-black-alpha-90 border-round">{{item.answer}}</p>
+                                <Button type="button" class="bg-primary text-white" size="small" label="Hightlight Citation" icon="pi pi-code" @click="toggleCitation(index)" />
+                              </div>
                               <div class="flex-row">
-                                <Button icon="pi pi-copy" class="bg-transparent border-transparent border-0 text-surface-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
-                                <Button icon="pi pi-clipboard" class="bg-transparent border-transparent border-0 text-surface-500 flex-shrink-0 align-content-start flex-wrap pr-0" size="large" aria-label="Close"/>
+                                <Button icon="pi pi-copy" class="bg-transparent border-transparent border-0 text-500 flex-shrink-0 align-content-start flex-wrap pb-0 pr-0" size="large" aria-label="Copy"/>
                               </div>
                             </div>
                           </template>
@@ -101,17 +99,18 @@
                 </div>
               </TabPanel>
               <TabPanel value="2">
-                <div class="flex-column my-1 h-full p-2 surface-100">
-                  <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
-                    <div class="panel mb-3">
-                      <div v-for="item in highlightedTextList" class="mb-3">
-                        <p class="text-sm">{{ moment(item.updated).format('DD MMM YYYY h:mm a') }}</p>
-                        <p class="text-sm overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;"><a :href="item.id">{{ item.notes }}</a></p>
+                <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-blue-100 h-full surface-100">
+                  <div class="flex-column mx-2 my-2 mt-3 border-round border-1 border-blue-100 bg-white w-full">
+                    <div class="overflow-y-auto px-2 py-2" style="height: calc(100% - 49.6px);">
+                      <div class="panel mb-3">
+                        <div v-for="item in highlightedTextList" class="mb-3">
+                          <p class="text-sm">{{ moment(item.updated).format('DD MMM YYYY h:mm a') }}</p>
+                          <p class="text-sm overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;"><a :href="item.id">{{ item.notes }}</a></p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -122,8 +121,7 @@
 </template>
 
 <script setup lang="ts" >
-  import { inject, ref, onBeforeMount } from 'vue';
-  import DocxrayService from '@/services/DocxrayService';
+  import { inject, ref, h, onBeforeMount } from 'vue';
   import moment from 'moment';
   import * as pdfFonts from '@/components/models/vfs_fonts.vue';
   import  pdfMake from "pdfmake/build/pdfmake";
@@ -134,35 +132,28 @@
   import useDocQuesAnswers from '@/composables/useDocQuesAnswers';
   import useDocXRay from '@/composables/useDocXRay';
   import AskQuestion from '@/components/models/AskQuestion.vue';
-  import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
 
   const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
   const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
-  const { original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
+  const { doc, original_elements, xRayIsPending, getDocumetXRay } = useDocXRay();
   const dialogRef = inject("dialogRef") as any;
+  const answer = ref('');
   const author = ref(dialogRef.value.data.authors);
-  const buttonTogglePlay = ref(true);
   const buttonToggleSplitterPanelRight = ref(true);
   const citations = ref();
   const highlightedFromWhere = ref();
   const highlightedText = ref('');
   const highlightedTextList = ref([]);
   let highlightedTextListId = 0;
-  const hightlights = ref();
-  const highlight_notes_value = ref('');
-  const html_elements_for_page = ref();
-  const html_elements_for_pdf = html_elements_for_page.value = dialogRef.value.data.html_elements;
-  let html_to_pdf: [Object] = [null];
-  const menu_highlight = ref();
-
-  // const talkify = new Talkify({
-  //   fallbackLanguage: 'English',
-  //   format: 'mp3',
-  //   key: (import.meta as any).env.TALKIFY_TTS_API_KEY
-  // });
+  const highlightNotesValue = ref('');
+  const htmlElementsForPage = ref([]);
+  const htmlElementsForPDF = ref([]);
+  let htmlToPDF: [Object] = [null];
+  const menuHighlight = ref();
+  const pageHTML = ref('');
   const publication_date = ref(formate_date(dialogRef.value.data.publicationDate));
   const question = ref('');
-  const answer = ref('');
+  const scrollToElement = ref(0);
 
   onBeforeMount(async () => {
       try {
@@ -171,12 +162,11 @@
         console.log("Document: ", dialogRef.value.data);
         console.log("Original Elements: ", original_elements.value);
         console.log("Questions and Answers: ", qas.value);
-        html_elements_for_page.value = addHightlights(html_elements_for_page.value, dialogRef.value.data.summary_citations);
-        if (dialogRef.value.data.summary_citations != null) {
-          highlight(dialogRef.value.data.summary_citations);
-        }
-        DocxrayService.getCitations().then((data) => (citations.value = data));
-        DocxrayService.getHighlights().then((data) => (hightlights.value = data));
+        htmlElementsForPage.value = original_elements.value;
+        citations.value = dialogRef.value.data.summary_citations;
+
+        //Generate document for html
+        pageHTML.value = article_html_builder(original_elements.value, dialogRef.value.data.summary_citations, 'Summary');
         // create an object that can be seen as html
         setupArticleHTML(dialogRef.value.data.html_elements, citations);
       } catch (err) {
@@ -224,22 +214,66 @@
     }
   }
 
-  const addHightlights = (html_elements, citations) => {
-    if (html_elements != null) {
+  const addCitiationHightlights = (text, citations = null, tooltiptext = null, hightlight_style = "bg-highlight") => {
+    if (text != null) {
       if(citations != null) {
-        html_elements.forEach(html_element => {
-          citations.forEach((citation, index) => {
-        
-            if (html_element.text.includes(citation.verbatim)) {
-              html_element.text = html_element.text.replace(new RegExp(citation.verbatim, 'gi'), `<span class="bg-highlight tooltip" id="section-${index}">${citation.verbatim}<span class="tooltiptext">${citation.verbatim}</span></span>`);
-            }
-          });
+        citations.forEach((citation, index) => {
+          if (text.includes(citation.verbatim_text)) {
+            text = text.replace(new RegExp(citation.verbatim_text, 'gi'),
+              `<span class="${hightlight_style} tooltip" id="section-${index}">${citation.verbatim_text}<span class="tooltiptext">${tooltiptext}</span></span>`);
+          }
         });
+        return text;
+      } else {
+        console.log("No citations found");
+        return text;
       }
-      return html_elements;
     } else {
       return null;
     }
+  }
+
+  const addHightlights = (html_elements, citations, family) => {
+    let _html_elements = html_elements;
+    if (_html_elements != null) {
+      if(citations != null) {
+        _html_elements.forEach(html_element => {
+          citations.forEach((citation, index) => {
+        
+            if (html_element.text.includes(citation.verbatim)) {
+              html_element.text = html_element.text.replace(new RegExp(citation.verbatim_text, 'gi'),
+              `<span class="bg-highlight tooltip" id="section-${index}">${citation.verbatim_text}<span class="tooltiptext">${family}</span></span>`);
+            }
+          });
+        });
+        return _html_elements;
+      } else {
+        console.log("No citations found");
+        return _html_elements;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  const article_html_builder = (elements, citations, tooltiptext) => {
+    let html = '';
+    elements.forEach((element) => {
+      if (element.element === 'h1') {
+        html += `<h1 class="mt-2">${addCitiationHightlights(element.text, citations, tooltiptext)}</h1>`;
+      } else if (element.element === 'h2') {
+        html += `<h2 class="mt-2">${addCitiationHightlights(element.text, citations, tooltiptext)}</h2>`;
+      } else if (element.element === 'h3') {
+        html += `<h3 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h3>`;
+      } else if (element.element === 'h4') {
+        html += `<h4 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h4>`;
+      } else if (element.element === 'h5') {
+        html += `<h5 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h5>`;
+      } else if (element.element === 'p') {
+        html += `<p class="text-left font-medium">${addCitiationHightlights(element.text, citations, tooltiptext)}</p>`;
+      }
+    });
+    return html;
   }
 
   function formate_date(value) {
@@ -247,8 +281,8 @@
   };
 
   const handleDownloadClick = async () => {
-    html_elements_for_pdf.forEach(item => {
-      return html_to_pdf.push(add_to_pdf(item.element, item.text));
+    htmlElementsForPDF.value.forEach(item => {
+      return htmlToPDF.push(add_to_pdf(item.element, item.text));
     });
 
     const docDefinition = {
@@ -258,7 +292,7 @@
           table: {
             widths: ['auto'],
             body: [
-              [html_to_pdf]
+              [htmlToPDF]
             ]
           },
           layout: {
@@ -271,20 +305,20 @@
   }
 
   const handleHighlightNotesAdd = async () => {
-    if (highlight_notes_value.value != '' && highlight_notes_value.value != null) {
+    if (highlightNotesValue.value != '' && highlightNotesValue.value != null) {
       handleHighlightClick();
     }
-    menu_highlight.value.toggle();
+    menuHighlight.value.toggle();
   }
 
   const handleHighlightClick = async () => {
     
-    html_elements_for_page.value.forEach(element => {
+    htmlElementsForPage.value.forEach(element => {
       if (element.text == highlightedFromWhere.value) {
         if (element.text.includes(highlightedText.value)) {
           let first_half = element.text.substr(0, element.text.indexOf(highlightedText.value));
           let second_half = element.text.substr(element.text.indexOf(highlightedText.value) + highlightedText.value.length, element.text.length);
-          element.text = first_half + `<span class="bg-highlight tooltip" id="section-${highlightedTextListId}">${highlightedText.value}<span class="tooltiptext">${highlight_notes_value.value}</span></span>` + second_half;
+          element.text = first_half + `<span class="bg-highlight tooltip" id="section-${highlightedTextListId}">${highlightedText.value}<span class="tooltiptext">${highlightNotesValue.value}</span></span>` + second_half;
         }
       }
     });
@@ -292,7 +326,7 @@
     highlightedTextList.value.push({
       id: '#section-' + highlightedTextListId,
       contents: highlightedText,
-      notes: highlight_notes_value.value,
+      notes: highlightNotesValue.value,
       updated: new Date()
     });
     highlightedTextListId += 1;
@@ -329,16 +363,80 @@
     // playlist.play();
   }  
 
-  const highlight = (source_sentences) => {
-    const sentences_map = new Map(Object.entries(source_sentences));
-    console.log("Highlighting", source_sentences);
-    sentences_map.forEach((item) => {
-      try {
-        //jQuery("article").html(jQuery("article").html().replace(new RegExp(item.sentence, 'g'), '<span class="about">' + item.sentence + '</span>'));
-      } catch (err) {
-        console.log("Error: ", err);
+  const document_component = () => {
+    const build_citation_span = (element, citations, tooltiptext) => {
+      console.log(tooltiptext);
+      let text = element.text
+      citations.forEach((citation, index) => {
+        if (text.includes(citation.verbatim_text)) {
+          text = text.replace(new RegExp(citation.verbatim_text, 'gi'), `|${citation.verbatim_text}|`);
+        }
+      }); 
+      let text_array = text.split('|');
+        //Iterate and create the elements with h(, { class: 'mt-2', innerHTML: element.text });
+      let nodes = [];
+        let citation_exits = false;
+        let citations_texts = citations.map(citation => citation.verbatim_text)
+        text_array.forEach(item => {
+          if (item.trim() != '') {
+            if (citations_texts.includes(item)) {
+              // let tooltip_node = ;
+              nodes.push(h('p',
+                { class: 'bg-highlight tooltip xx', id: 'section-' + scrollToElement.value, innerHTML: item },
+                [h('span', { class: 'tooltiptext', innerHTML: tooltiptext })]
+              ))
+
+              scrollToElement.value++;
+              citation_exits = true;
+            } else {
+              nodes.push(h('span', { class: 'mt-2', innerHTML: item }));
+            }
+          }
+        });
+      //Return the element with the citation hightlighted
+      if (citation_exits) {
+        return (h(element.element, { class: 'mt-2 citation', ref: scrollToElement }, nodes));
+      } else {
+        return (h(element.element, { class: 'mt-2 no-citation' }, nodes));
       }
+    }
+    const markCitations = (element, tooltiptext) => {
+      //, citations = null, tooltiptext = null, hightlight_style = "bg-highlight"
+      let node_results = null;
+      if(citations.value != null) {
+        let found_citations = [];
+        citations.value.forEach((citation, index) => {
+          if (element.text.includes(citation.verbatim_text)) { found_citations.push(citation); }
+        });
+        if (found_citations.length > 0) {
+          let citiation_instances = [];
+          
+          citiation_instances.push(build_citation_span(element, found_citations, tooltiptext));
+      
+          return citiation_instances;
+        } else {
+          return h(element.element, { class: 'mt-2 yy', innerHTML: element.text })
+        }
+        
+      } else {
+        console.log("No citations found");
+        return h(element.element, { class: 'mt-2 yy', innerHTML: element.text })
+      }
+      
+    }//End of addCitiationHightlights2
+    let children = [];
+    htmlElementsForPage.value.forEach((element) => {
+      let node1 = markCitations(element, 'Summary YY'); 
+      children.push(node1);
+      //children.push(h(element.element, { class: 'mt-2', innerHTML: element.text }));
     });
+    return h(
+      'div',
+      { id: 'document', class: 'bar' }, // props
+      [
+        children
+      ],
+    );
   }
 
   const handleAsk = async () => {
@@ -360,6 +458,23 @@
     question.value = '';
   }
 
+  const handleDataChange = () => {
+    console.log("Data Change: ");
+  }
+
+  const highlight = (source_sentences) => {
+    const sentences_map = new Map(Object.entries(source_sentences));
+    console.log("Highlighting", source_sentences);
+    sentences_map.forEach((item) => {
+      try {
+        //jQuery("article").html(jQuery("article").html().replace(new RegExp(item.sentence, 'g'), '<span class="about">' + item.sentence + '</span>'));
+      } catch (err) {
+        console.log("Error: ", err);
+      }
+    });
+  }
+
+
   const qasRemove = async (index) => {
     qas.value.splice(index, 1);
   }
@@ -372,11 +487,19 @@
     
   }
 
+  const toggleCitation = async (index) => {
+    console.log("Toggle Citation: ", index, " item: ", qas.value[index].citations);
+    pageHTML.value = article_html_builder(original_elements.value, qas.value[index].citations, qas.value[index].question);
+    citations.value = qas.value[index].citations;
+    // scrollToElement.value.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    
+  }
+
   const toggleHighlightMenu = (event) => {
     // We need to get the highlighted text prior to opening the popover or we lose the data.
     highlightedText.value = getSelectedText();
     highlightedFromWhere.value = document.getSelection().focusNode.textContent;
-    menu_highlight.value.toggle(event);
+    menuHighlight.value.toggle(event);
   };
 
 </script>

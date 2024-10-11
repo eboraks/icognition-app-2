@@ -1,17 +1,14 @@
-<script setup>
+<script setup lang="ts">
     import useLibrary from '@/composables/useLibrary';
     import useStudyProject from '@/composables/useStudyProject';
     import user_state from '@/composables/getUser';
-    import { ref, onMounted, computed, watch } from 'vue'
-    import AutoComplete from 'primevue/autocomplete';
-    import Button from 'primevue/button';
-    import Checkbox from 'primevue/checkbox';
-    import Dialog from 'primevue/dialog';
+    import { defineAsyncComponent, ref, onMounted, computed, watch } from 'vue';
     import GridSelection from '@/components/GridSelection.vue';
     import moment from 'moment';
-    import StudyProject from '@/components/models/StudyProject.vue'
-    import { useToast } from 'primevue/usetoast';
+    import StudyProject from '@/components/models/StudyProject.vue';
+    import { useDialog } from 'primevue/usedialog';
     import { useRouter } from 'vue-router';
+    import { useToast } from 'primevue/usetoast';
 
     const { documents, answer, isLibraryerror, resp_type, isLibraryPending, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names } = useLibrary();
@@ -22,14 +19,15 @@
     const addStudyListError = ref('');
     const analysis_checked = ref();
     const answer_loading = ref(false);
+    const dialog = useDialog();
     const hasCheck = ref(false);
     let hasNoData = false;
     const items = ref([]);
     const expandedRows = ref({});
+    const newProjectErrorMessages = ref([]);
     const new_study_project_name = ref('');
     const new_study_project_objective = ref('');
     const new_study_project_study_tasks = ref([]);
-    const newProjectErrorMessages = ref([]);
     const router = useRouter();
     const search_term = ref('');
     const selectedProjects = ref();
@@ -38,7 +36,6 @@
     let showExampleStudyPointsDialog = ref(false);
     const showFooterSelect = ref(false);
     const showNewProjectDialog = ref(false);
-    const studyTaskList = ref([]);
     const toast = useToast();
 
     onMounted(async() => {
@@ -60,30 +57,6 @@
             }
         }
     )
-
-    const addANewStudyPoint = async () => {
-        if (addANewStudyPointValue.value != '') {
-            const index = studyTaskList.value.find(o => o.description === addANewStudyPointValue.value);
-
-            if (index == undefined) {
-                studyTaskList.value.push({
-                    description: addANewStudyPointValue.value
-                });
-                addStudyListError.value = '';
-                addANewStudyPointValue.value = '';
-            } else {
-                addStudyListError.value = 'Study Point Already Exists.';
-            }
-        } else {
-            addStudyListError.value = 'Study Point Text is empty.';
-        }
-        new_study_project_study_tasks.value = studyTaskList.value;
-    }
-
-    const addANewStudyPointThenClose = async () => {
-        addANewStudyPoint();
-        showAddANewStudyPointDialog.value = false;
-    }
 
     const autocompleteSearch = (e) => {
         console.log("Autocomplete Search: ", e.query);
@@ -136,7 +109,7 @@
         }
 
         // Study Task List Error
-        if (new_study_project_study_tasks.length == 0) {
+        if (new_study_project_study_tasks.value.length == 0) {
             newProjectErrorMessages.value.push({id: 4, content: 'Study Task List is empty.'});
         }
 
@@ -152,14 +125,12 @@
         new_study_project_objective.value = '';
         new_study_project_study_tasks.value = [];
     }
-
-    const addANewStudyPointAndAnother = async () => {
-        addANewStudyPoint();
-    }
-
-    const closeStudyPoint = async () => {
-        addANewStudyPointValue.value = '';
-        showAddANewStudyPointDialog.value = false;
+    
+    const deleteStudyTask = async (description) => {
+        const index = new_study_project_study_tasks.value.indexOf(description);
+        if (index > -1) {
+            new_study_project_study_tasks.value.splice(index, 1);
+        }
     }
 
     const emptied = () => {
@@ -172,13 +143,6 @@
         selectedProjects.value.forEach(selectedProject => {
             deleteStudyProject(selectedProject.id);
         });
-    }
-
-    const deleteStudyTask = async (description) => {
-        const index = studyTaskList.value.indexOf(description);
-        if (index > -1) {
-            studyTaskList.value.splice(index, 1);
-        }
     }
 
     const handleCancelNewProjectDialog = async () => {
@@ -224,6 +188,27 @@
         selectedProjects.value = [];
     }
 
+    const showAddStudyTaskDialog = () => {
+        dialog.open(StudyTaskView, {
+            data: new_study_project_study_tasks.value,
+            props: {
+                header: new_study_project_name.value,
+                contentClass: 'dialog-inner-scroll',
+                style: {
+                    height: 'auto',
+                    width: '50%'
+                },
+                modal: true
+            },
+            onClose: (options) => {
+                const dataClose = options.data;
+                new_study_project_study_tasks.value = dataClose;
+            }
+        });
+    };
+
+    const StudyTaskView = defineAsyncComponent(() => import('@/views/library/AddStudyTask.vue'));
+
 </script>
 
 <template>
@@ -234,7 +219,7 @@
                     <div class="col-6 mt-1">
                         <IconField>
                             <InputIcon>
-                                <i class="pi pi-search" />
+                                <i class="pi pi-search"></i>
                             </InputIcon>
                             <AutoComplete class="surface-50 border-round-lg w-full" inputId="ac" v-model="search_term" :suggestions="items" 
                                 @complete="autocompleteSearch" @keydown.enter="searchHandle"  
@@ -265,7 +250,7 @@
                                                 name: 'projectdetails',
                                                 params: {id: slotProps.data.id}
                                             }"
-                                            class="mt-2 py-1 ml-2">{{ slotProps.data.name }}
+                                            class="mt-2 text-700 py-1 ml-2">{{ slotProps.data.name }}
                                         </router-link>
                                     </p>
                                 </template>
@@ -308,7 +293,7 @@
         </template>
         <div class="grid grid-nested">
             <div class="col-12 px-3">
-                <div class="grid flex flex-row"  v-if="newProjectErrorMessages != []">
+                <div class="grid flex flex-row"  v-if="newProjectErrorMessages.length != 0">
                     <Message v-for="msg of newProjectErrorMessages" severity="error" class="mr-2">{{ msg.content }}</Message>
                 </div>
                 <div class="grid">
@@ -350,7 +335,8 @@
                             </div>
                         </div>
                         <div class="flex flex-column col-6 pl-0">
-                            <Button icon="pi pi-plus" style="width: 12rem;" class="surface-300 border-300 border-400 text-black-alpha-90 px-3 py-1" label="Add a Study Point" @click="showAddANewStudyPointDialog = true" />
+                            <Button icon="pi pi-plus" style="width: 12rem;" class="surface-300 border-300 border-400 text-black-alpha-90 px-3 py-1" label="Add a Study Task" aria-label="Add a Study Task" @click="showAddStudyTaskDialog"></Button>
+                            <DynamicDialog/>
                         </div>
                     </div>
                 </div>
@@ -436,29 +422,6 @@
                 </div>
                 <div class="grid grid-nogutter flex justify-content-end gap-2">
                     <Button type="button" label="Close" class="bg-blue-500 mt-3 flex justify-content-end" @click="showExampleStudyPointsDialog = false"></Button>
-                </div>
-            </div>
-        </div>
-    </Dialog>
-    <Dialog v-model:visible="showAddANewStudyPointDialog" modal header="Add a Study Task" :style="{ width: '60%' }">
-        <template #header>
-            <div class="inline-flex gap-2">
-                <span class="font-semibold text-2xl">Add a Study Task</span>
-            </div>
-        </template>
-        <div class="grid grid-nested">
-            <div class="col-12 px-4">
-                <div class="grid flex justify-content-end">
-                    <div class="col-12">
-                        
-                        <Tag v-if="addStudyListError != ''" severity="info" class="mb-1">{{addStudyListError}}</Tag>
-                        <Textarea v-model="addANewStudyPointValue" rows="4" cols="30" placeholder="Ex: &quot;What were the conditions that led up to the French Revolution?&quot;" />
-                    </div>
-                </div>
-                <div class="grid grid-nogutter flex justify-content-end gap-2">
-                    <Button type="button" label="Close" class="text-black-alpha-90 mt-3 surface-400 border-300 border-400" severity="secondary" @click="closeStudyPoint"></Button>
-                    <Button type="button" label="Submit and add another" class="bg-blue-500 mt-3" @click="addANewStudyPointAndAnother"></Button>
-                    <Button type="button" label="Submit" class="bg-blue-500 mt-3 flex justify-content-end" @click="addANewStudyPointThenClose"></Button>
                 </div>
             </div>
         </div>

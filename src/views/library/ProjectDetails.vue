@@ -4,7 +4,8 @@
     import useLibrary from '@/composables/useLibrary';
     import useStudyProject from '@/composables/useStudyProject';
     import user_state from '@/composables/getUser';
-    import { ref, onMounted } from 'vue';
+    import { defineAsyncComponent, ref, onMounted } from 'vue';
+    import { useDialog } from 'primevue/usedialog';
     import { useRouter } from 'vue-router';
     import AskQuestion from '@/components/models/AskQuestion.vue';
     import AskQuestionAnswer from '@/components/models/AskQuestionAnswer.vue';
@@ -17,7 +18,8 @@
     const { docs, answer, iserrorLibrary, resp_type, isPendingLibrary, getDocuments, getSubtopics, subtopics,
         searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument } = useLibrary();
     const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
-    const fitlerCheckedIds = ref(new Map());
+    
+    const dialogAddStudyTask = useDialog();
     const projectDescription = ref(false);
     const projectTitle = ref(false);
     const qas = ref([]);
@@ -34,6 +36,10 @@
             console.log("Error: ", err);
         }
     });
+
+    const deleteStudyTask = async (index) => {
+        studyProject.value.tasks.splice(index, 1);
+    }
 
     const handleApply = async () => {
         if (!selectedDocuments.value) {
@@ -62,9 +68,26 @@
         qas.value.push({question: question.value, answer: answer.value, created_at: moment()});
     }
 
-    const onCheckedIds = (checkedIds) => {
-        fitlerCheckedIds.value = checkedIds;
-    }
+    const showAddStudyTaskDialog = (data) => {
+        dialogAddStudyTask.open(StudyTaskView, {
+            data: studyProject.value.tasks,
+            props: {
+                header: studyProject.value.name,
+                contentClass: 'dialog-inner-scroll',
+                style: {
+                    height: 'auto',
+                    width: '50%'
+                },
+                modal: true
+            },
+            onClose: (options) => {
+                const dataClose = options.data;
+                studyProject.value.tasks = dataClose;
+            }
+        });
+    };
+
+    const StudyTaskView = defineAsyncComponent(() => import('@/views/library/AddStudyTask.vue'));
 
 </script>
 
@@ -106,10 +129,22 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <p class="font-semibold mb-1">Study Tasks</p>
+                                    <div class="flex flex-row">
+                                        <div class="col-6">
+                                            <p class="font-semibold mb-1">Study Tasks</p>
+                                        </div>
+                                        <div class="col-6 flex justify-content-end pr-0">
+                                            <p class="font-semibold mb-1"><a @click="showAddStudyTaskDialog(studyProject.tasks)" tabindex="0"><i class="pi pi-plus"></i> Add a Study Task</a></p>
+                                            <DynamicDialog/>
+                                        </div>
+                                    </div>
+                                    
                                     <Panel toggleable :collapsed="index != 0" v-for="(study_task, index) in studyProject.tasks" class="surface-200 mb-3">
                                         <template #header class="">
-                                            <p class="font-semibold ml-3 flex-order-1">{{ study_task.description }}</p>
+                                            <Button class="mx-2 bg-green-500 flex-order-1" v-if="study_task.status == Default_Status.SUCCESS" severity="success" icon="pi pi-check" rounded aria-label="Status" size="small" />
+                                            <Button class="mx-2 bg-orange-500 flex-order-1" v-if="study_task.status == Default_Status.PENDING" severity="warning" icon="pi pi-check" rounded aria-label="Status" size="small" />
+                                            <Button class="mx-2 bg-red-500 flex-order-1" v-if="study_task.status == Default_Status.ERROR" severity="error" icon="pi pi-check" rounded aria-label="Status" size="small" />
+                                            <p class="font-semibold ml-1 flex-order-2">{{ study_task.description }}</p>
                                         </template>
                                         <template #footer>
                                             
@@ -134,10 +169,7 @@
                                                         </ul>
                                                     </div>
                                                     <div class="col-2 flex justify-content-end">
-                                                        <Button class="mr-2 bg-green-500" v-if="study_task.status == Default_Status.SUCCESS" severity="success" icon="pi pi-check" rounded aria-label="Status" size="small" />
-                                                        <Button class="mr-2 bg-orange-500" v-if="study_task.status == Default_Status.PENDING" severity="warning" icon="pi pi-check" rounded aria-label="Status" size="small" />
-                                                        <Button class="mr-2 bg-red-500" v-if="study_task.status == Default_Status.ERROR" severity="error" icon="pi pi-check" rounded aria-label="Status" size="small" />
-                                                        <a @click="" class="mr-2"><i class="pi pi-trash text-600"></i></a>
+                                                        <a @click="deleteStudyTask(index)" class="mr-2"><i class="pi pi-trash text-600"></i></a>
                                                         <a @click="" class="mr-2"><i class="pi pi-refresh text-600"></i></a>
                                                     </div>
                                                 </div>

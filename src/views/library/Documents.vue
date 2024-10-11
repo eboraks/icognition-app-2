@@ -1,13 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import useLibrary from '@/composables/useLibrary';
 import user_state from '@/composables/getUser';
-import { ref, onMounted, computed, defineAsyncComponent, watch } from 'vue';
+import { ref, onMounted, defineAsyncComponent, watch } from 'vue';
 import AutoComplete from 'primevue/autocomplete';
 import FileUpload from 'primevue/fileupload';
 import GridSelection from '@/components/GridSelection.vue';
 import moment from 'moment';
 import { useDialog } from 'primevue/usedialog';
 import { useToast } from 'primevue/usetoast';
+import DynamicDialog from 'primevue/dynamicdialog';
 
 const { docs, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
     searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument } = useLibrary();
@@ -17,7 +18,7 @@ const dialog = useDialog();
 const expandedRows = ref({});
 const fileupload = ref([]);
 const fitlerCheckedIds = ref(new Map());
-let hasNoData = ref();
+const hasNoData = ref();
 let isError = false;
 const items = ref([]);
 const props = defineProps({
@@ -33,8 +34,7 @@ onMounted(async() => {
     try {
         await getEntitiesNames(user_state.user.uid);
         isError = false;
-        // console.log('hasData props', props.documents.length);
-        // await hasData(props.documents.value.length);
+        await hasData(props.documents.length);
     } catch (err) {
         isError = true;
         console.log("Error: ", err);
@@ -93,7 +93,7 @@ const filteredDocuments = ref();
 
 const hasData = async (documentsLength) => {
     if (documentsLength != null && documentsLength > 0) {
-        hasNoData = false;
+        hasNoData.value = false;
     }
 }
 
@@ -113,7 +113,7 @@ const onCollapseAll = () => {
 };
 
 const onExpandAll = () => {
-    expandedRows.value = props.documents.reduce((acc, p) => (acc[p.id] = true) && acc, {});
+    expandedRows.value = props.documents.reduce((acc, p: any) => (acc[p.id] = true) && acc, {});
 };
 
 const onRowCollapse = (event) => {
@@ -125,14 +125,14 @@ const onRowExpand = (event) => {
 };
 
 const searchHandle = async () => {
-    console.log('props.documents', props.documents.value);
+    console.log('props.documents', props.documents);
     answer_loading.value = true;
     await searchDocuments(user_state.user.uid, search_term.value);
     answer_loading.value = false; 
     console.log("Search handle, answer: ", resp_type.value)
     console.log('documents from searchHandle', docs.value);
     filteredDocuments.value = docs.value;
-    console.log('props.documents', props.documents.value);
+    console.log('props.documents', props.documents);
 };
 
 const showXRayDialog = (data) => {
@@ -169,6 +169,7 @@ const unselectDocuments = async () => {
     selectedDocuments.value = [];
 }
 
+const StudyTaskView = defineAsyncComponent(() => import('@/views/library/AddStudyTask.vue'));
 const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.vue'));
 
 </script>
@@ -199,13 +200,14 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
         <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0" :class="{'projectHeightLarge': showFooterSelect}">
             <div class="card h-full">
                 <DataTable v-model:filters="filteredDocuments" v-model:expandedRows="expandedRows" v-model:selection="selectedDocuments" :value="props.documents" dataKey="id"
-                        @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full text-xs relative">
+                        @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full text-xs relative" v-if="!isPending">
                     <Column expander style="width: 2rem" />
                     <Column field="title" header="Title" class="set-background-image">
                         <template #body="slotProps">
                             <div class="flex flex-row align-items-center">
                                 <i class="pi pi-globe"></i>
-                                <a @click="showXRayDialog(slotProps.data)" tabindex="0"><p class="my-auto px-2 text-black-alpha-90 overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;">{{slotProps.data.title}}</p></a>
+                                <a @click="showXRayDialog(slotProps.data)" tabindex="0"><span class="my-auto px-2 text-black-alpha-90 overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;">{{slotProps.data.title}}</span></a>
+                                <DynamicDialog />
                             </div>
                         </template>
                     </Column>
@@ -222,28 +224,27 @@ const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.
                     <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
                     <template #expansion="slotProps">
                         <div class="p-1 pl-5">
-                            <div class="col-12 pb-0">
+                            <!-- <div class="col-12 pb-0">
                                 <a class="mr-3" :href="slotProps.data.url" target="_blank"><i class="pi pi-pen-to-square"></i> OPEN ORIGINAL</a>
                                 <a @click="showXRayDialog(slotProps.data)" tabindex="0">OPEN X-RAY</a>
-                                <DynamicDialog class="dialog-original-xray"/>
-                            </div>
-                            <div class="col-12 pt-1">
+                            </div> -->
+                            <div class="col-12 pt-1" style="max-width: 70%;">
                                 <h5>Summary: {{ slotProps.data.is_about}}</h5>
                             </div>
-                            <!-- <div class="col-12">
-                                <Tag v-for="entity of slotProps.data.entities_and_concepts" :value="entity.name" severity="info" class="mr-1 text-700 mb-1 px-2" />
-                            </div> -->
                         </div>
                     </template>
                 </DataTable>
+                <div v-if="isPending" class="flex flex-flow justify-content-center">
+                    <i class="text-white pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                </div>
             </div>
         </div>
-        <div class="col-12 card" v-if="props.documents.length == 0">
+        <div class="col-12 card" v-if="!isPending">
             <div class="col-12 pt-7 mt-7">
                 <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
             </div>
             <div class="col-12">
-                <p class="flex text-center m-auto" style="max-width: 60%;" src="/src/assets/images/icons/bookmark.png">
+                <p class="block text-center m-auto" style="max-width: 60%;" src="/src/assets/images/icons/bookmark.png">
                     You don't have any bookmark topics created yet, because you haven't bookmarked any pages.
                 </p>
             </div>

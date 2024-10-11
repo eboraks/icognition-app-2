@@ -3,11 +3,10 @@ import { ref } from 'vue';
 
 const useDocXRay = () => {
 
-    const original_elements = ref(null)
-    const llm_results = ref(null)
-    const document = ref(null)
-    const error = ref(null)
-    const xRayIsPending = ref(false)
+    const original_elements = ref(null);
+    const doc = ref(null);
+    const error = ref(null);
+    const xRayIsPending = ref(false);
     
     const baseurl = import.meta.env.VITE_APP_API_BASE_URL
     
@@ -22,7 +21,7 @@ const useDocXRay = () => {
                 throw Error('Could not fetch the data for that resource')
             }
             const results = await res.json()
-            document.value = results
+            doc.value = results
 
             // Check if html_elements is a string or an object. This is results from the API change of changing how the html_elements are stored. 
             if (typeof results.html_elements === 'string') {
@@ -39,7 +38,7 @@ const useDocXRay = () => {
         }
     }
 
-    return { document, original_elements, xRayIsPending, getDocumetXRay }    
+    return { doc, original_elements, xRayIsPending, getDocumetXRay }    
 
 
 }
