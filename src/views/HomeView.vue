@@ -29,7 +29,7 @@
                     <div class="intrinsic-inner">
                       <div ref="video" class="relative" style="opacity: 1;" id="">
                         <img data-src="/src/assets/images/videosplash.png" data-load="false" data-image-focal-point="0.5,0.5" class="loaded" data-image-dimensions="100x57" data-parent-ratio="1.8" style="font-size: 0px; left: 0px; top: -1.15px; width: 100%; height: 100%; position: relative;" data-image-resolution="750w" src="/src/assets/images/videosplash.png" data-video="http://www.youtube.com/embed/fsoXJmnV_Ns">
-                        <a aria-label="Play" class="video-icon absolute" style="right: 40%; top: 40%;" tabindex="0" @click="handleYouTubeClick"><i class="pi pi-youtube" style="font-size: 4rem"></i></a>
+                        <a aria-label="Play" class="video-icon absolute" style="right: 42.5%; top: 36%;" tabindex="0" @click="handleYouTubeClick"><i class="pi pi-youtube" style="font-size: 4rem"></i></a>
                       </div>
                     </div>
                   </div>

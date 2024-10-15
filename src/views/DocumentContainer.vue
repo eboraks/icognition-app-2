@@ -11,8 +11,8 @@
                         <div class="col-6 text-right">
                             <Button v-if="buttonToggleSplitterPanelLeft" class="bg-transparent border-transparent border-0 text-white" icon="pi pi-filter" @click="buttonToggleSplitterPanelLeft = !buttonToggleSplitterPanelLeft" rounded aria-label="Collapse Panel"/>
                         </div>
-                        <div class="w-full" style="height: calc(100% - 60px);" v-if="buttonToggleSplitterPanelLeft">
-                            <div v-if="subtopics_nodes.length == 0">
+                        <div class="w-full" style="height: calc(100% - 60px);" v-if="buttonToggleSplitterPanelLeft">                            
+                            <div v-if="subtopics_nodes.length == 0 && !isPending">
                                 <div class="col-12 pt-7 mt-6">
                                     <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
                                 </div>
@@ -26,6 +26,9 @@
                                 <div class="mb-2 w-full border-round-lg h-full">
                                     <SubtopicsTree :nodes="filteredSubtopicsNodesByFilteredDocuments" @checkedIdsEvent="onCheckedIds"/>
                                 </div>
+                            </div>
+                            <div v-if="isPending" class="flex flex-flow justify-content-center">
+                                <i class="text-white pi pi-spin pi-spinner" style="font-size: 2rem"></i>
                             </div>
                         </div>
                     </div>
