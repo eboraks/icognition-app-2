@@ -136,7 +136,9 @@ defineExpose({
                         <template #body="slotProps">
                             <div class="flex flex-row align-items-center">
                                 <i class="pi pi-globe"></i>
-                                <a @click="showXRayDialog(slotProps.data)" tabindex="0"><span class="my-auto px-2 text-black-alpha-90 overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;">{{slotProps.data.title}}</span></a>
+                                <a @click="showXRayDialog(slotProps.data)" tabindex="0">
+                                    <span class="my-auto px-2 text-black-alpha-90 font-medium text-base overflow-hidden" 
+                                    style="white-space: nowrap; text-overflow: ellipsis;">{{slotProps.data.title}}</span></a>
                                 <DynamicDialog />
                             </div>
                         </template>
@@ -154,12 +156,23 @@ defineExpose({
                     <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
                     <template #expansion="slotProps">
                         <div class="p-1 pl-5">
-                            <!-- <div class="col-12 pb-0">
-                                <a class="mr-3" :href="slotProps.data.url" target="_blank"><i class="pi pi-pen-to-square"></i> OPEN ORIGINAL</a>
-                                <a @click="showXRayDialog(slotProps.data)" tabindex="0">OPEN X-RAY</a>
-                            </div> -->
-                            <div class="col-12 pt-1" style="max-width: 70%;">
-                                <h5>Summary: {{ slotProps.data.is_about}}</h5>
+                            <div class="grid">
+                                <div class="col-fixed" style="width: 100px;">
+                                    <p>Summary:</p>    
+                                </div>
+                                <div class="col-12" style="max-width: 60%;">
+                                    <p>{{ slotProps.data.is_about}}</p>
+                                </div>
+                            </div>
+                            <div class="grid">
+                                <div class="col-fixed" style="width: 100px;">
+                                    <p>Key Points:</p>
+                                </div>
+                                <div class="col-11" style="max-width: 60%;">
+                                    <ul v-for="item in slotProps.data.tldr">
+                                        <li>{{ item }}</li>
+                                    </ul>
+                                </div>  
                             </div>
                         </div>
                     </template>
