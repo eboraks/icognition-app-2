@@ -100,7 +100,7 @@
 
   const addCitiationHightlights = (text, citations = null, tooltiptext = null, hightlight_style = "bg-highlight") => {
     if (text != null) {
-      if(citations != null) {
+      if (citations != null) {
         citations.forEach((citation, index) => {
           if (text.includes(citation.verbatim_text)) {
             text = text.replace(new RegExp(citation.verbatim_text, 'gi'),
@@ -109,7 +109,6 @@
         });
         return text;
       } else {
-        console.log("No citations found");
         return text;
       }
     } else {
@@ -132,7 +131,6 @@
         });
         return _html_elements;
       } else {
-        console.log("No citations found");
         return _html_elements;
       }
     } else {
@@ -160,10 +158,9 @@
     return html;
   }
 
-  
   const build_citation_span = (element, citations, tooltiptext) => {
     let text = element.text
-    citations.forEach((citation, index) => {
+    citations.forEach((citation) => {
       if (text.includes(citation.verbatim_text)) {
         text = text.replace(new RegExp(citation.verbatim_text, 'gi'), `|${citation.verbatim_text}|`);
       }
@@ -173,7 +170,7 @@
     let nodes = [];
     let citation_exits = false;
     let citations_texts = citations.map(citation => citation.verbatim_text)
-    text_array.forEach((item, index) => {
+    text_array.forEach((item) => {
       
       if (item.trim() != '') {
         if (citations_texts.includes(item)) {
@@ -275,29 +272,6 @@
     }
     return text;
   }
-  
-  const handlePlayClick = async (element) => {
-    
-    // (talkify as any).config.remoteService.host = talkify_tts_host;
-    // (talkify as any).config.remoteService.apiKey = talkify_tts_api_key;
-
-    // (talkify as any).config.ui.audioControls.enabled = true; //<-- Disable to get the browser built in audio controls
-    // (talkify as any).config.ui.audioControls.voicepicker.enabled = true;
-    // // (talkify as any).config.ui.audioControls.container = document.getElementById("player-and-voices");
-
-    // let player = new (talkify as any).TtsPlayer()
-    //   .enableTextHighlighting()
-    //   .forceVoice({name: "Zira"});
-
-    // let playlist = new (talkify as any).playlist()
-    //   .begin()
-    //   .usingPlayer(player)
-    //   .withRootSelector('#root')
-    //   .withTextInteraction()
-    //   .build();
-    
-    // playlist.play();
-  }  
 
   const handleAsk = async () => {
     console.log("Asking question: ", question.value, " document_id: ", doc.value.id);
@@ -318,25 +292,7 @@
     question.value = '';
   }
 
-  const handleDataChange = () => {
-    console.log("Data Change: ");
-  }
-
-  const highlight = (source_sentences) => {
-    const sentences_map = new Map(Object.entries(source_sentences));
-    console.log("Highlighting", source_sentences);
-    sentences_map.forEach((item) => {
-      try {
-        //jQuery("article").html(jQuery("article").html().replace(new RegExp(item.sentence, 'g'), '<span class="about">' + item.sentence + '</span>'));
-      } catch (err) {
-        console.log("Error: ", err);
-      }
-    });
-  }
-
   function markCitations(element, tooltiptext) {
-    //, citations = null, tooltiptext = null, hightlight_style = "bg-highlight"
-    console.log('markCitations');
     if(citations.value != null) {
       let found_citations = [];
       citations.value.forEach((citation, index) => {
@@ -346,18 +302,16 @@
         let citiation_instances = [];
         
         citiation_instances.push(build_citation_span(element, found_citations, tooltiptext));
-    
         return citiation_instances;
       } else {
         return h(element.element, { class: 'mt-2', innerHTML: element.text })
       }
       
     } else {
-      console.log("No citations found");
       return h(element.element, { class: 'mt-2', innerHTML: element.text })
     }
     
-  }//End of addCitiationHightlights2
+  }
 
   const qasRemove = async (index) => {
     qas.value.splice(index, 1);
@@ -372,10 +326,15 @@
   }
 
   const toggleCitation = async (index) => {
-    console.log("Toggle Citation: ", index, " item: ", qas.value[index].citations);
+    let countToIndex = 0;
+    for (let j = 0; j < index; j++) {
+      for (let i = 0; i < qas.value[j].citations.length; i++) {
+        countToIndex++;
+      }
+    }
     pageHTML.value = article_html_builder(original_elements.value, qas.value[index].citations, qas.value[index].question);
     citations.value = qas.value[index].citations;
-    // scrollToElement.value.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    document.getElementById('section-'+countToIndex).scrollIntoView();
   }
 
   const toggleHighlightMenu = (event) => {
@@ -418,10 +377,10 @@
             <div class="col-12 border-1 border-round border-solid mb-3 border-blue-100 overflow-y-auto" style="height: calc(100% - 3em);">
               <div class="col-12 bg-white px-3 py-2 flex flex-column border-round h-auto min-h-full">
                 <div class="flex-row">
-                  <span class="text-sm" v-for="item in author">{{ item }} </span>
+                  <span class="text-sm" v-if="author != null" v-for="item in author">{{ item }} </span>
                 </div>
                 
-                <!-- <span class="text-sm mb-3">Published {{ publication_date.valueOf() }}</span> -->
+                <span class="text-sm mb-3">Published {{ publication_date }}</span>
                 <div v-if="xRayIsPending" class="flex flex-flow justify-content-center">
                   <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
                 </div>
@@ -443,8 +402,8 @@
                   <div class="grid nested-grid grid-nogutter border-1 border-round border-solid border-blue-100 surface-100 h-full">
                     <div class="flex-column mx-2 my-2 mt-3 w-full border-round border-1 border-blue-100 bg-white">
                       <div class="overflow-y-auto pr-3 py-3" style="height: calc(100% - 49.6px);">
-                        <p class="pl-3 pb-3 line-height-2" v-if="doc.is_about != null">{{ doc.is_about }}</p>
-                        <div v-if="doc.tldr != null">
+                        <p class="pl-3 pb-3 line-height-2" v-if="doc != null && doc.is_about != null">{{ doc.is_about }}</p>
+                        <div v-if="doc != null && doc.tldr != null">
                           <p class="pl-3">Key Points:</p>
                           <ul>
                             <li v-for="item in doc.tldr">{{ item }}</li>
@@ -474,7 +433,7 @@
                                 </div>
                                 <div class="flex-row mx-3">
                                   <Button type="button" class="bg-primary text-white" size="small" label="Hightlight Citation" icon="pi pi-code" @click="toggleCitation(index)" />
-                                  <Button icon="pi pi-copy" class="bg-transparent border-transparent border-0 text-500 flex-shrink-0 align-content-start flex-wrap pb-0 pr-0" size="large" aria-label="Copy"/>
+                                  <Button type="button" class="bg-transparent border-transparent border-0 text-500 flex-shrink-0 align-content-start flex-wrap pb-0 pr-0" size="large" aria-label="Copy" icon="pi pi-copy" />
                                 </div>
                               </div>
                             </template>
