@@ -52,8 +52,6 @@ watch(
     }
 )
 
-
-
 const filteredDocuments = ref();
 
 const hasData = async (documentsLength) => {
@@ -90,38 +88,21 @@ const searchHandle = async () => {
     console.log('props.documents', props.documents);
 };
 
-const showXRayDialog = (data) => {
-    dialog.open(XRayView, {
-        data: data,
-        props: {
-            header: data.title,
-            contentClass: 'dialog-inner-scroll',
-            style: {
-                height: '100%',
-                width: '95%'
-            },
-            modal: true
-        },
-        onClose: (options) => {
-            console.log(options);
-            const dataClose = options.data;
-            console.log(dataClose);
-        }
-    });
+const onUpload = async (e) => {
+    console.log(e);
+    // files.value = event.files;
+    // files.value.forEach((file) => {
+    //     totalSize.value += parseInt(formatSize(file.size));
+    // });
+    console.log('fileupload ', fileupload.value);
+
 };
-
-
 
 const unselectDocuments = async () => {
     selectedDocuments.value = [];
 }
 
 const StudyTaskView = defineAsyncComponent(() => import('@/views/library/AddStudyTask.vue'));
-const XRayView = defineAsyncComponent(() => import('@/views/library/DocXRayView.vue'));
-
-defineExpose({
-    onCollapseAll, onExpandAll
-});
 
 </script>
 
@@ -136,8 +117,13 @@ defineExpose({
                         <template #body="slotProps">
                             <div class="flex flex-row align-items-center">
                                 <i class="pi pi-globe"></i>
-                                <a @click="showXRayDialog(slotProps.data)" tabindex="0"><span class="my-auto px-2 text-black-alpha-90 overflow-hidden" style="white-space: nowrap; text-overflow: ellipsis;">{{slotProps.data.title}}</span></a>
-                                <DynamicDialog />
+                                <router-link 
+                                    :to="{
+                                        name: 'docxray',
+                                        params: {id: slotProps.data.id}
+                                    }"
+                                    class="text-700 py-1 ml-2">{{slotProps.data.title}}
+                                </router-link>
                             </div>
                         </template>
                     </Column>

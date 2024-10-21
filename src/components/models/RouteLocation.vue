@@ -4,7 +4,9 @@
         DOCUMENTS = 'documents',
         PROJECTS = 'projects',
         HOME = 'home',
-        PROJECTDETAILS = 'projectdetails'
+        PROJECTDETAILS = 'projectdetails',
+        DOCXRAY = 'docxray',
+        UNDEFINED = 'undefined'
     }
     export default Route_Location
 </script>

@@ -16,7 +16,7 @@ const requireAuth = (to, from, next) => {
   } else {
     next()
   }
-}
+};
 
 const authenticated = (to, from, next) => {
   if (user_state.user) {
@@ -25,8 +25,7 @@ const authenticated = (to, from, next) => {
   } else {
     next()
   }
-}
-
+};
 
 const routes = [
   {
@@ -71,12 +70,11 @@ const routes = [
     name: 'terms-of-use',
     component: TermsOfUse
   }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
-})
-
+});
 
 export default router

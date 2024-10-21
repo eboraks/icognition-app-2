@@ -45,7 +45,7 @@
                                     @input="inputHandle" @keydown.escape="emptied" placeholder="Search"/> 
                             </IconField>
                         </div>
-                        <div class="col-6 flex align-content-between flex-wrap justify-content-center pr-0">
+                        <div class="col-6 flex align-content-between flex-wrap justify-content-end pr-0">
                             <a class="px-5 py-1 font-semibold" @click="onExpandAll" style="height: 2rem;" tabindex="0">
                                 <i class="pi pi-plus text-black-alpha-90 text-xs"></i> Expand All
                             </a>

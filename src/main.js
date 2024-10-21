@@ -1,9 +1,9 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import App from './App.vue'
-import router from './router'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+import router from './router';
 import moment from 'moment';
-import './assets/css/main.scss'
+import './assets/css/main.scss';
 
 // PrimeVue and PrimeFlex
 import PrimeVue from 'primevue/config';
