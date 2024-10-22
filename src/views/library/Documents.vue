@@ -1,115 +1,111 @@
 <script setup lang="ts">
-import useLibrary from '@/composables/useLibrary';
-import user_state from '@/composables/getUser';
-import { ref, onMounted, defineAsyncComponent, watch } from 'vue';
-import AutoComplete from 'primevue/autocomplete';
-import FileUpload from 'primevue/fileupload';
-import GridSelection from '@/components/GridSelection.vue';
-import moment from 'moment';
-import { useDialog } from 'primevue/usedialog';
-import { useToast } from 'primevue/usetoast';
-import DynamicDialog from 'primevue/dynamicdialog';
+    import useLibrary from '@/composables/useLibrary';
+    import user_state from '@/composables/getUser';
+    import { ref, onMounted, watch } from 'vue';
+    import FileUpload from 'primevue/fileupload';
+    import GridSelection from '@/components/GridSelection.vue';
+    import moment from 'moment';
+    import { useToast } from 'primevue/usetoast';
 
-const { docs, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
-    searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument } = useLibrary();
-const answer_loading = ref(false);
+    const { docs, answer, error, resp_type, isPending, getDocuments, getSubtopics, subtopics,
+        searchDocuments, subtopics_nodes, getSubtopicsNodes, getEntitiesNames, entities_names, deleteDocument } = useLibrary();
+    const answer_loading = ref(false);
 
-const dialog = useDialog();
-const expandedRows = ref({});
-const fileupload = ref([]);
-const fitlerCheckedIds = ref(new Map());
-const hasNoData = ref();
-let isError = false;
-const items = ref([]);
-const props = defineProps({
-    documents: Array
-});
-const search_term = ref('');
-const selectedDocuments = ref();
-const showFooterSelect = ref(false);
-let showUploadFileDialog = ref(false);
-const toast = useToast();
+    const expandedRows = ref({});
+    const fileupload = ref([]);
+    const fitlerCheckedIds = ref(new Map());
+    const hasNoData = ref();
+    let isError = false;
+    const props = defineProps({
+        documents: Array,
+        collapseAll: Boolean,
+        expandAll: Boolean
+    });
+    const search_term = ref('');
+    const selectedDocuments = ref();
+    const showFooterSelect = ref(false);
+    let showUploadFileDialog = ref(false);
+    const toast = useToast();
 
-onMounted(async() => {
-    try {
-        await getEntitiesNames(user_state.user.uid);
-        isError = false;
-        await hasData(props.documents.length);
-    } catch (err) {
-        isError = true;
-        console.log("Error: ", err);
-    }
-});
+    onMounted(async() => {
+        try {
+            await getEntitiesNames(user_state.user.uid);
+            isError = false;
+            await hasData(props.documents.length);
+        } catch (err) {
+            isError = true;
+            console.log("Error: ", err);
+        }
+    });
 
-watch(
-    () => selectedDocuments.value,
-    () => {
-        if (selectedDocuments.value.length > 0) {
-            showFooterSelect.value = true;
-        } else {
-            showFooterSelect.value = false;
+    watch(
+        () => selectedDocuments.value,
+        () => {
+            if (selectedDocuments.value.length > 0) {
+                showFooterSelect.value = true;
+            } else {
+                showFooterSelect.value = false;
+            }
+        }
+    )
+
+    const filteredDocuments = ref();
+
+    const hasData = async (documentsLength) => {
+        if (documentsLength != null && documentsLength > 0) {
+            hasNoData.value = false;
         }
     }
-)
 
-const filteredDocuments = ref();
+    const onCollapseAll = () => {
+        expandedRows.value = null;
+    };
 
-const hasData = async (documentsLength) => {
-    if (documentsLength != null && documentsLength > 0) {
-        hasNoData.value = false;
+    const onExpandAll = () => {
+        expandedRows.value = props.documents.reduce((acc, p: any) => (acc[p.id] = true) && acc, {});
+    };
+
+    const onRowCollapse = (event) => {
+        toast.add({ severity: 'success', summary: 'Documents Collapsed', detail: event.data.title, life: 3000 });
+    };
+
+    const onRowExpand = (event) => {
+        toast.add({ severity: 'info', summary: 'Documents Expanded', detail: event.data.title, life: 3000 });
+    };
+
+    const searchHandle = async () => {
+        answer_loading.value = true;
+        await searchDocuments(user_state.user.uid, search_term.value);
+        answer_loading.value = false; 
+        console.log("Search handle, answer: ", resp_type.value)
+        console.log('documents from searchHandle', docs.value);
+        filteredDocuments.value = docs.value;
+        console.log('props.documents', props.documents);
+    };
+
+    const onUpload = async (e) => {
+        console.log(e);
+        // files.value = event.files;
+        // files.value.forEach((file) => {
+        //     totalSize.value += parseInt(formatSize(file.size));
+        // });
+        console.log('fileupload ', fileupload.value);
+    };
+
+    const unselectDocuments = async () => {
+        selectedDocuments.value = [];
     }
-}
 
-
-const onCollapseAll = () => {
-    expandedRows.value = null;
-};
-
-const onExpandAll = () => {
-    expandedRows.value = props.documents.reduce((acc, p: any) => (acc[p.id] = true) && acc, {});
-};
-
-const onRowCollapse = (event) => {
-    toast.add({ severity: 'success', summary: 'Documents Collapsed', detail: event.data.title, life: 3000 });
-};
-
-const onRowExpand = (event) => {
-    toast.add({ severity: 'info', summary: 'Documents Expanded', detail: event.data.title, life: 3000 });
-};
-
-const searchHandle = async () => {
-    console.log('props.documents', props.documents);
-    answer_loading.value = true;
-    await searchDocuments(user_state.user.uid, search_term.value);
-    answer_loading.value = false; 
-    console.log("Search handle, answer: ", resp_type.value)
-    console.log('documents from searchHandle', docs.value);
-    filteredDocuments.value = docs.value;
-    console.log('props.documents', props.documents);
-};
-
-const onUpload = async (e) => {
-    console.log(e);
-    // files.value = event.files;
-    // files.value.forEach((file) => {
-    //     totalSize.value += parseInt(formatSize(file.size));
-    // });
-    console.log('fileupload ', fileupload.value);
-
-};
-
-const unselectDocuments = async () => {
-    selectedDocuments.value = [];
-}
-
-const StudyTaskView = defineAsyncComponent(() => import('@/views/library/AddStudyTask.vue'));
-
+    defineExpose({
+        onCollapseAll,
+        onExpandAll
+    });
 </script>
 
 <template>
     <div class="col-12 grid p-0 grid-nogutter h-full">
-        <div class="col-12 pr-0" style="height: calc(100% - 57px);" v-if="props.documents.length != 0" :class="{'projectHeightLarge': showFooterSelect}">
-            <div class="card h-full">
+        <div class="col-12 pr-0" style="height: calc(100% - 3em);" v-if="props.documents.length != 0" :class="{'projectHeightLarge': showFooterSelect}">
+            <div class="card">
                 <DataTable v-model:expandedRows="expandedRows" v-model:selection="selectedDocuments" :value="props.documents" dataKey="id"
                         @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" scrollable tableStyle="min-width: 1rem" class="min-h-full h-full text-xs relative">
                     <Column expander style="width: 2rem" />
@@ -145,7 +141,7 @@ const StudyTaskView = defineAsyncComponent(() => import('@/views/library/AddStud
                                 <a @click="showXRayDialog(slotProps.data)" tabindex="0">OPEN X-RAY</a>
                             </div> -->
                             <div class="col-12 pt-1" style="max-width: 70%;">
-                                <h5>Summary: {{ slotProps.data.is_about}}</h5>
+                                <h4 class="font-normal">Summary: {{ slotProps.data.is_about}}</h4>
                             </div>
                         </div>
                     </template>
@@ -155,7 +151,7 @@ const StudyTaskView = defineAsyncComponent(() => import('@/views/library/AddStud
                 </div>
             </div>
         </div>
-        <div class="col-12 card" v-if="!isPending">
+        <div class="col-12 card" v-if="!isPending && props.documents.length == 0">
             <div class="col-12 pt-7 mt-7">
                 <img class="flex m-auto" alt="bookmark" style="max-width: 100px;" src="/src/assets/images/icons/bookmark.png" />
             </div>
