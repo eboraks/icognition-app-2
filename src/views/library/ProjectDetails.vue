@@ -184,7 +184,7 @@
                 </SplitterPanel>
                 <SplitterPanel class="col-12 p-0" :minSize="1" :size="34">
                     <div class="card h-full">
-                        <Tabs value="0" class="h-full">
+                        <Tabs value="1" class="h-full">
                             <TabList class="border-bottom-1 border-200">
                                 <!-- <Tab value="0"><i class="pi pi-th-large"></i> Entities by Source</Tab> -->
                                 <Tab value="1"><i class="pi pi-sparkles"></i> Ask iCognition</Tab>
