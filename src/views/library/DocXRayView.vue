@@ -1,5 +1,5 @@
 <script setup lang="ts" >
-  import { ref, h, onBeforeMount } from 'vue';
+  import { ref, h, onBeforeMount, watch } from 'vue';
   import { useRouter } from 'vue-router';
   import moment from 'moment';
   import * as pdfFonts from '@/components/models/vfs_fonts.vue';
@@ -32,7 +32,9 @@
   let publication_date = ref();
   const router = useRouter();
   const question = ref('');
-  let scrollToElement = 0;
+let scrollToElement = 0;
+const scrollRef = ref(null);
+  const clickEventForScroll = ref(false);
 
   onBeforeMount(async () => {
       try {
@@ -103,6 +105,7 @@
       if (citations != null) {
         citations.forEach((citation, index) => {
           if (text.includes(citation.verbatim_text)) {
+            console.log("Citiation index: ", index);
             text = text.replace(new RegExp(citation.verbatim_text, 'gi'),
               `<span class="${hightlight_style} tooltip" id="section-${index}">${citation.verbatim_text}<span class="tooltiptext">${tooltiptext}</span></span>`);
           }
@@ -175,13 +178,10 @@
       if (item.trim() != '') {
         if (citations_texts.includes(item)) {
           // let tooltip_node = ;
-          
-          nodes.push(h('p',
-            { class: 'bg-highlight tooltip', id: 'section-' + scrollToElement, innerHTML: item },
-            [h('span', { class: 'tooltiptext', innerHTML: tooltiptext })]
-          ))
-          
 
+          let node = h('span', { class: 'bg-highlight tooltip', id: 'section-'+scrollToElement, ref: scrollRef }, [item, h('span', { class: 'tooltiptext' }, tooltiptext)]);
+          nodes.push(node)
+          
           scrollToElement++;
           citation_exits = true;
         } else {
@@ -208,6 +208,15 @@
       [ children ]
     );
   }
+
+
+  watch(scrollRef, () => {
+    console.log("scroll ref: ", scrollRef.value);
+    if (clickEventForScroll.value === true && scrollRef.value != null) {
+      console.log("scroll ref: ", scrollRef.value);
+      scrollRef.value.scrollIntoView({ behavior: "smooth" });
+    }
+  });
 
   function formate_date(value) {
     return moment(value).format('hh:mm a, MM-DD-YYYY');
@@ -332,10 +341,19 @@
         countToIndex++;
       }
     }
-    pageHTML.value = article_html_builder(original_elements.value, qas.value[index].citations, qas.value[index].question);
+    //This method build the html for the page, not the H
+    //pageHTML.value = article_html_builder(original_elements.value, qas.value[index].citations, qas.value[index].question);
+
+    // By assinging the value to the Ref cititation it will trigger the vnode to be updated
     citations.value = qas.value[index].citations;
-    document.getElementById('section-'+countToIndex).scrollIntoView();
+    clickEventForScroll.value = !clickEventForScroll.value;
+    
+    //This line has two problems. 
+    // 1 the index used is the index used by the article_html_builder, not the index of the citation(H)
+    // 2. It's executing before the rending of the page, so the element is not found. 
+    //document.getElementById('section-'+countToIndex).scrollIntoView();
   }
+
 
   const toggleHighlightMenu = (event) => {
     // We need to get the highlighted text prior to opening the popover or we lose the data.
@@ -384,7 +402,8 @@
                 <div v-if="xRayIsPending" class="flex flex-flow justify-content-center">
                   <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
                 </div>
-                <div><component :is="vnode"/></div>
+                <!--div><component :is="vnode" :key="citations"/></div-->
+                <div><vnode :key="citations"/></div>
               </div>
             </div>
           </div>
