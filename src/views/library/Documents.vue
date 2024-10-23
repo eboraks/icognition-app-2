@@ -140,8 +140,23 @@
                                 <a class="mr-3" :href="slotProps.data.url" target="_blank"><i class="pi pi-pen-to-square"></i> OPEN ORIGINAL</a>
                                 <a @click="showXRayDialog(slotProps.data)" tabindex="0">OPEN X-RAY</a>
                             </div> -->
-                            <div class="col-12 pt-1" style="max-width: 70%;">
-                                <h4 class="font-normal">Summary: {{ slotProps.data.is_about}}</h4>
+                            <div class="grid">
+                                <div class="col-fixed" style="width: 100px;">
+                                    <p>Summary:</p>    
+                                </div>
+                                <div class="col-12" style="max-width: 60%;">
+                                    <p>{{ slotProps.data.is_about}}</p>
+                                </div>
+                            </div>
+                            <div class="grid">
+                                <div class="col-fixed" style="width: 100px;">
+                                    <p>Key Points:</p>
+                                </div>
+                                <div class="col-11" style="max-width: 60%;">
+                                    <ul v-for="item in slotProps.data.tldr">
+                                        <li>{{ item }}</li>
+                                    </ul>
+                                </div>  
                             </div>
                         </div>
                     </template>

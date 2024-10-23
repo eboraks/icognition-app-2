@@ -61,6 +61,10 @@
         color: var(--primary-500);
     }
 
+    #siteWrapper {
+        height: 100vh !important;
+    }
+
     .splitter-panel-container-small {
         flex-basis: 4em!important;
     }

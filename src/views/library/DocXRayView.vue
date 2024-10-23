@@ -1,16 +1,16 @@
 <script setup lang="ts" >
-  import { ref, h, onBeforeMount } from 'vue';
+  import { ref, h, onBeforeMount, watch } from 'vue';
   import { useRouter } from 'vue-router';
+  import useCustomQandA from '@/composables/useCustomQandA';
+  import useDocQuesAnswers from '@/composables/useDocQuesAnswers';
+  import useDocXRay from '@/composables/useDocXRay';
+  import AskQuestion from '@/components/models/AskQuestion.vue';
   import moment from 'moment';
   import * as pdfFonts from '@/components/models/vfs_fonts.vue';
   import  pdfMake from "pdfmake/build/pdfmake";
   (<any>pdfMake).vfs = pdfFonts.default;
   // import TalkifyTTSService from '@/services/TalkifyTTSService';
   // import Talkify from 'talkify-tts-api';
-  import useCustomQandA from '@/composables/useCustomQandA';
-  import useDocQuesAnswers from '@/composables/useDocQuesAnswers';
-  import useDocXRay from '@/composables/useDocXRay';
-  import AskQuestion from '@/components/models/AskQuestion.vue';
 
   const { isAskPending, askQuestion, answerResponse } = useCustomQandA();
   const { qas, qasPending, getDocQuestionsAnswers } = useDocQuesAnswers();
@@ -22,33 +22,31 @@
   const highlightedFromWhere = ref();
   const highlightedText = ref('');
   const highlightedTextList = ref([]);
-  let highlightedTextListId = 0;
   const highlightNotesValue = ref('');
   const htmlElementsForPage = ref([]);
   const htmlElementsForPDF = ref([]);
   let htmlToPDF: [Object] = [null];
   const menuHighlight = ref();
-  const pageHTML = ref('');
   let publication_date = ref();
   const router = useRouter();
   const question = ref('');
   let scrollToElement = 0;
+  const scrollRef = ref(null);
+  const clickEventForScroll = ref(false);
+  let tooltiptext = 'Citation';
 
   onBeforeMount(async () => {
       try {
         await getDocumetXRay(router.currentRoute.value.params.id);
         console.log("Document: ", doc.value);
         console.log("Original Elements: ", original_elements.value);
-        htmlElementsForPage.value = original_elements.value;
+        htmlElementsForPage.value = htmlElementsForPDF.value = original_elements.value;
         author = ref(doc.value.authors);
+        //Citation is driving the vnode to be updated
         citations.value = doc.value.summary_citations;
 
         //Generate document for html
-        pageHTML.value = article_html_builder(original_elements.value, doc.value.summary_citations, 'Summary');
         publication_date = ref(formate_date(doc.value.publicationDate));
-
-        // create an object that can be seen as html
-        setupArticleHTML(doc.value.html_elements, citations);
 
         await getDocQuestionsAnswers(router.currentRoute.value.params.id);
         
@@ -98,66 +96,6 @@
     }
   }
 
-  const addCitiationHightlights = (text, citations = null, tooltiptext = null, hightlight_style = "bg-highlight") => {
-    if (text != null) {
-      if (citations != null) {
-        citations.forEach((citation, index) => {
-          if (text.includes(citation.verbatim_text)) {
-            text = text.replace(new RegExp(citation.verbatim_text, 'gi'),
-              `<span class="${hightlight_style} tooltip" id="section-${index}">${citation.verbatim_text}<span class="tooltiptext">${tooltiptext}</span></span>`);
-          }
-        });
-        return text;
-      } else {
-        return text;
-      }
-    } else {
-      return null;
-    }
-  }
-
-  const addHightlights = (html_elements, citations, family) => {
-    let _html_elements = html_elements;
-    if (_html_elements != null) {
-      if(citations != null) {
-        _html_elements.forEach(html_element => {
-          citations.forEach((citation, index) => {
-        
-            if (html_element.text.includes(citation.verbatim)) {
-              html_element.text = html_element.text.replace(new RegExp(citation.verbatim_text, 'gi'),
-              `<span class="bg-highlight tooltip" id="section-${index}">${citation.verbatim_text}<span class="tooltiptext">${family}</span></span>`);
-            }
-          });
-        });
-        return _html_elements;
-      } else {
-        return _html_elements;
-      }
-    } else {
-      return null;
-    }
-  }
-
-  const article_html_builder = (elements, citations, tooltiptext) => {
-    let html = '';
-    elements.forEach((element) => {
-      if (element.element === 'h1') {
-        html += `<h1 class="mt-2">${addCitiationHightlights(element.text, citations, tooltiptext)}</h1>`;
-      } else if (element.element === 'h2') {
-        html += `<h2 class="mt-2">${addCitiationHightlights(element.text, citations, tooltiptext)}</h2>`;
-      } else if (element.element === 'h3') {
-        html += `<h3 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h3>`;
-      } else if (element.element === 'h4') {
-        html += `<h4 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h4>`;
-      } else if (element.element === 'h5') {
-        html += `<h5 class="mt-1">${addCitiationHightlights(element.text, citations, tooltiptext)}</h5>`;
-      } else if (element.element === 'p') {
-        html += `<p class="text-left font-medium">${addCitiationHightlights(element.text, citations, tooltiptext)}</p>`;
-      }
-    });
-    return html;
-  }
-
   const build_citation_span = (element, citations, tooltiptext) => {
     let text = element.text
     citations.forEach((citation) => {
@@ -174,14 +112,11 @@
       
       if (item.trim() != '') {
         if (citations_texts.includes(item)) {
-          // let tooltip_node = ;
           
-          nodes.push(h('p',
-            { class: 'bg-highlight tooltip', id: 'section-' + scrollToElement, innerHTML: item },
-            [h('span', { class: 'tooltiptext', innerHTML: tooltiptext })]
-          ))
+          //ref: scrollRef is used to scroll to the element
+          let node = h('span', { class: 'bg-highlight tooltip', id: 'section-'+scrollToElement, ref: scrollRef }, [item, h('span', { class: 'tooltiptext' }, tooltiptext)]);
+          nodes.push(node)
           
-
           scrollToElement++;
           citation_exits = true;
         } else {
@@ -200,7 +135,7 @@
   const vnode = () => {
     let children = [];
     htmlElementsForPage.value.forEach((element) => {
-      children.push(markCitations(element, 'citation'));
+      children.push(markCitations(element, tooltiptext));
     });
     return h(
       'div',
@@ -208,6 +143,14 @@
       [ children ]
     );
   }
+
+  watch(scrollRef, () => {
+    console.log("scroll ref: ", scrollRef.value);
+    if (clickEventForScroll.value === true && scrollRef.value != null) {
+      console.log("scroll ref: ", scrollRef.value);
+      scrollRef.value.scrollIntoView({ behavior: "smooth" });
+    }
+  });
 
   function formate_date(value) {
     return moment(value).format('hh:mm a, MM-DD-YYYY');
@@ -251,18 +194,19 @@
         if (element.text.includes(highlightedText.value)) {
           let first_half = element.text.substr(0, element.text.indexOf(highlightedText.value));
           let second_half = element.text.substr(element.text.indexOf(highlightedText.value) + highlightedText.value.length, element.text.length);
-          element.text = first_half + `<span class="bg-highlight tooltip" id="section-${highlightedTextListId}">${highlightedText.value}<span class="tooltiptext">${highlightNotesValue.value}</span></span>` + second_half;
+          element.text = first_half + `<span class="bg-highlight tooltip" id="section-${scrollToElement}">${highlightedText.value}<span class="tooltiptext">${highlightNotesValue.value}</span></span>` + second_half;
+          console.log("hanlded highlight click element.text: ", element.text);
         }
       }
     });
     
     highlightedTextList.value.push({
-      id: '#section-' + highlightedTextListId,
+      id: '#section-' + scrollToElement,
       contents: highlightedText,
       notes: highlightNotesValue.value,
       updated: new Date()
     });
-    highlightedTextListId += 1;
+    scrollToElement += 1;
   }
 
   function getSelectedText() {
@@ -310,31 +254,17 @@
     } else {
       return h(element.element, { class: 'mt-2', innerHTML: element.text })
     }
-    
   }
 
   const qasRemove = async (index) => {
     qas.value.splice(index, 1);
   }
 
-  const setupArticleHTML = async (html_elements, citations) => {
-    
-    html_elements.forEach(item => {
-      let charCount = Array.from(item.text).length;
-    });
-    
-  }
-
   const toggleCitation = async (index) => {
-    let countToIndex = 0;
-    for (let j = 0; j < index; j++) {
-      for (let i = 0; i < qas.value[j].citations.length; i++) {
-        countToIndex++;
-      }
-    }
-    pageHTML.value = article_html_builder(original_elements.value, qas.value[index].citations, qas.value[index].question);
+    // By assinging the value to the Ref cititation it will trigger the vnode to be updated
     citations.value = qas.value[index].citations;
-    document.getElementById('section-'+countToIndex).scrollIntoView();
+    tooltiptext = qas.value[index].question;
+    clickEventForScroll.value = !clickEventForScroll.value;
   }
 
   const toggleHighlightMenu = (event) => {
@@ -384,7 +314,8 @@
                 <div v-if="xRayIsPending" class="flex flex-flow justify-content-center">
                   <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
                 </div>
-                <div><component :is="vnode"/></div>
+                <!-- key citations tell Vue to listen to changes on citiations -->
+                <div><vnode :key="citations"/></div>
               </div>
             </div>
           </div>
